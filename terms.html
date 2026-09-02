@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>Terms of Service — PyPractice</title>
+    <meta name="title" content="Terms of Service — PyPractice" />
+    <meta name="description" content="Terms of Service for PyPractice. Understand the guidelines and conditions for using our interactive Python practice platform." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://mahesh-atx.github.io/Py_Practice/terms.html" />
+
+    <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+    <link rel="apple-touch-icon" href="assets/favicon.svg" />
+    <meta name="theme-color" content="#2e5a33" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <div class="site-shell min-h-screen flex flex-col">
+      <header class="header-blur sticky top-0 z-50 border-b border-line shrink-0">
+        <div class="app-max h-[76px] flex items-center justify-between">
+          <a href="index.html" class="text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+          <nav class="hidden md:flex items-center gap-8 text-sm text-muted">
+            <a href="index.html" class="hover:text-ink">Home</a>
+            <a href="learn.html" class="hover:text-ink">Learn</a>
+            <a href="topics.html" class="hover:text-ink">Practice</a>
+            <a href="progress.html" data-auth-only class="hover:text-ink hidden">Progress</a>
+            <a href="guide.html" class="hover:text-ink">Python Guide</a>
+            <a href="profile.html" data-auth-only class="hover:text-ink hidden">Profile</a>
+          </nav>
+          <div class="flex items-center gap-2.5">
+            <div data-guest-only class="hidden sm:inline-flex items-center gap-2">
+              <a href="login.html" class="btn-ghost px-4 py-2 text-xs rounded-[10px] font-medium">Login</a>
+              <a href="signup.html" class="btn-primary px-4 py-2 text-xs rounded-[10px] font-medium shadow-sm">Sign up</a>
+            </div>
+            <div data-auth-only class="hidden inline-flex items-center gap-2">
+              <a href="progress.html" class="btn-ghost px-2.5 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 border border-line" title="Your Progress">
+                <i class="fa-solid fa-chart-simple text-[var(--green)] text-[11px]"></i>
+                <span data-overall-pct class="font-mono text-xs font-semibold text-ink">0%</span>
+              </a>
+              <a href="profile.html" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-2 border border-line" title="View Profile">
+                <span class="w-5 h-5 rounded-full bg-[var(--green)] text-white text-[10px] font-bold grid place-items-center" data-user-initial>U</span>
+                <span class="font-medium text-ink max-w-[110px] truncate" data-user-name>User</span>
+              </a>
+              <button data-logout-btn type="button" class="btn-ghost h-9 w-9 grid place-items-center text-xs rounded-[10px] text-muted hover:text-red-500 hover:border-red-200 transition" title="Sign out">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+              </button>
+            </div>
+            <button data-theme-toggle class="h-10 w-10 border border-line grid place-items-center text-sm btn-ghost rounded-[10px]" aria-label="Toggle dark mode"><span data-theme-icon>◐</span></button>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex-1 app-max py-12 max-w-3xl">
+        <div class="space-y-6">
+          <div class="border-b border-line pb-6">
+            <div class="text-xs font-mono uppercase tracking-wider text-[var(--green)] font-semibold mb-2">Legal Documentation</div>
+            <h1 class="text-3xl font-bold tracking-tight text-ink">Terms of Service</h1>
+            <p class="text-sm text-muted mt-2">Last updated: September 3, 2026 · PyPractice</p>
+          </div>
+
+          <section class="space-y-3">
+            <h2 class="text-lg font-semibold text-ink">1. Acceptance of Terms</h2>
+            <p class="text-sm text-muted leading-relaxed">
+              By accessing and using PyPractice (<a href="https://mahesh-atx.github.io/Py_Practice/" class="text-[var(--green)] underline font-medium">https://mahesh-atx.github.io/Py_Practice/</a>), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the service.
+            </p>
+          </section>
+
+          <section class="space-y-3">
+            <h2 class="text-lg font-semibold text-ink">2. Permitted Use</h2>
+            <p class="text-sm text-muted leading-relaxed">
+              PyPractice is designed as an interactive educational platform to help learners practice and improve their Python programming skills. You agree to use the platform in compliance with all applicable laws and regulations.
+            </p>
+          </section>
+
+          <section class="space-y-3">
+            <h2 class="text-lg font-semibold text-ink">3. Accounts & Authentication</h2>
+            <p class="text-sm text-muted leading-relaxed">
+              You may use Google Sign-In or email registration to save your progress. You are responsible for maintaining the security of your credentials.
+            </p>
+          </section>
+
+          <section class="space-y-3">
+            <h2 class="text-lg font-semibold text-ink">4. Intellectual Property</h2>
+            <p class="text-sm text-muted leading-relaxed">
+              The platform design, educational topics, and curriculum are owned by PyPractice. The code you write to solve problems remains your property.
+            </p>
+          </section>
+
+          <section class="space-y-3">
+            <h2 class="text-lg font-semibold text-ink">5. Contact</h2>
+            <p class="text-sm text-muted leading-relaxed">
+              For any questions regarding these terms, contact <a href="mailto:dongaremahesh10@gmail.com" class="text-[var(--green)] underline font-medium">dongaremahesh10@gmail.com</a>.
+            </p>
+          </section>
+        </div>
+      </main>
+
+      <footer class="border-t border-line py-8 mt-12">
+        <div class="app-max flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted">
+          <div>© 2026 PyPractice. Built for learners worldwide.</div>
+          <div class="flex items-center gap-4">
+            <a href="index.html" class="hover:text-ink">Home</a>
+            <a href="privacy.html" class="hover:text-ink">Privacy Policy</a>
+            <a href="terms.html" class="text-ink font-medium">Terms of Service</a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="js/topics-data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/app.js"></script>
+    <script type="module" src="js/auth.js"></script>
+  </body>
+</html>
