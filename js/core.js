@@ -165,7 +165,7 @@ function setupHeader() {
     document.body.style.overflow = '';
   });
   document.querySelectorAll('[data-reset-progress]').forEach(b => {
-    b.addEventListener('click', () => {
+    b.addEventListener('click', async () => {
       if (!confirm('Reset all question progress, streak data, and saved code?')) return;
       state.solved = {};
       state.activity = [];
@@ -173,9 +173,13 @@ function setupHeader() {
       allQuestions().forEach(q => localStorage.removeItem(`code:${q.id}`));
       localStorage.removeItem(lastQuestionKey);
       toast('Progress reset.');
-      // little shake feedback
       b.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(3px)' }, { transform: 'translateX(0)' }], { duration: 260, easing: 'ease-out' });
-      setTimeout(() => location.reload(), 350);
+      
+      const authObj = typeof getAuth === 'function' ? getAuth() : null;
+      if (typeof window.saveUserData === 'function' && authObj?.uid) {
+        try { await window.saveUserData(authObj.uid); } catch {}
+      }
+      setTimeout(() => location.reload(), 300);
     });
   });
   if (typeof syncAuthUI === 'function') syncAuthUI();
@@ -491,6 +495,9 @@ function promptLoginModal(message) {
     msgEl.textContent = message || 'Please log in or create an account to access this feature.';
   }
 }
+
+// Expose for Firestore sync (js/auth.js module needs access)
+try { window.state = state; window.save = save; window.saveProfile = saveProfile; window.getProfile = getProfile; } catch {}
 
 
 

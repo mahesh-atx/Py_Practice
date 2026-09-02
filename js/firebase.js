@@ -7,6 +7,7 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-app.js";
 import { getAuth, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCTAGP-RHyYhx7dvg1mK3x3t0OJJORSWOc",
@@ -20,18 +21,20 @@ const firebaseConfig = {
 // Prevent crash if user hasn't replaced config yet — shows toast hint
 let app;
 let auth;
+let db;
 try {
   if (firebaseConfig.apiKey.includes("REPLACE")) {
     console.warn("[PyPractice] Firebase config not set — replace placeholders in js/firebase.js with your project config. See comments at top.");
   }
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
+  db = getFirestore(app);
   setPersistence(auth, browserLocalPersistence).catch(()=>{});
 } catch (e) {
   console.error("[PyPractice] Firebase init failed. Check js/firebase.js config:", e);
-  // Create a dummy auth to avoid import errors before config is set
   app = null;
   auth = null;
+  db = null;
 }
 
-export { app, auth };
+export { app, auth, db };
