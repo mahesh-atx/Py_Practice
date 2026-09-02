@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solve Problem — PyPractice</title>
+    <script>
+      tailwind = { config: { darkMode: 'class' } };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/app.css" />
+    <!-- Monaco Editor AMD Loader -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
+  </head>
+  <body class="overflow-hidden">
+    <div
+      id="problemPage"
+      class="site-shell h-screen flex flex-col overflow-hidden"
+    >
+      <!-- Top Global Header -->
+      <header class="paper sticky top-0 z-50 border-b border-line shrink-0">
+        <div class="app-max h-[68px] flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <a href="index.html" class="text-[27px] tracking-[-.05em] font-medium mr-2 inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+
+          </div>
+          <div class="flex items-center gap-2 sm:gap-3">
+
+            <button
+              id="resetBtn"
+              class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"
+            >
+              <i class="fa-solid fa-rotate-left text-[11px]"></i> Reset Code
+            </button>
+            <a href="profile.html" title="Profile" aria-label="Profile" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-line rounded-full bg-white text-ink text-xs font-medium hover:bg-[var(--soft)] hover:text-ink transition dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6]"><i class="fa-solid fa-user text-[11px] opacity-70"></i> Profile</a>
+            <a href="profile.html" class="sm:hidden h-8 w-8 rounded-full bg-ink text-[#fffdf7] dark:bg-[#f4efe6] dark:text-[#1b1a19] grid place-items-center text-xs font-medium" title="Profile">P</a>
+            <button
+              data-theme-toggle
+              class="h-8 w-8 border border-line btn-ghost rounded-[3px]"
+              aria-label="Toggle theme"
+            >
+              <span data-theme-icon>◐</span>
+            </button>
+
+          </div>
+        </div>
+      </header>
+
+      <div class="learning-shell flex-1 flex overflow-hidden min-h-0">
+
+        <!-- Main Workspace (Locked Height, No Page Scroll) -->
+        <main
+          class="flex-1 min-w-0 h-full overflow-hidden grid xl:grid-cols-[.8fr_1.7fr] gap-4 p-4"
+        >
+          <!-- Left Pane: Problem Statement (Independently Scrollable) -->
+          <section
+            class="paper p-6 sm:p-8 lg:p-9 overflow-y-auto side-scroll h-full border border-line flex flex-col justify-between rounded-[14px]"
+          >
+            <div>
+              <div>
+                <!-- Breadcrumb -->
+                <nav id="problemBreadcrumb" class="flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3">
+                  <a href="index.html" class="flex items-center gap-1 hover:text-ink transition"><i class="fa-solid fa-house text-[10px]"></i> Home</a>
+                  <span class="opacity-40">/</span>
+                  <a href="topics.html" class="hover:text-ink transition">Practice</a>
+                  <span class="opacity-40">/</span>
+                  <a id="problemBreadcrumbTopic" href="#" class="hover:text-ink transition">Topic</a>
+                  <span class="opacity-40">/</span>
+                  <span id="problemBreadcrumbTitle" class="text-[var(--green)] font-semibold truncate max-w-[140px]">Problem</span>
+                </nav>
+                <div
+                  id="problemNumber"
+                  class="text-[11px] uppercase tracking-[.18em] text-muted font-mono flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-hashtag text-[10px] opacity-60"></i> Question 1
+                </div>
+                <h1
+                  id="problemTitle"
+                  class="text-3xl sm:text-4xl tracking-[-.05em] mt-1 font-semibold text-ink"
+                >
+                  Problem Title
+                </h1>
+              </div>
+
+              <div class="mt-5 leading-7 text-[15px] text-ink">
+                <p id="problemDesc" class="leading-7"></p>
+              </div>
+
+              <!-- Example I/O Card -->
+              <div class="card mt-6 rounded-[4px] overflow-hidden">
+                <div
+                  class="px-4 py-2 border-b border-line text-[11px] uppercase tracking-[.16em] text-muted font-medium bg-[var(--soft)] flex items-center justify-between"
+                >
+                  <span>Sample Example</span>
+                  <span class="text-[10px] text-muted lowercase">case 1</span>
+                </div>
+                <div class="grid sm:grid-cols-2 text-xs">
+                  <div
+                    class="p-3.5 border-b sm:border-b-0 sm:border-r border-line bg-black/[.015]"
+                  >
+                    <div
+                      class="text-[10px] uppercase tracking-[.14em] text-muted mb-1 font-mono"
+                    >
+                      Input
+                    </div>
+                    <pre
+                      id="exampleInput"
+                      class="font-mono whitespace-pre-wrap text-[12px] bg-transparent text-ink"
+                    ></pre>
+                  </div>
+                  <div class="p-3.5 bg-black/[.015]">
+                    <div
+                      class="text-[10px] uppercase tracking-[.14em] text-muted mb-1 font-mono"
+                    >
+                      Expected Output
+                    </div>
+                    <pre
+                      id="exampleOutput"
+                      class="font-mono whitespace-pre-wrap text-[12px] bg-transparent text-ink"
+                    ></pre>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Explanation Panel -->
+              <div
+                id="explanationPanel"
+                class="card mt-6 p-5 hidden rounded-[14px] border-l-4 border-l-[var(--green)]"
+              ></div>
+
+            </div>
+
+            <div class="mt-7 pt-5 border-t border-line shrink-0 flex gap-3">
+              <a
+                id="prevQuestionBtn"
+                class="flex-1 btn-ghost py-3 text-xs font-medium rounded-[12px] inline-flex items-center justify-center gap-2 text-center"
+              >
+                <i class="fa-solid fa-arrow-left text-[11px]"></i> Previous
+              </a>
+              <a
+                id="nextQuestionBtn"
+                class="flex-1 btn-primary py-3 text-xs font-medium rounded-[12px] inline-flex items-center justify-center gap-2 text-center"
+              >
+                <span>Next</span> <i class="fa-solid fa-arrow-right text-[11px]"></i>
+              </a>
+            </div>
+          </section>
+
+          <!-- Right Pane: Monaco Editor (Top Action Bar + Minimal Terminal & Test Cases) -->
+          <div class="h-full flex flex-col bg-transparent overflow-hidden rounded-[14px] border border-white/10 mr-1">
+            <section class="code-window flex-1 flex flex-col overflow-hidden min-h-0 border-0 rounded-t-[14px]">
+            <!-- Top Action Bar (Run Code and Submit at the TOP of the Editor) -->
+            <div
+              class="px-4 py-2 border-b border-white/10 flex items-center justify-between text-xs text-white/70 bg-[#1c1b1a] shrink-0"
+            >
+              <div class="flex items-center gap-3">
+                <div class="flex items-center gap-2">
+                  <span
+                    class="inline-block w-2 h-2 rounded-full bg-emerald-400"
+                  ></span>
+                  <span class="font-mono font-medium text-white/90 text-[12px] inline-flex items-center gap-1.5"
+                    ><i class="fa-solid fa-file-code text-[11px] opacity-60"></i> solution.py</span
+                  >
+                </div>
+                <div id="pyodideStatus" class="flex items-center gap-1.5 text-[11px] text-white/40 font-mono">
+                  <span class="inline-block w-2 h-2 rounded-full bg-white/30 animate-pulse"></span>
+                  <span>Initializing…</span>
+                </div>
+                <span
+                  class="text-[10px] text-white/30 hidden lg:inline font-mono"
+                  >Ctrl+Enter (Run) &middot; Ctrl+Shift+Enter (Submit)</span
+                >
+              </div>
+
+              <div class="flex items-center gap-2">
+                <!-- Run Button (Top) -->
+                <button
+                  id="runBtn"
+                  class="px-3.5 py-1.5 border border-white/15 text-xs text-white hover:bg-white/10 rounded-[8px] transition flex items-center gap-1.5 active:scale-95 cursor-pointer font-mono font-medium"
+                >
+                  <i class="fa-solid fa-play text-[10px]"></i> <span>Run</span>
+                </button>
+
+                <!-- Submit Button (Top) -->
+                <button
+                  id="submitBtn"
+                  class="px-4 py-1.5 bg-[#f4efe6] text-black text-xs font-semibold rounded-[8px] hover:bg-white transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer font-mono font-medium"
+                >
+                  <i class="fa-solid fa-paper-plane text-[10px]"></i> <span>Submit</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Monaco Editor Canvas (Fills Remaining Space) -->
+            <div
+              class="flex-1 relative min-h-0 w-full overflow-hidden bg-[#211f1e]"
+            >
+              <div
+                id="monacoLoading"
+                class="absolute inset-0 flex items-center justify-center text-xs text-white/40 z-10 font-mono"
+              >
+                Loading editor...
+              </div>
+              <div
+                id="monacoEditor"
+                class="w-full h-full absolute inset-0"
+              ></div>
+              <textarea
+                id="codeEditor"
+                spellcheck="false"
+                class="editor w-full h-full resize-none bg-transparent border-0 outline-none text-[13px] text-[#f4efe6] p-4 hidden"
+                placeholder="# Write your Python solution here..."
+              ></textarea>
+            </div>
+
+            <!-- Result Banner (Placed OVER the bottom panel) -->
+            <div id="resultPanel" class="hidden shrink-0 border-t border-white/10 z-20"></div>
+
+            <!-- Bottom Panel: HackerRank-style Test Cases, Custom Input & Terminal — resizable -->
+            <div
+              class="min-h-[160px] h-[230px] sm:h-[245px] max-h-[60vh] resize-y overflow-auto shrink-0 border-t border-white/10 flex flex-col bg-[#171615]"
+            >
+              <!-- Top Tabs & Controls Bar -->
+              <div
+                class="px-3 py-1.5 border-b border-white/[.08] flex items-center justify-between text-xs bg-[#191817] shrink-0"
+              >
+                <div class="flex items-center gap-1">
+                  <!-- Test Cases Tab -->
+                  <button
+                    id="tabTestCasesBtn"
+                    class="bottom-tab active flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white bg-white/10 transition cursor-pointer font-mono"
+                  >
+                    <i class="fa-solid fa-vial text-[11px] text-emerald-400"></i>
+                    <span>Test Cases</span>
+                    <span
+                      id="testTabBadge"
+                      class="hidden text-[10px] px-1.5 py-0.2 rounded bg-green-500/20 text-green-300 font-mono font-semibold"
+                      >Passed</span
+                    >
+                  </button>
+
+                  <!-- Terminal / Console Tab -->
+                  <button
+                    id="tabTerminalBtn"
+                    class="bottom-tab flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white/40 hover:text-white/80 hover:bg-white/[.04] transition cursor-pointer font-mono"
+                  >
+                    <i class="fa-solid fa-terminal text-[11px] text-emerald-400"></i>
+                    <span>Terminal</span>
+                  </button>
+                </div>
+
+                <div class="flex items-center gap-3 font-mono text-xs">
+                  <!-- Custom Input Checkbox Toggle (HackerRank Style) -->
+                  <label class="flex items-center gap-1.5 text-white/50 hover:text-white/80 cursor-pointer select-none text-[11px]">
+                    <input type="checkbox" id="customInputToggle" class="accent-emerald-500 rounded cursor-pointer w-3.5 h-3.5">
+                    <span class="inline-flex items-center gap-1"><i class="fa-solid fa-keyboard text-[11px] opacity-60"></i> Custom Input</span>
+                  </label>
+
+                  <button
+                    id="clearTerminalBtn"
+                    class="text-[10px] text-white/40 hover:text-white/80 transition cursor-pointer font-mono px-1.5 py-0.5 rounded hover:bg-white/5 hidden"
+                    title="Clear Console"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tab Content Container (Independently Scrollable) -->
+              <div
+                class="flex-1 overflow-y-auto side-scroll p-3 min-h-0 bg-[#171615]"
+              >
+                <!-- Tab 1: HackerRank-style Test Cases Content (Active by default) -->
+                <div id="tabContentTestCases" class="space-y-2.5">
+                  <!-- Testcase Selection Pills Bar (Case 1, Case 2...) -->
+                  <div id="testCaseTabsContainer" class="flex items-center gap-1.5 overflow-x-auto pb-0.5 side-scroll"></div>
+
+                  <!-- Selected Test Case Detail (Input, Expected Output, Your Output) -->
+                  <div id="selectedTestCaseDetail" class="space-y-2 font-mono"></div>
+                </div>
+
+                <!-- Tab 2: Custom Input Content (Visible when Custom Input is checked) -->
+                <div id="tabContentCustomInput" class="hidden space-y-2 font-mono">
+                  <div class="text-[10px] uppercase tracking-wider text-white/40">
+                    Custom Standard Input (stdin):
+                  </div>
+                  <textarea
+                    id="customInputText"
+                    class="w-full h-[85px] bg-[#141312] border border-white/[.08] rounded p-2 text-xs text-white/90 font-mono outline-none focus:border-emerald-500/50 resize-none leading-relaxed"
+                    placeholder="Enter custom input here..."
+                    spellcheck="false"
+                  ></textarea>
+                  <div id="customOutputPanel" class="hidden"></div>
+                </div>
+
+                <!-- Tab 3: Terminal / Console Content -->
+                <div
+                  id="tabContentTerminal"
+                  class="hidden font-mono text-[12px] leading-5 space-y-1"
+                >
+                  <div
+                    id="terminalLogs"
+                    class="text-white/80 whitespace-pre-wrap font-mono text-xs"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </section>
+</div>
+</main>
+      </div>
+
+      <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="js/topics-data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/runner.js"></script>
+    <script src="js/problem.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

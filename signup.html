@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign up — PyPractice</title>
+    <script>
+      // Force light mode only for auth pages
+      try { localStorage.setItem('pypractice-theme','light'); } catch {}
+      document.documentElement.classList.remove('dark','theme-dark');
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class'
+      };
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/app.css" />
+    <style>
+      :root {
+        --bg-page: #1C1D24;
+        --bg-left: #DFDFE3;
+        --bg-right: #FFFFFF;
+        --text-primary: #18181B;
+        --text-secondary: #71717A;
+        --text-muted: #A1A1AA;
+        --input-border: #D4D4D8;
+        --input-focus: #18181B;
+        --btn-primary-bg: #18181B;
+        --btn-primary-text: #FFFFFF;
+        --btn-primary-hover: #27272A;
+        --btn-google-bg: #F4F4F5;
+        --btn-google-text: #18181B;
+        --btn-google-border: #E4E4E7;
+        --btn-google-hover: #EAEAEB;
+      }
+      html, body {
+        background-color: var(--bg-page) !important;
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+      }
+      @media (min-width: 768px) { body { overflow: hidden !important; } }
+      .no-scrollbar::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
+      .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
+      .underline-input {
+        border: none !important;
+        border-bottom: 1.5px solid var(--input-border) !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        padding: 0.35rem 0 !important;
+        width: 100% !important;
+        color: var(--text-primary) !important;
+        font-size: 0.9375rem !important;
+        outline: none !important;
+        box-shadow: none !important;
+        transition: border-color 0.2s ease, color 0.2s ease;
+      }
+      .underline-input:focus { border-bottom-color: var(--input-focus) !important; }
+      .btn-primary-custom { background-color: var(--btn-primary-bg) !important; color: var(--btn-primary-text) !important; transition: all 0.2s ease; }
+      .btn-primary-custom:hover { background-color: var(--btn-primary-hover) !important; }
+      .btn-google-custom { background-color: var(--btn-google-bg) !important; color: var(--btn-google-text) !important; border: 1px solid var(--btn-google-border) !important; transition: all 0.2s ease; }
+      .btn-google-custom:hover { background-color: var(--btn-google-hover) !important; }
+      .character-eyes { transition: transform 0.08s ease-out; }
+      .character-float { animation: gentleFloat 4s ease-in-out infinite alternate; }
+      @keyframes gentleFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
+    </style>
+  </head>
+  <body class="w-full h-full min-h-screen flex items-center justify-center p-3 sm:p-5 md:p-8 selection:bg-black selection:text-white">
+    <main class="w-full max-w-[1040px] md:h-[600px] rounded-[32px] overflow-hidden shadow-[0_25px_70px_rgba(0,0,0,0.55)] flex flex-col md:flex-row border border-black/10 my-auto" style="background-color: var(--bg-left);">
+      <div id="leftIllustrationPane" class="w-full md:w-1/2 h-[340px] md:h-full flex items-end justify-center px-6 pt-6 pb-0 relative overflow-hidden select-none shrink-0" style="background-color: var(--bg-left);">
+        <div class="w-full max-w-[430px] lg:max-w-[460px] h-[92%] relative flex items-end justify-center pb-0">
+          <svg id="monsterSvg" class="w-full h-full character-float" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYBottom meet">
+            <g id="purpleMonster"><rect x="68" y="35" width="80" height="245" rx="2" fill="#6B11F4" /><line x1="108" y1="68" x2="108" y2="88" stroke="#18181B" stroke-width="3" stroke-linecap="round" /><g id="purpleEyes" class="character-eyes"><circle cx="100" cy="68" r="2.8" fill="#18181B" /><circle cx="101" cy="67" r="0.9" fill="#FFFFFF" /><circle cx="116" cy="68" r="2.8" fill="#18181B" /><circle cx="117" cy="67" r="0.9" fill="#FFFFFF" /></g></g>
+            <g id="charcoalMonster"><rect x="148" y="115" width="56" height="165" rx="2" fill="#1E2024" stroke="#2D3039" stroke-width="0.8" /><circle cx="170" cy="140" r="8" fill="#FFFFFF" /><circle cx="186" cy="140" r="8" fill="#FFFFFF" /><g id="charcoalPupils" class="character-eyes"><circle id="charcoalPupilL" cx="173.5" cy="139.5" r="4.2" fill="#18181B" /><circle cx="174.8" cy="138.0" r="1.0" fill="#FFFFFF" opacity="0.95" /><circle id="charcoalPupilR" cx="189.5" cy="139.5" r="4.2" fill="#18181B" /><circle cx="190.8" cy="138.0" r="1.0" fill="#FFFFFF" opacity="0.95" /></g></g>
+            <g id="yellowMonster"><path d="M 184 280 L 184 210 A 34 34 0 0 1 252 210 L 252 280 Z" fill="#E8C822" /><line x1="218" y1="220" x2="265" y2="220" stroke="#18181B" stroke-width="3.2" stroke-linecap="round" /><g id="yellowEyes" class="character-eyes"><circle cx="205" cy="202" r="3" fill="#18181B" /><circle cx="206" cy="201" r="0.9" fill="#FFFFFF" /></g></g>
+            <g id="orangeMonster"><path d="M 15 280 A 85 85 0 0 1 185 280 Z" fill="#F26A37" /><path d="M 100 246 Q 106 253 112 246" stroke="#18181B" stroke-width="3" stroke-linecap="round" fill="none" /><g id="orangeEyes" class="character-eyes"><circle cx="88" cy="236" r="3.8" fill="#18181B" /><circle cx="89.5" cy="234.5" r="1.1" fill="#FFFFFF" /><circle cx="124" cy="236" r="3.8" fill="#18181B" /><circle cx="125.5" cy="234.5" r="1.1" fill="#FFFFFF" /></g></g>
+          </svg>
+        </div>
+      </div>
+      <div id="rightFormPane" class="w-full md:w-1/2 h-full flex flex-col justify-center px-8 sm:px-12 lg:px-14 py-6 relative overflow-hidden" style="background-color: var(--bg-right); color: var(--text-primary);">
+        <div class="w-full max-w-[340px] mx-auto">
+          <div class="flex items-center gap-3.5 mb-6 text-left">
+            <div class="h-12 w-12 rounded-[14px] bg-[var(--green)] text-white grid place-items-center text-lg shadow-sm shrink-0"><i class="fa-brands fa-python"></i></div>
+            <div>
+              <h1 class="text-2xl sm:text-[28px] font-bold tracking-tight leading-none" style="color: var(--text-primary);">Create an account</h1>
+              <p class="text-xs sm:text-[13px] mt-1 font-normal" style="color: var(--text-secondary);">Please enter your details.</p>
+            </div>
+          </div>
+          <form id="signupForm" class="space-y-3" novalidate>
+            <div class="space-y-0.5">
+              <label for="signupName" class="block text-xs font-medium" style="color: var(--text-primary);">Full name</label>
+              <input id="signupName" type="text" required autocomplete="name" maxlength="40" class="underline-input" placeholder="" />
+              <span class="hidden text-[11px] text-red-500 mt-0.5 font-medium block" data-error="signupName"></span>
+            </div>
+            <div class="space-y-0.5">
+              <label for="signupEmail" class="block text-xs font-medium" style="color: var(--text-primary);">Email</label>
+              <input id="signupEmail" type="email" required autocomplete="email" class="underline-input" placeholder="" />
+              <span class="hidden text-[11px] text-red-500 mt-0.5 font-medium block" data-error="signupEmail"></span>
+            </div>
+            <div class="space-y-0.5">
+              <label for="signupPassword" class="block text-xs font-medium" style="color: var(--text-primary);">Password</label>
+              <div class="relative">
+                <input id="signupPassword" type="password" required autocomplete="new-password" class="underline-input pr-8" placeholder="" />
+                <button type="button" data-toggle="signupPassword" aria-label="Toggle password visibility" class="absolute right-0 top-1/2 -translate-y-1/2 transition p-1 hover:opacity-80" style="color: var(--text-secondary);">
+                  <svg class="w-4 h-4 eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg class="w-4 h-4 eye-closed hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><line x1="2" y1="2" x2="22" y2="22"/></svg>
+                </button>
+              </div>
+              <span class="hidden text-[11px] text-red-500 mt-0.5 font-medium block" data-error="signupPassword"></span>
+            </div>
+            <div class="pt-0.5">
+              <label class="flex items-center gap-2 cursor-pointer select-none text-xs" style="color: var(--text-secondary);">
+                <input type="checkbox" id="agreeTerms" class="w-3.5 h-3.5 rounded cursor-pointer accent-black" />
+                <span>I agree to the <a href="#" class="underline underline-offset-2" style="color: var(--text-primary);">Terms & Privacy Policy</a></span>
+              </label>
+              <span class="hidden text-[11px] text-red-500 mt-0.5 font-medium block" data-error="agreeTerms"></span>
+            </div>
+            <div class="space-y-2 pt-1.5">
+              <button type="submit" class="btn-primary-custom w-full py-3 px-6 rounded-full text-xs sm:text-sm font-semibold shadow-sm flex items-center justify-center tracking-tight cursor-pointer active:scale-[0.98]">Create account</button>
+              <button type="button" id="googleSignupBtn" class="btn-google-custom w-full py-3 px-6 rounded-full text-xs sm:text-sm font-medium flex items-center justify-center gap-2.5 cursor-pointer active:scale-[0.98]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.66-5.17 3.66-9.17z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"/><path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.17 0 9.99 0 12s.45 3.83 1.25 5.42l4.03-3.15z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/></svg>
+                <span>Sign up with Google</span>
+              </button>
+            </div>
+          </form>
+          <p class="text-center text-xs mt-4" style="color: var(--text-secondary);">Already have an account? <a href="login.html" class="font-semibold hover:underline" style="color: var(--text-primary);">Log in</a></p>
+        </div>
+      </div>
+    </main>
+    <div id="toast" class="toast"></div>
+    <script src="js/topics-data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/app.js"></script>
+    <script type="module">
+      import { auth } from "./js/firebase.js";
+      import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
+      try { localStorage.setItem('pypractice-theme','light'); } catch {}
+      document.documentElement.classList.remove('dark','theme-dark');
+      document.body.classList.remove('dark','theme-dark');
+      if(auth) onAuthStateChanged(auth, (u)=>{ if(u) location.href='index.html'; });
+      const form = document.getElementById('signupForm');
+      const nameEl = document.getElementById('signupName');
+      const emailEl = document.getElementById('signupEmail');
+      const passEl = document.getElementById('signupPassword');
+      const agreeEl = document.getElementById('agreeTerms');
+      const googleSignupBtn = document.getElementById('googleSignupBtn');
+      const purpleEyes = document.getElementById('purpleEyes');
+      const charcoalPupils = document.getElementById('charcoalPupils');
+      const yellowEyes = document.getElementById('yellowEyes');
+      const orangeEyes = document.getElementById('orangeEyes');
+      const monsterSvg = document.getElementById('monsterSvg');
+      window.addEventListener('mousemove', (e) => {
+        if (!monsterSvg) return;
+        const rect = monsterSvg.getBoundingClientRect();
+        function track(el, rx, ry, maxDist) {
+          if (!el) return;
+          const originX = rect.left + rect.width * rx;
+          const originY = rect.top + rect.height * ry;
+          const dx = e.clientX - originX;
+          const dy = e.clientY - originY;
+          const angle = Math.atan2(dy, dx);
+          const dist = Math.min(maxDist, Math.hypot(dx, dy) / 45);
+          const ox = Math.cos(angle) * dist;
+          const oy = Math.sin(angle) * dist;
+          el.setAttribute('transform', `translate(${ox.toFixed(2)}, ${oy.toFixed(2)})`);
+        }
+        track(purpleEyes, 0.386, 0.243, 2.0);
+        track(charcoalPupils, 0.643, 0.500, 3.2);
+        track(yellowEyes, 0.732, 0.721, 2.0);
+        track(orangeEyes, 0.379, 0.843, 2.5);
+      });
+      document.querySelectorAll('[data-toggle]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.getAttribute('data-toggle');
+          const inp = document.getElementById(id);
+          if (!inp) return;
+          const willBeText = inp.type === 'password';
+          inp.type = willBeText ? 'text' : 'password';
+          const openIcon = btn.querySelector('.eye-open');
+          const closedIcon = btn.querySelector('.eye-closed');
+          if (openIcon && closedIcon) {
+            if (willBeText) { openIcon.classList.add('hidden'); closedIcon.classList.remove('hidden'); }
+            else { openIcon.classList.remove('hidden'); closedIcon.classList.add('hidden'); }
+          }
+        });
+      });
+      function setError(id, msg) {
+        const el = document.querySelector(`[data-error="${id}"]`);
+        if (!el) return;
+        if (msg) { el.textContent = msg; el.classList.remove('hidden'); }
+        else { el.textContent = ''; el.classList.add('hidden'); }
+      }
+      function validate() {
+        let ok = true;
+        const name = nameEl.value.trim();
+        const email = emailEl.value.trim();
+        const pass = passEl.value;
+        if (!name || name.length < 2) { setError('signupName', 'Enter your name (at least 2 characters).'); ok = false; } else setError('signupName', '');
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { setError('signupEmail', 'Enter a valid email address.'); ok = false; } else setError('signupEmail', '');
+        if (!pass || pass.length < 6) { setError('signupPassword', 'Password must be at least 6 characters.'); ok = false; } else setError('signupPassword', '');
+        if (!agreeEl.checked) { setError('agreeTerms', 'Please agree to the Terms & Privacy Policy.'); ok = false; } else setError('agreeTerms', '');
+        return ok;
+      }
+      [nameEl, emailEl, passEl].forEach(el => { el.addEventListener('input', () => setError(el.id, '')); });
+      agreeEl.addEventListener('change', () => setError('agreeTerms', ''));
+      function showErr(err){
+        const msg = err?.code==='auth/email-already-in-use' ? 'Email already registered. Try login.' :
+                    err?.code==='auth/invalid-email' ? 'Invalid email.' :
+                    err?.code==='auth/weak-password' ? 'Password should be at least 6 characters.' :
+                    err?.message || 'Signup failed.';
+        if(typeof toast==='function') toast(msg); else alert(msg);
+      }
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!validate()) return;
+          const name = nameEl.value.trim();
+          const email = emailEl.value.trim().toLowerCase();
+          const pass = passEl.value;
+          const btn = form.querySelector('button[type="submit"]');
+          const orig = btn.innerHTML; btn.disabled=true; btn.textContent='Creating…';
+          try{
+            if(!auth || auth.app.options.apiKey.includes('REPLACE')) throw new Error('Firebase not configured');
+            const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            await updateProfile(cred.user, { displayName: name });
+            try{ localStorage.setItem('pypractice-profile-v1', JSON.stringify({ name, bio:'Learning Python, one problem at a time.', createdAt:new Date().toISOString() })); }catch{}
+            if(typeof toast==='function') toast('Account created — redirecting…');
+            setTimeout(()=> location.href='index.html', 700);
+          }catch(err){
+            if(err.message.includes('Firebase not configured') || err.code==='auth/api-key-not-valid'){
+              const data={ name, email, createdAt:new Date().toISOString(), loggedInAt:new Date().toISOString() };
+              localStorage.setItem('pypractice-auth-v1', JSON.stringify(data));
+              try{ localStorage.setItem('pypractice-profile-v1', JSON.stringify({ name, bio:'Learning Python, one problem at a time.', createdAt:data.createdAt })); }catch{}
+              if(typeof toast==='function') toast('Account created (demo) — redirecting…');
+              setTimeout(()=> location.href='login.html', 700);
+            } else showErr(err);
+          } finally { btn.disabled=false; btn.innerHTML=orig; }
+        });
+      }
+      if (googleSignupBtn) {
+        googleSignupBtn.addEventListener('click', async () => {
+          const orig = googleSignupBtn.innerHTML; googleSignupBtn.disabled=true; googleSignupBtn.innerHTML='Opening Google…';
+          try{
+            if(!auth || auth.app.options.apiKey.includes('REPLACE')) throw new Error('Firebase not configured');
+            const provider = new GoogleAuthProvider();
+            await signInWithPopup(auth, provider);
+            if(typeof toast==='function') toast('Signed up with Google — redirecting…');
+            setTimeout(()=> location.href='index.html', 600);
+          }catch(err){
+            if(err.code==='auth/popup-closed-by-user') {}
+            else if(err.message.includes('Firebase not configured') || err.code==='auth/api-key-not-valid'){
+              const data={ name:'Google Learner', email:'learner@gmail.com', provider:'google', createdAt:new Date().toISOString(), loggedInAt:new Date().toISOString() };
+              localStorage.setItem('pypractice-auth-v1', JSON.stringify(data));
+              try{ localStorage.setItem('pypractice-profile-v1', JSON.stringify({ name:'Google Learner', bio:'Learning Python, one problem at a time.', createdAt:data.createdAt })); }catch{}
+              if(typeof toast==='function') toast('Signed up with Google (demo) — redirecting…');
+              setTimeout(()=> location.href='index.html', 600);
+            } else showErr(err);
+          } finally { googleSignupBtn.disabled=false; googleSignupBtn.innerHTML=orig; }
+        });
+      }
+    </script>
+  </body>
+</html>

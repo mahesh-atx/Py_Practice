@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Progress — PyPractice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <div class="site-shell min-h-screen flex flex-col">
+      <header class="header-blur sticky top-0 z-50 border-b border-line shrink-0">
+        <div class="app-max h-[76px] flex items-center justify-between">
+          <a href="index.html" class="text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+          <nav class="hidden md:flex items-center gap-8 text-sm text-muted">
+            <a href="index.html" class="hover:text-ink">Home</a>
+            <a href="learn.html" class="hover:text-ink">Learn</a>
+            <a href="topics.html" class="hover:text-ink">Practice</a>
+            <a href="progress.html" class="text-ink font-medium">Progress</a>
+            <a href="guide.html" class="hover:text-ink">Python Guide</a>
+            <a href="profile.html" class="hover:text-ink">Profile</a>
+          </nav>
+          <div class="flex items-center gap-2">
+            <button
+              data-theme-toggle
+              class="h-10 w-10 border border-line btn-ghost grid place-items-center text-sm rounded-[3px]"
+              aria-label="Toggle dark mode"
+            >
+              <span data-theme-icon>◐</span>
+            </button>
+            <button data-mobile-toggle class="md:hidden h-10 w-10 border border-line btn-ghost rounded-[3px]">☰</button>
+          </div>
+        </div>
+        <div id="mobileMenu" class="mobile-menu border-t border-line md:hidden">
+          <div class="app-max py-4 grid gap-2 text-sm">
+            <a href="index.html" class="py-2">Home</a>
+            <a href="learn.html" class="py-2">Learn</a>
+            <a href="topics.html" class="py-2">Practice</a>
+            <a href="progress.html" class="py-2 font-medium text-ink">Progress</a>
+            <a href="guide.html" class="py-2">Python Guide</a>
+            <a href="profile.html" class="py-2">Profile</a>
+          </div>
+        </div>
+      </header>
+
+      <!-- Two-pane layout: left tab + right topics (exactly like before, non-scrolling left panel) -->
+      <div id="progressPage" class="flex-1 flex flex-col lg:flex-row lg:items-start min-h-0 app-max w-full">
+        <!-- Left Tab — Progress summary (fixed / sticky, non-scrollable) -->
+        <aside class="w-full lg:w-[clamp(320px,30vw,400px)] shrink-0 border-b lg:border-b-0 lg:border-r border-line py-6 lg:py-8 lg:pr-6 flex flex-col lg:sticky lg:top-[76px] lg:self-start">
+          <!-- Header -->
+          <div>
+            <div class="text-[11px] uppercase tracking-[.2em] text-muted font-mono flex items-center gap-1.5"><i class="fa-solid fa-chart-line text-[11px] opacity-60"></i> Progress · Saved locally</div>
+            <h1 class="text-3xl sm:text-[32px] tracking-[-.04em] mt-3 font-semibold leading-[1.05]">Your progress, clearly.</h1>
+            <p class="text-[13px] text-muted leading-6 mt-3">
+              Minimal, honest tracking. No levels, no clutter — just what you’ve solved and what’s next.
+            </p>
+          </div>
+
+          <!-- Stats — compact KPI cards -->
+          <div class="mt-8 grid grid-cols-2 gap-3">
+            <!-- Solved Card -->
+            <div class="card rounded-[14px] p-4 flex flex-col justify-between hover:shadow-[0_8px_24px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
+              <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-emerald-500"></div>
+              <div class="flex items-center justify-between gap-1.5">
+                <span class="text-[10px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Solved</span>
+                <span class="h-6 w-6 rounded-[7px] bg-emerald-50 text-emerald-600 border border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40 grid place-items-center text-[11px] shrink-0">
+                  <i class="fa-solid fa-check"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                  <span id="progressSolved" class="text-2xl font-bold tracking-tight text-ink font-mono leading-none">0</span>
+                  <span class="text-[11px] text-muted font-mono">/ 162</span>
+                </div>
+                <div class="text-[10px] text-muted flex items-center gap-1 mt-1.5 font-medium">
+                  <i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[8px]"></i>
+                  <span>Completed</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Topics Started Card -->
+            <div class="card rounded-[14px] p-4 flex flex-col justify-between hover:shadow-[0_8px_24px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
+              <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--green)]"></div>
+              <div class="flex items-center justify-between gap-1.5">
+                <span class="text-[10px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Topics</span>
+                <span class="h-6 w-6 rounded-[7px] bg-[var(--soft)] text-[var(--green)] border border-line grid place-items-center text-[11px] shrink-0 dark:bg-[#2a2826]">
+                  <i class="fa-solid fa-layer-group"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                  <span id="progressStarted" class="text-2xl font-bold tracking-tight text-ink font-mono leading-none">0</span>
+                  <span class="text-[11px] text-muted font-mono">/ 18</span>
+                </div>
+                <div class="text-[10px] text-muted flex items-center gap-1 mt-1.5 font-medium">
+                  <i class="fa-solid fa-book-open text-[var(--green)] text-[8px]"></i>
+                  <span>Started</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Streak Card -->
+            <div class="card rounded-[14px] p-4 flex flex-col justify-between hover:shadow-[0_8px_24px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
+              <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-amber-500"></div>
+              <div class="flex items-center justify-between gap-1.5">
+                <span class="text-[10px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Streak</span>
+                <span class="h-6 w-6 rounded-[7px] bg-amber-50 text-amber-600 border border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40 grid place-items-center text-[11px] shrink-0">
+                  <i class="fa-solid fa-fire"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                  <span id="progressStreak" class="text-2xl font-bold tracking-tight text-ink font-mono leading-none">0</span>
+                  <span class="text-[11px] text-muted font-mono">days</span>
+                </div>
+                <div class="text-[10px] text-muted flex items-center gap-1 mt-1.5 font-medium">
+                  <i class="fa-solid fa-bolt text-amber-500 text-[8px]"></i>
+                  <span>Daily habit</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Completion Card -->
+            <div class="card rounded-[14px] p-4 flex flex-col justify-between hover:shadow-[0_8px_24px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_8px_24px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
+              <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--green)]"></div>
+              <div class="flex items-center justify-between gap-1.5">
+                <span class="text-[10px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Overall</span>
+                <span class="h-6 w-6 rounded-[7px] bg-[var(--soft)] text-[var(--green)] border border-line grid place-items-center text-[11px] shrink-0 dark:bg-[#2a2826]">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="flex items-baseline gap-1.5">
+                  <span id="progressOverall" class="text-2xl font-bold tracking-tight text-ink font-mono leading-none">0%</span>
+                  <span class="text-[11px] text-muted font-mono">done</span>
+                </div>
+                <div class="text-[10px] text-muted flex items-center gap-1 mt-1.5 font-medium">
+                  <i class="fa-solid fa-graduation-cap text-[var(--green)] text-[8px]"></i>
+                  <span>Mastery</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Helper -->
+          <div class="mt-6 hidden lg:block card rounded-[14px] overflow-hidden border border-line">
+            <div class="h-32 w-full bg-[#1b2230] relative overflow-hidden group">
+              <img src="assets/21_asset.gif" alt="Problem solving tip" class="w-full h-full object-cover object-[center_30%] group-hover:scale-105 transition-transform duration-500 ease-out" loading="lazy" />
+              <span class="absolute top-2.5 left-2.5 card-badge text-[9px] uppercase font-mono font-semibold tracking-wider px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1 z-10"><i class="fa-solid fa-lightbulb text-amber-500"></i> Study Tip</span>
+            </div>
+            <div class="p-3.5">
+              <div class="text-xs font-semibold text-ink">Stuck on a test case?</div>
+              <p class="text-[11px] text-muted leading-relaxed mt-1">Read the error traceback bottom-to-top, print variable types, and test a minimal 3-line case.</p>
+              <a href="guide.html" class="inline-flex items-center gap-1 text-[11px] text-[var(--green)] hover:underline mt-2 font-medium">Read debugging guide →</a>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right — Topic list (horizontal strips) -->
+        <main class="flex-1 min-w-0 py-6 lg:py-8 lg:pl-8 xl:pl-10">
+          <div class="flex items-baseline justify-between gap-4 border-b border-line pb-4">
+            <h2 class="text-[13px] uppercase tracking-[.14em] font-medium flex items-center gap-2"><i class="fa-solid fa-layer-group text-muted text-xs"></i> Topics</h2>
+            <span class="text-xs text-muted hidden sm:inline-flex items-center gap-1.5"><i class="fa-solid fa-graduation-cap text-[11px] opacity-60"></i> 18 topics · 162 questions · tap to continue</span>
+            <span class="text-xs text-muted sm:hidden">18 · 162</span>
+          </div>
+
+          <div id="progressGrid" class="mt-6 space-y-3.5 stagger">
+            <!-- rendered by JS: enhanced horizontal strips matching home page -->
+          </div>
+
+          <div id="progressEmpty" class="hidden mt-10 py-10 border border-dashed border-line text-center rounded-[14px] card">
+            <div class="h-12 w-12 rounded-full bg-[var(--soft)] border border-line grid place-items-center mx-auto text-muted"><i class="fa-solid fa-rocket"></i></div>
+            <div class="text-sm font-medium mt-4">No progress yet</div>
+            <p class="text-xs text-muted mt-2 max-w-md mx-auto leading-5">Start with Python Basics. One question at a time is enough.</p>
+            <a href="topics.html" class="inline-flex items-center gap-1.5 mt-4 btn-primary px-4 py-2 text-xs rounded-[8px]">Browse topics <i class="fa-solid fa-arrow-right text-[10px]"></i></a>
+          </div>
+        </main>
+      </div>
+
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="js/topics-data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/pages.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

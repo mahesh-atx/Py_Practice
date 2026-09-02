@@ -1,0 +1,748 @@
+/* ==========================================================================
+   PyPractice Problem Workspace: Monaco Editor, Test Cases & Run Pipeline
+   FIXED v2 - correct IDs, payload, custom handling, robust mapping
+   ========================================================================== */
+
+let monacoEditorInstance = null;
+
+function initBottomTabs() {
+  const tabTerminalBtn = document.getElementById('tabTerminalBtn');
+  const tabTestCasesBtn = document.getElementById('tabTestCasesBtn');
+  const contentTerminal = document.getElementById('tabContentTerminal');
+  const contentTestCases = document.getElementById('tabContentTestCases');
+  const contentCustomInput = document.getElementById('tabContentCustomInput');
+  const customInputToggle = document.getElementById('customInputToggle');
+  const clearTerminalBtn = document.getElementById('clearTerminalBtn');
+
+  if (!tabTerminalBtn || !tabTestCasesBtn) return;
+
+  function updateViews() {
+    const isTerminal = tabTerminalBtn.classList.contains('active');
+    if (isTerminal) {
+      contentTerminal?.classList.remove('hidden');
+      contentTestCases?.classList.add('hidden');
+      contentCustomInput?.classList.add('hidden');
+      if (clearTerminalBtn) clearTerminalBtn.classList.remove('hidden');
+    } else {
+      contentTerminal?.classList.add('hidden');
+      if (clearTerminalBtn) clearTerminalBtn.classList.add('hidden');
+
+      if (customInputToggle && customInputToggle.checked) {
+        contentCustomInput?.classList.remove('hidden');
+        contentTestCases?.classList.add('hidden');
+      } else {
+        contentTestCases?.classList.remove('hidden');
+        contentCustomInput?.classList.add('hidden');
+      }
+    }
+  }
+
+  function setTab(tab) {
+    if (tab === 'terminal') {
+      tabTerminalBtn.className = 'bottom-tab active flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white bg-white/10 transition cursor-pointer font-mono';
+      tabTestCasesBtn.className = 'bottom-tab flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white/40 hover:text-white/80 hover:bg-white/[.04] transition cursor-pointer font-mono';
+    } else {
+      tabTestCasesBtn.className = 'bottom-tab active flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white bg-white/10 transition cursor-pointer font-mono';
+      tabTerminalBtn.className = 'bottom-tab flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white/40 hover:text-white/80 hover:bg-white/[.04] transition cursor-pointer font-mono';
+    }
+    updateViews();
+  }
+
+  tabTerminalBtn.addEventListener('click', () => setTab('terminal'));
+  tabTestCasesBtn.addEventListener('click', () => setTab('testcases'));
+  customInputToggle?.addEventListener('change', () => {
+    setTab('testcases');
+  });
+  clearTerminalBtn?.addEventListener('click', () => initTerminal());
+}
+
+function initMonaco(containerEl, initialCode, onChange) {
+  const loadingEl = document.getElementById('monacoLoading');
+  const textareaEl = document.getElementById('codeEditor');
+
+  function showTextareaFallback() {
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (textareaEl) {
+      textareaEl.classList.remove('hidden');
+      textareaEl.style.display = 'block';
+      textareaEl.style.position = 'absolute';
+      textareaEl.style.inset = '0';
+      textareaEl.style.width = '100%';
+      textareaEl.style.height = '100%';
+      textareaEl.style.zIndex = '5';
+      textareaEl.value = initialCode;
+      // ensure textarea fills container when Monaco not available
+      textareaEl.addEventListener('input', () => {
+        if (onChange) onChange(textareaEl.value);
+      });
+    }
+    if (containerEl) {
+      // hide loading but keep container for textarea overlay if needed
+      containerEl.style.background = '#211f1e';
+    }
+  }
+
+  if (!containerEl) {
+    showTextareaFallback();
+    return;
+  }
+
+  if (typeof window.require !== 'undefined') {
+    try {
+      window.require.config({
+        paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs' }
+      });
+
+      let fallbackTimer = setTimeout(() => {
+        if (!monacoEditorInstance) {
+          console.warn('Monaco load timeout — falling back to textarea');
+          showTextareaFallback();
+        }
+      }, 4000);
+
+      // handle require load errors
+      if (window.require.onError) {
+        const prevOnError = window.require.onError;
+        window.require.onError = function (err) {
+          clearTimeout(fallbackTimer);
+          console.warn('Monaco require error, fallback to textarea', err);
+          showTextareaFallback();
+          if (typeof prevOnError === 'function') try { prevOnError(err); } catch {}
+        };
+      }
+
+      window.require(['vs/editor/editor.main'], function (monaco) {
+        clearTimeout(fallbackTimer);
+        try {
+          if (loadingEl) loadingEl.style.display = 'none';
+
+          monaco.editor.defineTheme('pypractice-dark', {
+            base: 'vs-dark',
+            inherit: true,
+            rules: [
+              { token: 'keyword', foreground: '9EAED4', fontStyle: 'bold' },
+              { token: 'string', foreground: 'D5B07D' },
+              { token: 'number', foreground: '9BB79D' },
+              { token: 'comment', foreground: '77716A', fontStyle: 'italic' },
+              { token: 'identifier', foreground: 'F4EFE6' },
+              { token: 'type', foreground: '9BB79D' },
+              { token: 'delimiter', foreground: 'D8D1C5' }
+            ],
+            colors: {
+              'editor.background': '#211f1e',
+              'editor.foreground': '#f4efe6',
+              'editorLineNumber.foreground': '#6f6b65',
+              'editorLineNumber.activeForeground': '#f4efe6',
+              'editor.selectionBackground': '#3a3835',
+              'editor.inactiveSelectionBackground': '#2b2927',
+              'editorCursor.foreground': '#f4efe6',
+              'editorIndentGuide.background': '#2d2b29',
+              'editorIndentGuide.activeBackground': '#4c4842',
+              'editorGutter.background': '#211f1e'
+            }
+          });
+
+          monacoEditorInstance = monaco.editor.create(containerEl, {
+            value: initialCode,
+            language: 'python',
+            theme: 'pypractice-dark',
+            fontSize: 13,
+            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace',
+            tabSize: 4,
+            insertSpaces: true,
+            automaticLayout: true,
+            minimap: { enabled: false },
+            scrollBeyondLastLine: false,
+            lineNumbers: 'on',
+            lineDecorationsWidth: 10,
+            lineNumbersMinChars: 3,
+            overviewRulerLanes: 0,
+            renderLineHighlight: 'line',
+            scrollbar: {
+              verticalScrollbarSize: 7,
+              horizontalScrollbarSize: 7
+            },
+            padding: { top: 12, bottom: 12 }
+          });
+
+          monacoEditorInstance.onDidChangeModelContent(() => {
+            const val = monacoEditorInstance.getValue();
+            if (textareaEl) textareaEl.value = val;
+            if (onChange) onChange(val);
+          });
+
+          monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+            document.getElementById('runBtn')?.click();
+          });
+          monacoEditorInstance.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.Enter, () => {
+            document.getElementById('submitBtn')?.click();
+          });
+
+          window.addEventListener('resize', () => {
+            if (monacoEditorInstance) monacoEditorInstance.layout();
+          });
+          // ensure visible
+          if (textareaEl) textareaEl.classList.add('hidden');
+        } catch (e) {
+          console.error('Monaco init error, fallback', e);
+          showTextareaFallback();
+        }
+      }, function (err) {
+        clearTimeout(fallbackTimer);
+        console.warn('Monaco load failed', err);
+        showTextareaFallback();
+      });
+    } catch (e) {
+      console.warn('Monaco setup error, fallback', e);
+      showTextareaFallback();
+    }
+  } else {
+    showTextareaFallback();
+  }
+}
+
+function getEditorCode() {
+  if (monacoEditorInstance) {
+    return monacoEditorInstance.getValue();
+  }
+  const textarea = document.getElementById('codeEditor');
+  return textarea ? textarea.value : '';
+}
+
+function setEditorCode(val) {
+  if (monacoEditorInstance) {
+    monacoEditorInstance.setValue(val);
+  }
+  const textarea = document.getElementById('codeEditor');
+  if (textarea) textarea.value = val;
+}
+
+function markSolved(q) {
+  state.solved[q.id] = Date.now();
+  recordActivity();
+  rememberQuestion(q);
+  save();
+}
+
+function initProblemPage() {
+  const root = document.getElementById('problemPage');
+  if (!root) return;
+
+  initTerminal();
+  initBottomTabs();
+
+  const params = new URLSearchParams(location.search);
+  const topic = params.get('topic') || topics[0].name;
+  const level = params.get('level') || 'basic';
+  const index = Math.max(0, Number(params.get('q') || 0));
+
+  const qs = questionsFor(topic, level);
+  const q = qs[index] || qs[0];
+  if (!q) return;
+
+  const topicIndex = topics.findIndex(t => t.name === q.topic);
+  const loggedIn = typeof isLoggedIn === 'function' ? isLoggedIn() : false;
+  if (!loggedIn && topicIndex >= 2) {
+    location.replace(`practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`);
+    return;
+  }
+
+  rememberQuestion(q);
+
+  const topicEl = document.getElementById('problemTopic');
+  if (topicEl) topicEl.textContent = q.topic;
+  const lvlEl = document.getElementById('problemLevel');
+  if (lvlEl) lvlEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${escapeHtml(levelMeta[q.level].label)}`;
+  const numEl = document.getElementById('problemNumber');
+  if (numEl) numEl.innerHTML = `<i class="fa-solid fa-hashtag text-[10px] opacity-60"></i> Question ${q.number}`;
+  // Highlight keywords — single primary accent, no background
+  function highlightDesc(text) {
+    const esc = escapeHtml(text);
+    const keywords = ['if','elif','else','for','while','def','return','import','class','try','except','finally','with','as','in','is','and','or','not','from','True','False','None','break','continue','pass','lambda','yield','raise','assert','print','input','range','len','type','int','float','str','bool','list','tuple','set','dict','open','append','extend','pop','sort','sorted','map','filter','sum','min','max','abs','round','enumerate','zip','Python','variable','Variable','String','string','List','Tuple','Set','Dictionary','Function','Loop','Conditional','File','Module','Class','Exception'];
+    const sorted = [...keywords].sort((a,b)=>b.length-a.length);
+    const re = new RegExp('\\b(' + sorted.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|') + ')\\b','g');
+    return esc.replace(re, m => `<span class="kw-primary">${m}</span>`);
+  }
+  const titleEl = document.getElementById('problemTitle');
+  if (titleEl) titleEl.textContent = q.title;
+  const descEl = document.getElementById('problemDesc');
+  if (descEl) descEl.innerHTML = `<span class="kw-prompt">>_</span> ` + highlightDesc(q.description);
+  const exInEl = document.getElementById('exampleInput');
+  if (exInEl) exInEl.textContent = q.input ? q.input.replace(/\\n/g, '\n') : '(none)';
+  const exOutEl = document.getElementById('exampleOutput');
+  if (exOutEl) exOutEl.textContent = q.output ? q.output.replace(/\\n/g, '\n') : '(empty)';
+
+  const codeKey = 'code:' + q.id;
+  const initialCode = localStorage.getItem(codeKey) || defaultCode(q.topic);
+
+  const explanation = document.getElementById('explanationPanel');
+  const editorContainer = document.getElementById('monacoEditor');
+  const testTabBadge = document.getElementById('testTabBadge');
+
+  // Previous / Next navigation (bottom) — replaces manual complete button
+  const prevBtn = document.getElementById('prevQuestionBtn');
+  const nextBtn = document.getElementById('nextQuestionBtn');
+  if (prevBtn) {
+    if (index > 0) {
+      prevBtn.href = `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index - 1}`;
+      prevBtn.classList.remove('opacity-50','pointer-events-none');
+    } else {
+      prevBtn.classList.add('opacity-50','pointer-events-none');
+      prevBtn.removeAttribute('href');
+    }
+  }
+  if (nextBtn) {
+    if (index + 1 < qs.length) {
+      nextBtn.href = `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index + 1}`;
+      nextBtn.classList.remove('opacity-50','pointer-events-none');
+    } else {
+      nextBtn.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+      nextBtn.innerHTML = `Back to list <i class="fa-solid fa-list text-[11px]"></i>`;
+    }
+  }
+
+  const backPracticeEl = document.querySelector('[data-back-practice]');
+  if (backPracticeEl) backPracticeEl.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+
+  // Breadcrumb
+  const bcTopic = document.getElementById('problemBreadcrumbTopic');
+  if (bcTopic) {
+    bcTopic.textContent = q.topic;
+    bcTopic.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+  }
+  const bcTitle = document.getElementById('problemBreadcrumbTitle');
+  if (bcTitle) bcTitle.textContent = q.title;
+
+  initMonaco(editorContainer, initialCode, (newCode) => {
+    localStorage.setItem(codeKey, newCode);
+    const editorState = document.getElementById('editorState');
+    if (editorState) editorState.textContent = 'Editing';
+    rememberQuestion(q);
+  });
+
+  document.getElementById('resetBtn')?.addEventListener('click', () => {
+    const freshCode = defaultCode(q.topic);
+    setEditorCode(freshCode);
+    localStorage.setItem(codeKey, freshCode);
+    const editorState = document.getElementById('editorState');
+    if (editorState) editorState.textContent = 'Reset';
+    document.getElementById('resultPanel')?.classList.add('hidden');
+    if (explanation) explanation.classList.add('hidden');
+    if (testTabBadge) testTabBadge.classList.add('hidden');
+    // Clear custom output if present
+    const customOut = document.getElementById('customOutputPanel');
+    if (customOut) { customOut.classList.add('hidden'); customOut.innerHTML = ''; }
+    // Reset test results
+    testCaseResults = {};
+    renderTestCasePills();
+    renderActiveCaseDetail();
+    appendTerminal(`Reset code to template: ${q.topic}`, 'system');
+    toast('Starter code restored.');
+  });
+
+  let activeCaseIdx = 0;
+  let testCaseResults = {};
+
+  function renderTestCasePills() {
+    const tabsContainer = document.getElementById('testCaseTabsContainer');
+    if (!tabsContainer) return;
+
+    tabsContainer.innerHTML = q.testCases.map((tc, idx) => {
+      const isSelected = idx === activeCaseIdx;
+      const res = testCaseResults[idx];
+      let badgeHtml = '';
+
+      if (res) {
+        badgeHtml = res.passed
+          ? `<svg class="w-3 h-3 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
+          : `<svg class="w-3 h-3 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+      } else {
+        badgeHtml = `<span class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-amber-400/60' : 'bg-white/20'}"></span>`;
+      }
+
+      return `
+        <button
+          data-case-tab="${idx}"
+          class="case-tab-btn shrink-0 flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono rounded transition-all cursor-pointer ${
+            isSelected
+              ? 'bg-white/[.08] text-white font-medium border border-white/15'
+              : 'bg-white/[.02] text-white/40 hover:text-white/80 hover:bg-white/[.04] border border-transparent'
+          }"
+        >
+          <span>${escapeHtml(tc.label || `Case ${idx + 1}`)}</span>
+          ${badgeHtml}
+        </button>
+      `;
+    }).join('');
+
+    tabsContainer.querySelectorAll('.case-tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeCaseIdx = parseInt(btn.dataset.caseTab, 10);
+        renderTestCasePills();
+        renderActiveCaseDetail();
+      });
+    });
+  }
+
+  function renderActiveCaseDetail() {
+    const detailContainer = document.getElementById('selectedTestCaseDetail');
+    if (!detailContainer) return;
+
+    const tc = q.testCases[activeCaseIdx];
+    if (!tc) return;
+
+    const res = testCaseResults[activeCaseIdx];
+
+    const inputVal = tc.input ? tc.input.replace(/\\n/g, '\n') : '(none)';
+    const expectedVal = tc.output ? tc.output.replace(/\\n/g, '\n') : '(empty)';
+    const actualVal = res ? (res.actual ?? res.stdout ?? '(no output)') : null;
+    const stderrVal = res && res.stderr ? res.stderr : null;
+
+    detailContainer.innerHTML = `
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+        <div>
+          <div class="text-[10px] uppercase text-white/40 mb-1 flex items-center justify-between">
+            <span>Input</span>
+            <span class="text-white/20">${tc.label || `Case ${activeCaseIdx + 1}`}</span>
+          </div>
+          <div class="p-2.5 rounded bg-white/[.02] border border-white/10 text-white/80 whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(inputVal)}</div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase text-white/40 mb-1">Expected Output</div>
+          <div class="p-2.5 rounded bg-white/[.02] border border-white/10 text-emerald-400/90 whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(expectedVal)}</div>
+        </div>
+      </div>
+
+      ${res ? `
+        <div class="mt-3 pt-3 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
+          <div>
+            <div class="text-[10px] uppercase ${res.passed ? 'text-emerald-400' : 'text-red-400'} mb-1 flex items-center justify-between">
+              <span>Your Output</span>
+              <span class="text-[10px] ${res.passed ? 'text-emerald-400/70' : 'text-red-400/70'}">${res.passed ? 'Passed ✓' : 'Failed ✗'} (${res.elapsed ?? 0}ms)</span>
+            </div>
+            <div class="p-2.5 rounded ${res.passed ? 'bg-emerald-950/20 border-emerald-500/20 text-emerald-300' : 'bg-red-950/20 border-red-500/30 text-red-300'} border whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(actualVal)}</div>
+          </div>
+          ${stderrVal ? `
+            <div>
+              <div class="text-[10px] uppercase text-amber-400 mb-1">Standard Error / Warnings</div>
+              <div class="p-2.5 rounded bg-amber-950/20 border border-amber-500/20 text-amber-300 whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(stderrVal)}</div>
+            </div>
+          ` : `
+            <div class="flex items-center justify-center p-3 rounded bg-white/[.01] border border-dashed border-white/10 text-white/30 text-[11px]">
+              ${res.passed ? 'Output matched expected response.' : 'Output did not match expected response.'}
+            </div>
+          `}
+        </div>
+      ` : ''}
+    `;
+  }
+
+  renderTestCasePills();
+  renderActiveCaseDetail();
+
+  // Helper to show explanation safely
+  function showExplanation() {
+    if (!explanation) return;
+    explanation.classList.remove('hidden');
+    explanation.innerHTML = `<div class="text-sm leading-6">${escapeHtml(explanationFor(q))}</div>`;
+    const explText = document.getElementById('explanationText');
+    if (explText) explText.textContent = explanationFor(q);
+  }
+
+  async function runCode(mode = 'sample') {
+    const code = getEditorCode();
+    const runBtn = document.getElementById('runBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const testSummary = document.getElementById('testSummary');
+    const editorState = document.getElementById('editorState');
+    const resultPanel = document.getElementById('resultPanel');
+    const customInputToggle = document.getElementById('customInputToggle');
+    const customInputEl = document.getElementById('customInputText');
+    const customOutputPanel = document.getElementById('customOutputPanel');
+    const pyodideStatus = document.getElementById('pyodideStatus');
+    const runnerStatus = document.getElementById('runnerStatus') || pyodideStatus;
+
+    if (runBtn) { runBtn.disabled = true; runBtn.style.opacity = '0.6'; }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; }
+    if (runnerStatus) runnerStatus.textContent = mode === 'submit' ? 'Running all test cases…' : 'Running sample…';
+    if (testSummary) testSummary.textContent = 'Executing…';
+    if (editorState) editorState.textContent = 'Running';
+
+    const isCustom = customInputToggle && customInputToggle.checked && mode === 'sample';
+    const isSubmit = mode === 'submit';
+
+    if (isCustom) {
+      appendTerminal(`Executing with custom input…`, 'cmd');
+    } else {
+      appendTerminal(`Executing ${mode === 'submit' ? 'full test suite' : 'sample'}…`, 'cmd');
+    }
+
+    try {
+      let casesToRun = [];
+
+      if (isCustom) {
+        const customVal = customInputEl ? customInputEl.value : '';
+        casesToRun = [{
+          label: 'Custom Input',
+          input: customVal,
+          output: '',
+          expected: ''
+        }];
+      } else if (isSubmit) {
+        casesToRun = q.testCases;
+      } else {
+        casesToRun = [q.testCases[0]];
+      }
+
+      const startTime = performance.now();
+
+      // Use canonical type and field names for robustness
+      const res = await executePythonAsync({
+        type: 'run-batch',
+        code,
+        testCases: casesToRun
+      });
+
+      const totalElapsed = Math.round(performance.now() - startTime);
+
+      // Handle custom input separately - show raw output, don't grade
+      if (isCustom) {
+        const r = res.results && res.results[0];
+        if (!r) throw new Error('No result returned');
+        const stdout = r.stdout ?? r.actual ?? '';
+        const stderr = r.stderr ?? '';
+        const hasError = !!(stderr && String(stderr).trim());
+
+        // Update testCaseResults for badge but mark custom as not graded
+        testCaseResults[0] = {
+          passed: !hasError,
+          actual: stdout,
+          expected: '',
+          elapsed: r.elapsed ?? totalElapsed,
+          stderr: stderr,
+          isCustom: true
+        };
+
+        renderTestCasePills();
+        renderActiveCaseDetail();
+
+        // Show custom output panel
+        if (customOutputPanel) {
+          customOutputPanel.classList.remove('hidden');
+          if (hasError) {
+            customOutputPanel.innerHTML = `<div class="p-2.5 rounded bg-red-950/20 border border-red-500/30 text-red-300 font-mono text-[11px] whitespace-pre-wrap">${escapeHtml(stderr)}</div>`;
+          } else {
+            customOutputPanel.innerHTML = `<div class="text-[11px] uppercase text-white/40 mb-1">Output</div><div class="p-2.5 rounded bg-white/[.02] border border-white/10 text-white/90 font-mono text-[12px] whitespace-pre-wrap min-h-[50px]">${escapeHtml(stdout || '(no output)')}</div><div class="text-[10px] text-white/30 mt-1">${r.elapsed ?? totalElapsed}ms</div>`;
+          }
+        }
+
+        if (stdout) appendTerminal(stdout, 'stdout');
+        if (stderr) appendTerminal(stderr, 'stderr');
+        appendTerminal(`[Exit code ${hasError ? '1' : '0'}, ${r.elapsed ?? totalElapsed}ms]`, 'system');
+
+        if (resultPanel) {
+          resultPanel.classList.remove('hidden');
+          if (hasError) {
+            resultPanel.innerHTML = `
+              <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center justify-between font-mono">
+                <div class="flex items-center gap-2 text-red-400 text-xs font-semibold">
+                  <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <span>Custom run failed — see output.</span>
+                </div>
+              </div>
+            `;
+          } else {
+            resultPanel.innerHTML = `
+              <div class="pop-in bg-[#050f06] border-y border-[#1a381c] px-4 py-2 flex items-center justify-between font-mono shadow-sm">
+                <div class="flex items-center gap-2.5">
+                  <svg class="text-[#7CB342] w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span class="text-[#7CB342] font-medium text-xs tracking-wide">Custom input executed.</span>
+                </div>
+                <span class="text-white/40 text-[11px]">${r.elapsed ?? totalElapsed}ms</span>
+              </div>
+            `;
+          }
+        }
+        if (testSummary) testSummary.textContent = hasError ? 'Error' : 'Custom done';
+        if (editorState) editorState.textContent = hasError ? 'Error' : 'Done';
+        showExplanation();
+        return;
+      }
+
+      // Normal sample/submit flow
+      let allPassed = true;
+      const results = res.results || [];
+      results.forEach((r, idx) => {
+        // Robust mapping: support both old and new field names
+        const actual = r.actual ?? r.stdout ?? '';
+        const expected = r.expected ?? r.output ?? (casesToRun[idx] ? casesToRun[idx].output : '');
+        // Use r.passed if provided, else compute via normalize
+        let passed = r.passed;
+        if (typeof passed === 'undefined') {
+          const normActual = typeof normalizeOutput === 'function' ? normalizeOutput(actual) : String(actual).trim();
+          const normExpected = typeof normalizeOutput === 'function' ? normalizeOutput(expected) : String(expected).trim();
+          passed = normActual === normExpected && !(r.stderr && String(r.stderr).trim());
+        }
+        if (!passed) allPassed = false;
+
+        const originalCaseIdx = idx;
+        testCaseResults[originalCaseIdx] = {
+          passed,
+          actual,
+          expected,
+          elapsed: r.elapsed ?? 0,
+          stderr: r.stderr ?? ''
+        };
+
+        if (r.stdout ?? actual) {
+          appendTerminal(r.stdout ?? actual, 'stdout');
+        }
+        if (r.stderr) {
+          appendTerminal(r.stderr, 'stderr');
+        }
+      });
+
+      activeCaseIdx = 0;
+      renderTestCasePills();
+      renderActiveCaseDetail();
+
+      if (testTabBadge) {
+        const passedCount = results.filter(r => {
+          const p = r.passed ?? testCaseResults[results.indexOf(r)]?.passed;
+          return p;
+        }).length;
+        // Correct count: use enriched results
+        const correctPassed = Object.values(testCaseResults).filter(v => v.passed).length;
+        const total = isSubmit ? q.testCases.length : 1;
+        // For submit, show correctPassed/total, for sample show 1/1
+        testTabBadge.classList.remove('hidden');
+        if (isSubmit) {
+          testTabBadge.textContent = `${correctPassed}/${total} passed`;
+        } else {
+          testTabBadge.textContent = allPassed ? `1/1 passed` : `0/1 passed`;
+        }
+        testTabBadge.className = `text-[10px] px-1.5 py-0.2 rounded font-mono font-semibold ${allPassed ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`;
+      }
+
+      appendTerminal(`[Exit code ${allPassed ? '0' : '1'}, ${totalElapsed}ms]`, 'system');
+
+      if (resultPanel) resultPanel.classList.remove('hidden');
+
+      if (!isSubmit) {
+        if (allPassed) {
+          if (testSummary) testSummary.textContent = 'Sample passed';
+          if (editorState) editorState.textContent = 'Sample passed';
+          if (resultPanel) resultPanel.innerHTML = `
+            <div class="pop-in bg-[#050f06] border-y border-[#1a381c] px-4 py-2 flex items-center justify-between font-mono shadow-sm">
+              <div class="flex items-center gap-2.5">
+                <svg class="text-[#7CB342] w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                <span class="text-[#7CB342] font-medium text-xs tracking-wide">Sample test cases passed. Ready to submit?</span>
+              </div>
+              <button id="bannerSubmitBtn" class="bg-[#E67E22] hover:bg-[#D35400] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors cursor-pointer shrink-0 shadow-sm">
+                Submit
+              </button>
+            </div>
+          `;
+          document.getElementById('bannerSubmitBtn')?.addEventListener('click', () => runCode('submit'));
+        } else {
+          if (testSummary) testSummary.textContent = 'Sample failed';
+          if (editorState) editorState.textContent = 'Needs work';
+          if (resultPanel) resultPanel.innerHTML = `
+            <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center justify-between font-mono">
+              <div class="flex items-center gap-2 text-red-400 text-xs font-semibold">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span>Sample Test Case Failed — Check terminal or test cases for output mismatch.</span>
+              </div>
+            </div>
+          `;
+        }
+      } else {
+        if (allPassed) {
+          if (testSummary) testSummary.textContent = `${results.length}/${results.length} passed`;
+          if (editorState) editorState.textContent = 'Accepted';
+          appendTerminal(`[All ${results.length} test cases passed in ${totalElapsed}ms]`, 'stdout');
+          
+          const wasAlreadySolved = state.solved[q.id] ? true : false;
+          
+          markSolved(q);
+          renderHeaderProgress();
+
+          const hasNextQuestion = index + 1 < qs.length;
+          const nextQuestion = hasNextQuestion ? qs[index + 1] : null;
+
+          if (resultPanel) resultPanel.innerHTML = `
+            <div class="pop-in bg-[#051108] border-y border-[#1a381c] px-4 py-2 flex items-center justify-between font-mono shadow-sm">
+              <div class="flex items-center gap-2.5">
+                <svg class="text-[#7CB342] w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <div>
+                  <span class="text-[#7CB342] font-bold text-xs tracking-wide">Accepted · All ${results.length} Test Cases Passed!</span>
+                  ${wasAlreadySolved ? '<span class="text-white/40 text-[11px] ml-2">(Already completed)</span>' : '<span class="text-emerald-400 text-[11px] ml-2">(+1 Solved!)</span>'}
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                ${hasNextQuestion ? `
+                  <a href="${questionUrl(nextQuestion)}" class="bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors inline-flex items-center gap-1">
+                    <span>Next Question</span>
+                    <span>→</span>
+                  </a>
+                ` : `
+                  <a href="practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}" class="bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors inline-flex items-center gap-1">
+                    <span>Back to Topics</span>
+                    <span>✓</span>
+                  </a>
+                `}
+              </div>
+            </div>
+          `;
+          toast('Question solved and progress saved!');
+        } else {
+          const failedCount = results.length - Object.values(testCaseResults).filter(v => v.passed).length;
+          if (testSummary) testSummary.textContent = `${results.length - failedCount}/${results.length} passed`;
+          if (editorState) editorState.textContent = 'Wrong Answer';
+          
+          if (resultPanel) resultPanel.innerHTML = `
+            <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center justify-between font-mono">
+              <div class="flex items-center gap-2 text-red-400 text-xs font-semibold">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+                <span>Wrong Answer · Failed ${failedCount} of ${results.length} test cases.</span>
+              </div>
+              <span class="text-white/40 text-[11px]">Inspect failed test cases below.</span>
+            </div>
+          `;
+        }
+      }
+
+      showExplanation();
+
+    } catch (err) {
+      console.error('Execution error:', err);
+      const testSummary = document.getElementById('testSummary');
+      const editorState = document.getElementById('editorState');
+      if (testSummary) testSummary.textContent = 'Error';
+      if (editorState) editorState.textContent = 'Error';
+      appendTerminal(err.message || 'Execution error occurred.', 'stderr');
+      // Show in custom panel if custom was active
+      const customOutputPanel = document.getElementById('customOutputPanel');
+      if (customOutputPanel && document.getElementById('customInputToggle')?.checked) {
+        customOutputPanel.classList.remove('hidden');
+        customOutputPanel.innerHTML = `<div class="p-2.5 rounded bg-red-950/20 border border-red-500/30 text-red-300 font-mono text-[11px] whitespace-pre-wrap">${escapeHtml(err.message || String(err))}</div>`;
+      }
+      toast('Execution error.');
+    } finally {
+      if (runBtn) { runBtn.disabled = false; runBtn.style.opacity = ''; }
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; }
+      const runnerStatus2 = document.getElementById('runnerStatus') || document.getElementById('pyodideStatus');
+      if (runnerStatus2 && runnerStatus2.id === 'runnerStatus') runnerStatus2.textContent = '';
+    }
+  }
+
+  document.getElementById('runBtn')?.addEventListener('click', () => runCode('sample'));
+  document.getElementById('submitBtn')?.addEventListener('click', () => runCode('submit'));
+
+  createPyWorker();
+}
+
+// Export helpers for Node tests
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { initProblemPage, markSolved };
+}

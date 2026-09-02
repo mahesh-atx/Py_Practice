@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile — PyPractice</title>
+    <script>
+      tailwind = { config: { darkMode: 'class' } };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="css/app.css" />
+  </head>
+  <body>
+    <div class="site-shell min-h-screen flex flex-col">
+      <header class="header-blur sticky top-0 z-50 border-b border-line shrink-0">
+        <div class="app-max h-[76px] flex items-center justify-between">
+          <a href="index.html" class="text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+          <nav class="hidden md:flex items-center gap-8 text-sm text-muted">
+            <a href="index.html" class="hover:text-ink">Home</a>
+            <a href="learn.html" class="hover:text-ink">Learn</a>
+            <a href="topics.html" class="hover:text-ink">Practice</a>
+            <a href="progress.html" class="hover:text-ink">Progress</a>
+            <a href="guide.html" class="hover:text-ink">Python Guide</a>
+            <a href="profile.html" class="text-ink font-medium">Profile</a>
+          </nav>
+          <div class="flex items-center gap-2">
+            <button data-theme-toggle class="h-10 w-10 border border-line grid place-items-center text-sm btn-ghost rounded-[3px]" aria-label="Toggle dark mode"><span data-theme-icon>◐</span></button>
+            <button data-mobile-toggle class="md:hidden h-10 w-10 border border-line btn-ghost rounded-[3px]">☰</button>
+          </div>
+        </div>
+        <div id="mobileMenu" class="mobile-menu border-t border-line md:hidden">
+          <div class="app-max py-4 grid gap-2 text-sm">
+            <a href="index.html" class="py-2">Home</a>
+            <a href="learn.html" class="py-2">Learn</a>
+            <a href="topics.html" class="py-2">Practice</a>
+            <a href="progress.html" class="py-2">Progress</a>
+            <a href="guide.html" class="py-2">Python Guide</a>
+            <a href="profile.html" class="py-2 font-medium text-ink">Profile</a>
+          </div>
+        </div>
+      </header>
+
+      <main id="profilePage" class="flex-1 app-max py-8 lg:py-10">
+        <div class="grid lg:grid-cols-[340px_1fr] gap-6 lg:gap-8 items-start">
+          <!-- Left: profile card -->
+          <div class="lg:sticky lg:top-[90px] space-y-5">
+            <div class="card reveal rounded-[18px] relative overflow-hidden border border-line shadow-sm">
+              <div class="absolute top-0 left-0 right-0 h-[3px] bg-[var(--green)] opacity-80 z-20"></div>
+              
+              <!-- Mascot Header Banner -->
+              <div class="w-full h-44 overflow-hidden bg-[#85c39e] dark:bg-[#1b2b22] relative flex items-center justify-center">
+                <img
+                  src="assets/23_asset.jpg"
+                  alt="PyPractice Companion — Soft Reboot"
+                  class="w-full h-full object-cover object-[center_30%] dark:brightness-[0.92] dark:contrast-[1.05] hover:scale-105 transition-transform duration-500 ease-out"
+                  loading="lazy"
+                />
+                <span class="absolute top-3 left-3 card-badge text-[10px] uppercase font-mono font-semibold tracking-wider px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1.5 z-10">
+                  <i class="fa-solid fa-robot text-[var(--green)]"></i> Companion
+                </span>
+                <span class="absolute top-3 right-3 card-badge text-[10px] uppercase font-mono font-semibold tracking-wider px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1.5 z-10">
+                  <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Ready
+                </span>
+              </div>
+
+              <!-- Profile Details with Overlapping Avatar -->
+              <div class="p-6 pt-0 relative">
+                <div class="flex flex-col items-center text-center -mt-10">
+                  <div class="relative">
+                    <div id="profileAvatar" class="h-[76px] w-[76px] rounded-full bg-[#2b2722] text-[#fffdf7] dark:bg-[#f4efe6] dark:text-[#1b1a19] grid place-items-center text-[26px] tracking-[-.04em] font-medium shrink-0 select-none shadow-md border-4 border-white dark:border-[#22201e]">L</div>
+                    <span class="absolute bottom-0 right-0 h-6 w-6 rounded-full bg-emerald-500 border-2 border-white dark:border-[#22201e] text-white grid place-items-center text-[9px] shadow-sm"><i class="fa-solid fa-check"></i></span>
+                  </div>
+                  <h1 id="profileName" class="text-xl tracking-[-.03em] font-semibold mt-3 flex items-center gap-2 leading-tight">Learner</h1>
+                  <p id="profileBio" class="text-sm text-muted leading-relaxed mt-1.5 max-w-xs">Learning Python, one problem at a time.</p>
+                  <div class="flex flex-wrap justify-center gap-2 text-xs text-muted mt-3">
+                    <span id="profileSince" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--soft)] border border-line"><i class="fa-regular fa-calendar text-[11px]"></i> Member since —</span>
+                  </div>
+                  <div class="mt-2 inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full bg-white border border-line text-muted dark:bg-white/[0.06] dark:border-white/10" id="profileTopicsDone"><i class="fa-solid fa-layer-group text-[11px] opacity-70"></i> 0 topics started</div>
+                </div>
+                <button id="editProfileBtn" class="btn-ghost w-full mt-5 py-2.5 text-xs rounded-[10px] inline-flex items-center justify-center gap-2 border border-line"><i class="fa-solid fa-pen text-[11px]"></i> Edit profile</button>
+                <div id="profileEditForm" class="hidden mt-4 p-4 border border-line panel rounded-[12px] bg-[var(--paper)] dark:bg-[var(--dark)]">
+                  <label class="text-xs block"><span class="text-muted flex items-center gap-1.5"><i class="fa-solid fa-user text-[11px]"></i> Display name</span><input id="profileNameInput" class="mt-1.5 w-full border border-line panel px-3 py-2.5 text-sm outline-none rounded-[10px]" maxlength="32" placeholder="Your name" /></label>
+                  <label class="text-xs block mt-3"><span class="text-muted flex items-center gap-1.5"><i class="fa-solid fa-quote-left text-[11px]"></i> Bio</span><input id="profileBioInput" class="mt-1.5 w-full border border-line panel px-3 py-2.5 text-sm outline-none rounded-[10px]" maxlength="80" placeholder="Short bio" /></label>
+                  <div class="flex gap-2 mt-4">
+                    <button id="saveProfileBtn" class="btn-primary flex-1 py-2.5 text-xs rounded-[10px] inline-flex items-center justify-center gap-2"><i class="fa-solid fa-check text-[11px]"></i> Save</button>
+                    <button id="cancelProfileBtn" class="btn-ghost flex-1 py-2.5 text-xs rounded-[10px]">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="card reveal rounded-[14px] overflow-hidden divide-y divide-line hidden lg:block">
+              <div class="flex items-center justify-between gap-4 p-4">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826]"><i class="fa-solid fa-circle-half-stroke text-xs"></i></div><div><div class="text-sm font-medium">Theme</div><div class="text-xs text-muted">Paper / ink</div></div></div>
+                <button data-theme-toggle class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"><i class="fa-solid fa-moon text-[11px]"></i> <span data-theme-icon>◐</span></button>
+              </div>
+              <div class="flex items-center justify-between gap-4 p-4">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826]"><i class="fa-solid fa-download text-xs"></i></div><div><div class="text-sm font-medium">Export</div><div class="text-xs text-muted">JSON</div></div></div>
+                <button id="exportBtn" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"><i class="fa-solid fa-file-arrow-down text-[11px]"></i> Export</button>
+              </div>
+              <div class="flex items-center justify-between gap-4 p-4">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-red-50 border border-red-100 text-red-600 grid place-items-center dark:bg-red-900/20 dark:border-red-800"><i class="fa-solid fa-trash text-xs"></i></div><div><div class="text-sm font-medium text-[#c0392b]">Reset</div><div class="text-xs text-muted">Clear data</div></div></div>
+                <button data-reset-progress class="px-3 py-1.5 text-xs rounded-[10px] border border-red-200 text-red-600 hover:bg-red-50 inline-flex items-center gap-1.5"><i class="fa-solid fa-rotate-left text-[11px]"></i> Reset</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: stats + activity + achievements + progress preview -->
+          <div class="min-w-0 space-y-6">
+            <!-- Quick stats — KPI cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 stagger">
+              <!-- Solved Card -->
+              <div class="card rounded-[16px] p-5 flex flex-col justify-between hover:shadow-[0_12px_28px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
+                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-emerald-500"></div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-[11px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Solved</span>
+                  <span class="h-8 w-8 rounded-[10px] bg-emerald-50 text-emerald-600 border border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40 grid place-items-center text-xs shrink-0 shadow-xs">
+                    <i class="fa-solid fa-check"></i>
+                  </span>
+                </div>
+                <div class="mt-4">
+                  <div class="flex items-baseline gap-2">
+                    <span id="profileSolved" class="text-3xl font-bold tracking-tight text-ink leading-none font-mono">0</span>
+                    <span class="text-xs text-muted font-mono font-medium">/ 162 total</span>
+                  </div>
+                  <div class="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted font-medium">
+                    <i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i>
+                    <span>Questions solved</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Streak Card -->
+              <div class="card rounded-[16px] p-5 flex flex-col justify-between hover:shadow-[0_12px_28px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
+                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-amber-500"></div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-[11px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Day Streak</span>
+                  <span class="h-8 w-8 rounded-[10px] bg-amber-50 text-amber-600 border border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40 grid place-items-center text-xs shrink-0 shadow-xs">
+                    <i class="fa-solid fa-fire"></i>
+                  </span>
+                </div>
+                <div class="mt-4">
+                  <div class="flex items-baseline gap-2">
+                    <span id="profileStreak" class="text-3xl font-bold tracking-tight text-ink leading-none font-mono">0</span>
+                    <span class="text-xs text-muted font-mono font-medium">days active</span>
+                  </div>
+                  <div class="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted font-medium">
+                    <i class="fa-solid fa-bolt text-amber-500 text-[10px]"></i>
+                    <span>Daily study habit</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Completion Card -->
+              <div class="card rounded-[16px] p-5 flex flex-col justify-between hover:shadow-[0_12px_28px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
+                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--green)]"></div>
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-[11px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Completion</span>
+                  <span class="h-8 w-8 rounded-[10px] bg-[var(--soft)] text-[var(--green)] border border-line grid place-items-center text-xs shrink-0 shadow-xs dark:bg-[#2a2826] dark:border-[var(--dark-line)]">
+                    <i class="fa-solid fa-chart-pie"></i>
+                  </span>
+                </div>
+                <div class="mt-4">
+                  <div class="flex items-baseline gap-2">
+                    <span id="profileOverall" class="text-3xl font-bold tracking-tight text-ink leading-none font-mono">0%</span>
+                    <span class="text-xs text-muted font-mono font-medium">curriculum</span>
+                  </div>
+                  <div class="mt-2.5">
+                    <div class="h-1.5 rounded-full progress-track overflow-hidden">
+                      <div id="profileOverallBar" class="h-full green-bg rounded-full transition-all duration-700 ease-out" style="width:0%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Activity + Achievements -->
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="card reveal rounded-[14px] p-5">
+                <h2 class="text-[11px] uppercase tracking-[.14em] text-muted flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-[11px] opacity-60"></i> Recent activity</h2>
+                <div id="profileActivity" class="mt-4 space-y-2 stagger"></div>
+                <div id="profileNoActivity" class="hidden text-sm text-muted border border-dashed border-line p-6 text-center mt-3 rounded-[12px]"><i class="fa-regular fa-calendar-xmark text-xl opacity-20 block mb-2"></i> No activity yet. Solve your first question.</div>
+              </div>
+              <div class="card reveal rounded-[14px] p-5">
+                <h2 class="text-[11px] uppercase tracking-[.14em] text-muted flex items-center gap-2"><i class="fa-solid fa-trophy text-[11px] opacity-60"></i> Achievements</h2>
+                <div id="profileAchievements" class="mt-4 grid grid-cols-2 gap-2.5 stagger"></div>
+              </div>
+            </div>
+
+
+            <!-- Progress preview — link to full progress, not duplicate -->
+            <div class="card reveal rounded-[14px] p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
+              <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--green)]"></div>
+              <div>
+                <div class="text-[11px] uppercase tracking-[.14em] text-muted flex items-center gap-2"><i class="fa-solid fa-chart-line text-[11px] opacity-60"></i> Progress</div>
+                <h2 class="text-lg font-semibold tracking-[-.02em] mt-1">See your full progress</h2>
+                <p class="text-sm text-muted leading-6 mt-1 max-w-md">Topic map, completion and streak — all in one place.</p>
+                <div class="flex gap-3 text-xs text-muted mt-3 font-mono">
+                  <span id="profileProgressPreview" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--soft)] border border-line"><i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> 0/18 topics · 0% complete</span>
+                </div>
+              </div>
+              <a href="progress.html" class="btn-primary px-5 py-2.5 text-xs rounded-[10px] shrink-0 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-right text-[11px]"></i> Open progress</a>
+            </div>
+
+            <!-- Settings for mobile (hidden on lg, already in left) -->
+            <div class="lg:hidden card reveal rounded-[14px] overflow-hidden divide-y divide-line">
+              <div class="flex items-center justify-between gap-4 p-4">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center"><i class="fa-solid fa-circle-half-stroke text-xs"></i></div><div><div class="text-sm font-medium">Theme</div><div class="text-xs text-muted">Paper / ink</div></div></div>
+                <button data-theme-toggle class="btn-ghost px-3 py-1.5 text-xs rounded-[10px]"><span data-theme-icon>◐</span></button>
+              </div>
+              <div class="flex items-center justify-between gap-4 p-4">
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center"><i class="fa-solid fa-download text-xs"></i></div><div><div class="text-sm font-medium">Export progress</div><div class="text-xs text-muted">Download JSON</div></div></div>
+                <button id="exportBtnMobile" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"><i class="fa-solid fa-file-arrow-down text-[11px]"></i> Export</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="js/topics-data.js"></script>
+    <script src="js/core.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>
