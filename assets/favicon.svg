@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="pypracticeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3C7646" />
+      <stop offset="100%" stop-color="#1E3E23" />
+    </linearGradient>
+    <filter id="subtleShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="2" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Background rounded icon tile -->
+  <rect width="64" height="64" rx="16" fill="url(#pypracticeGrad)" />
+  <rect width="62" height="62" x="1" y="1" rx="15" fill="none" stroke="#FFFFFF" stroke-width="1.2" stroke-opacity="0.25" />
+
+  <!-- Python Dual-Snake Emblem -->
+  <g transform="translate(13, 13) scale(1.6667)" filter="url(#subtleShadow)">
+    <!-- Top Snake (Pure Crisp White) -->
+    <path fill="#FFFFFF" d="M11.914 0C5.827 0 6.2 2.656 6.2 2.656L6.208 5.41h5.817v.825H3.85S0 5.794 0 11.906c0 6.113 3.364 5.9 3.364 5.9h2.01v-2.825s-.109-3.364 3.313-3.364h5.698s3.204.053 3.204-3.15V3.364S18.051 0 11.914 0zm-3.23 1.84a1.2 1.2 0 1 1 0 2.4 1.2 1.2 0 0 1 0-2.4z"/>
+    <!-- Bottom Snake (Light Mint Lime Accent) -->
+    <path fill="#A5D6A7" d="M12.086 24c6.087 0 5.714-2.656 5.714-2.656l-.008-2.754H11.975v-.825h8.175s3.85.444 3.85-5.668c0-6.113-3.364-5.9-3.364-5.9h-2.01v2.825s.109 3.364-3.313 3.364H9.63s-3.204-.053-3.204 3.15v5.117S5.949 24 12.086 24zm3.23-1.84a1.2 1.2 0 1 1 0-2.4 1.2 1.2 0 0 1 0 2.4z"/>
+  </g>
+</svg>

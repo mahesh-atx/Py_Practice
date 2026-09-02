@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Exclude sensitive query params or transient editor sessions
+Disallow: /profile.html
+
+Sitemap: https://pypractice.dev/sitemap.xml
