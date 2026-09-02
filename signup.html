@@ -242,16 +242,25 @@
             if(!auth || auth.app.options.apiKey.includes('REPLACE')) throw new Error('Firebase not configured');
             const cred = await createUserWithEmailAndPassword(auth, email, pass);
             await updateProfile(cred.user, { displayName: name });
+            const token = {
+              uid: cred.user.uid,
+              name: name,
+              email: email,
+              provider: 'password',
+              loggedInAt: new Date().toISOString(),
+              remember: true
+            };
+            localStorage.setItem('pypractice-auth-v1', JSON.stringify(token));
             try{ localStorage.setItem('pypractice-profile-v1', JSON.stringify({ name, bio:'Learning Python, one problem at a time.', createdAt:new Date().toISOString() })); }catch{}
             if(typeof toast==='function') toast('Account created — redirecting…');
-            setTimeout(()=> location.href='index.html', 700);
+            setTimeout(()=> location.href='index.html', 400);
           }catch(err){
             if(err.message.includes('Firebase not configured') || err.code==='auth/api-key-not-valid'){
               const data={ name, email, createdAt:new Date().toISOString(), loggedInAt:new Date().toISOString() };
               localStorage.setItem('pypractice-auth-v1', JSON.stringify(data));
               try{ localStorage.setItem('pypractice-profile-v1', JSON.stringify({ name, bio:'Learning Python, one problem at a time.', createdAt:data.createdAt })); }catch{}
               if(typeof toast==='function') toast('Account created (demo) — redirecting…');
-              setTimeout(()=> location.href='login.html', 700);
+              setTimeout(()=> location.href='index.html', 400);
             } else showErr(err);
           } finally { btn.disabled=false; btn.innerHTML=orig; }
         });
@@ -262,9 +271,27 @@
           try{
             if(!auth || auth.app.options.apiKey.includes('REPLACE')) throw new Error('Firebase not configured');
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            const res = await signInWithPopup(auth, provider);
+            const user = res.user;
+            const token = {
+              uid: user.uid,
+              email: user.email,
+              name: user.displayName || user.email.split('@')[0],
+              photoURL: user.photoURL || '',
+              provider: 'google',
+              loggedInAt: new Date().toISOString(),
+              remember: true
+            };
+            localStorage.setItem('pypractice-auth-v1', JSON.stringify(token));
+            try{
+              localStorage.setItem('pypractice-profile-v1', JSON.stringify({
+                name: token.name,
+                bio: 'Learning Python, one problem at a time.',
+                createdAt: new Date().toISOString()
+              }));
+            }catch{}
             if(typeof toast==='function') toast('Signed up with Google — redirecting…');
-            setTimeout(()=> location.href='index.html', 600);
+            setTimeout(()=> location.href='index.html', 400);
           }catch(err){
             if(err.code==='auth/popup-closed-by-user') {}
             else if(err.message.includes('Firebase not configured') || err.code==='auth/api-key-not-valid'){
@@ -272,7 +299,7 @@
               localStorage.setItem('pypractice-auth-v1', JSON.stringify(data));
               try{ localStorage.setItem('pypractice-profile-v1', JSON.stringify({ name:'Google Learner', bio:'Learning Python, one problem at a time.', createdAt:data.createdAt })); }catch{}
               if(typeof toast==='function') toast('Signed up with Google (demo) — redirecting…');
-              setTimeout(()=> location.href='index.html', 600);
+              setTimeout(()=> location.href='index.html', 400);
             } else showErr(err);
           } finally { googleSignupBtn.disabled=false; googleSignupBtn.innerHTML=orig; }
         });

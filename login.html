@@ -231,9 +231,29 @@
           const orig = btn.innerHTML; btn.disabled=true; btn.innerHTML='Signing in…';
           try{
             if(!auth) throw new Error('Firebase not configured. Set js/firebase.js');
-            await signInWithEmailAndPassword(auth, email, pass);
+            const cred = await signInWithEmailAndPassword(auth, email, pass);
+            const user = cred.user;
+            const token = {
+              uid: user.uid,
+              email: user.email,
+              name: user.displayName || email.split('@')[0],
+              provider: 'password',
+              loggedInAt: new Date().toISOString(),
+              remember: !!rememberEl?.checked
+            };
+            localStorage.setItem('pypractice-auth-v1', JSON.stringify(token));
+            try{
+              const pRaw = localStorage.getItem('pypractice-profile-v1');
+              if(!pRaw) {
+                localStorage.setItem('pypractice-profile-v1', JSON.stringify({
+                  name: token.name,
+                  bio: 'Learning Python, one problem at a time.',
+                  createdAt: new Date().toISOString()
+                }));
+              }
+            }catch{}
             if(typeof toast==='function') toast('Signed in — redirecting…');
-            setTimeout(() => location.href = 'index.html', 600);
+            setTimeout(() => location.href = 'index.html', 400);
           }catch(err){
             // Fallback to demo localStorage if Firebase not configured
             if(err.message.includes('Firebase not configured') || err.code==='auth/api-key-not-valid'){
@@ -242,7 +262,7 @@
               const token={ email, name: (a&&a.name)||email.split('@')[0], loggedInAt:new Date().toISOString(), remember: !!rememberEl.checked };
               localStorage.setItem('pypractice-auth-v1', JSON.stringify({...a,...token}));
               if(typeof toast==='function') toast('Signed in (demo) — redirecting…');
-              setTimeout(()=> location.href='index.html', 600);
+              setTimeout(()=> location.href='index.html', 400);
             } else showErr(err);
           } finally { btn.disabled=false; btn.innerHTML=orig; }
         });
@@ -253,9 +273,27 @@
           try{
             if(!auth) throw new Error('Firebase not configured');
             const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            const res = await signInWithPopup(auth, provider);
+            const user = res.user;
+            const token = {
+              uid: user.uid,
+              email: user.email,
+              name: user.displayName || user.email.split('@')[0],
+              photoURL: user.photoURL || '',
+              provider: 'google',
+              loggedInAt: new Date().toISOString(),
+              remember: true
+            };
+            localStorage.setItem('pypractice-auth-v1', JSON.stringify(token));
+            try{
+              localStorage.setItem('pypractice-profile-v1', JSON.stringify({
+                name: token.name,
+                bio: 'Learning Python, one problem at a time.',
+                createdAt: new Date().toISOString()
+              }));
+            }catch{}
             if(typeof toast==='function') toast('Signed in with Google — redirecting…');
-            setTimeout(() => location.href = 'index.html', 600);
+            setTimeout(() => location.href = 'index.html', 400);
           }catch(err){
             if(err.code==='auth/popup-closed-by-user') { /* ignore */ }
             else if(err.message.includes('Firebase not configured') || err.code==='auth/api-key-not-valid'){
@@ -263,7 +301,7 @@
               localStorage.setItem('pypractice-auth-v1', JSON.stringify(token));
               try{ localStorage.setItem('pypractice-profile-v1', JSON.stringify({ name:'Python Learner', bio:'Learning Python, one problem at a time.', createdAt:new Date().toISOString() })); }catch{}
               if(typeof toast==='function') toast('Signed in with Google (demo) — redirecting…');
-              setTimeout(()=> location.href='index.html', 600);
+              setTimeout(()=> location.href='index.html', 400);
             } else showErr(err);
           } finally { googleBtn.disabled=false; googleBtn.innerHTML=orig; }
         });

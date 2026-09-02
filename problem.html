@@ -37,23 +37,27 @@
 
           </div>
           <div class="flex items-center gap-2 sm:gap-3">
-
             <button
               id="resetBtn"
               class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"
             >
               <i class="fa-solid fa-rotate-left text-[11px]"></i> Reset Code
             </button>
-            <a href="profile.html" title="Profile" aria-label="Profile" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-line rounded-full bg-white text-ink text-xs font-medium hover:bg-[var(--soft)] hover:text-ink transition dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6]"><i class="fa-solid fa-user text-[11px] opacity-70"></i> Profile</a>
-            <a href="profile.html" class="sm:hidden h-8 w-8 rounded-full bg-ink text-[#fffdf7] dark:bg-[#f4efe6] dark:text-[#1b1a19] grid place-items-center text-xs font-medium" title="Profile">P</a>
+            <div data-auth-only class="hidden inline-flex items-center gap-2">
+              <a href="profile.html" title="Profile" aria-label="Profile" class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 border border-line rounded-full bg-white text-ink text-xs font-medium hover:bg-[var(--soft)] hover:text-ink transition dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6]"><i class="fa-solid fa-user text-[11px] opacity-70"></i> Profile</a>
+              <a href="profile.html" class="sm:hidden h-8 w-8 rounded-full bg-ink text-[#fffdf7] dark:bg-[#f4efe6] dark:text-[#1b1a19] grid place-items-center text-xs font-medium" title="Profile">P</a>
+            </div>
+            <div data-guest-only class="hidden sm:inline-flex items-center gap-1.5">
+              <a href="login.html" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] font-medium">Login</a>
+              <a href="signup.html" class="btn-primary px-3 py-1.5 text-xs rounded-[10px] font-medium shadow-sm">Sign up</a>
+            </div>
             <button
               data-theme-toggle
-              class="h-8 w-8 border border-line btn-ghost rounded-[3px]"
+              class="h-8 w-8 border border-line btn-ghost rounded-[10px]"
               aria-label="Toggle theme"
             >
               <span data-theme-icon>◐</span>
             </button>
-
           </div>
         </div>
       </header>
@@ -330,5 +334,6 @@
     <script src="js/runner.js"></script>
     <script src="js/problem.js"></script>
     <script src="js/app.js"></script>
+    <script type="module" src="js/auth.js"></script>
   </body>
 </html>

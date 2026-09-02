@@ -85,8 +85,12 @@
               <a href="signup.html" class="btn-primary px-4 py-2 text-xs rounded-[10px] font-medium shadow-sm">Sign up</a>
             </div>
 
-            <!-- AUTH ONLY: Logged-in User Chip & Logout -->
+            <!-- AUTH ONLY: Logged-in Progress & User Chip & Logout -->
             <div data-auth-only class="hidden inline-flex items-center gap-2">
+              <a href="progress.html" class="btn-ghost px-2.5 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 border border-line" title="Your Progress">
+                <i class="fa-solid fa-chart-simple text-[var(--green)] text-[11px]"></i>
+                <span data-overall-pct class="font-mono text-xs font-semibold text-ink">0%</span>
+              </a>
               <a href="profile.html" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-2 border border-line" title="View Profile">
                 <span class="w-5 h-5 rounded-full bg-[var(--green)] text-white text-[10px] font-bold grid place-items-center" data-user-initial>U</span>
                 <span class="font-medium text-ink max-w-[110px] truncate" data-user-name>User</span>
@@ -237,10 +241,11 @@
                   <div
                     class="mt-3 h-1.5 rounded-full progress-track overflow-hidden"
                   >
-                    <div class="h-full green-bg w-[62%] rounded-full"></div>
+                    <div data-hero-progress-bar class="h-full green-bg rounded-full transition-all duration-700" style="width: 0%"></div>
                   </div>
-                  <div class="mt-2 text-[11px] text-muted">
-                    Build the habit of solving
+                  <div class="mt-2 text-[11px] text-muted flex items-center justify-between font-mono">
+                    <span data-hero-progress-label>0% completed</span>
+                    <span data-hero-solved-label>0/162 solved</span>
                   </div>
                 </div>
               </div>

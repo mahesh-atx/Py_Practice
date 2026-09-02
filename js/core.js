@@ -185,6 +185,9 @@ function renderHeaderProgress() {
   const p = overall();
   document.querySelectorAll('[data-overall-pct]').forEach(e => e.textContent = p.pct + '%');
   document.querySelectorAll('[data-overall-bar]').forEach(e => e.style.width = p.pct + '%');
+  document.querySelectorAll('[data-hero-progress-bar]').forEach(e => e.style.width = p.pct + '%');
+  document.querySelectorAll('[data-hero-progress-label]').forEach(e => e.textContent = p.pct + '% completed');
+  document.querySelectorAll('[data-hero-solved-label]').forEach(e => e.textContent = p.done + '/' + p.total + ' solved');
 }
 
 function syncAllStats() {
