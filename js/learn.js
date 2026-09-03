@@ -53,6 +53,16 @@ const TOPIC_DOMAINS = {
 function getLearnIcon(name) { return LEARN_FA_ICONS[name] || 'fa-solid fa-code'; }
 function getTopicMeta(name) { return TOPIC_DOMAINS[name] || { domain: 'General Python', level: 'Core', readTime: '6 min' }; }
 
+/* Section anchors are harvested from the raw markdown before it is parsed, so
+   any line that merely LOOKS like a heading would be collected too. Python
+   comments such as `# 1. Read the input` inside a code fence match the heading
+   pattern and collide with real sections (both slugify to `sec-1-input`).
+   Blank out fenced code blocks first so only genuine headings are found. */
+function stripFencedCodeBlocks(md) {
+  return String(md || '')
+    .replace(/^[ \t]*```[^`\n]*\n[\s\S]*?^[ \t]*```[ \t]*$/gm, '');
+}
+
 function initLearnPage() {
   const root = document.getElementById('learnPage');
   if (!root) return;
@@ -286,7 +296,8 @@ function initLearnPage() {
     const sections = [];
     const headingRegex = /^##?\s+([0-9]+[\.\)]?\s*[^#\n]+)/gm;
     let match;
-    while ((match = headingRegex.exec(mdText)) !== null) {
+    const tocSource = stripFencedCodeBlocks(mdText);
+    while ((match = headingRegex.exec(tocSource)) !== null) {
       const rawTitle = match[1].trim();
       const slug = rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       sections.push({ title: rawTitle, id: 'sec-' + slug });

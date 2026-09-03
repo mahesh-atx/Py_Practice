@@ -1,43 +1,41 @@
 # Python Operators — Notes
 
-Operators are symbols or keywords used to perform operations on values and variables.
+An **operator** is a symbol that performs an operation on values. Python groups them into six families: arithmetic, comparison, logical, assignment, membership, and identity.
 
-Example:
+> **Why this matters** — Operators are the verbs of programming. You cannot write a condition, a loop, or a calculation without them. Understanding precedence and short-circuiting is the difference between code that works and code that *almost* works.
 
-```python
-a = 10
-b = 5
+### The six families
 
-print(a + b)
-```
-
-Here, `+` is an operator.
-
-Python has several types of operators.
+| Family | Operators | Question it answers |
+| ------ | --------- | ------------------- |
+| Arithmetic | `+ - * / // % **` | What is the result of this calculation? |
+| Comparison | `== != > < >= <=` | How do two values relate? |
+| Logical | `and or not` | Are these conditions jointly true? |
+| Assignment | `= += -= *= /= //= %= **=` | Store (and update) a value |
+| Membership | `in`, `not in` | Is this item inside that collection? |
+| Identity | `is`, `is not` | Are these the same object? |
 
 ---
 
-# 1. Arithmetic Operators
+## 1. Arithmetic Operators
 
-Arithmetic operators are used for mathematical calculations.
+Arithmetic operators perform mathematical calculations.
 
-| Operator | Name           | Example   | Result |
-| -------- | -------------- | --------- | -----: |
-| `+`      | Addition       | `10 + 5`  |   `15` |
-| `-`      | Subtraction    | `10 - 5`  |    `5` |
-| `*`      | Multiplication | `10 * 5`  |   `50` |
-| `/`      | Division       | `10 / 5`  |  `2.0` |
-| `//`     | Floor division | `10 // 3` |    `3` |
-| `%`      | Modulus        | `10 % 3`  |    `1` |
-| `**`     | Power          | `2 ** 3`  |    `8` |
+| Operator | Meaning | Example | Result |
+| -------- | ------- | ------- | ------ |
+| `+` | Addition | `10 + 3` | `13` |
+| `-` | Subtraction | `10 - 3` | `7` |
+| `*` | Multiplication | `10 * 3` | `30` |
+| `/` | Division | `10 / 3` | `3.3333...` |
+| `//` | Floor division | `10 // 3` | `3` |
+| `%` | Modulo (remainder) | `10 % 3` | `1` |
+| `**` | Exponentiation | `2 ** 3` | `8` |
 
-### `+` Addition
-
-Adds two values.
+### Addition
 
 ```python
 a = 10
-b = 5
+b = 3
 
 print(a + b)
 ```
@@ -45,16 +43,13 @@ print(a + b)
 Output:
 
 ```text
-15
+13
 ```
 
-It can also join strings:
+With strings, `+` concatenates instead:
 
 ```python
-first = "Hello"
-second = " World"
-
-print(first + second)
+print("Hello" + " " + "World")
 ```
 
 Output:
@@ -63,506 +58,205 @@ Output:
 Hello World
 ```
 
----
-
-### `-` Subtraction
-
-Subtracts the second value from the first.
+### Subtraction, multiplication
 
 ```python
-a = 10
-b = 5
-
-print(a - b)
+print(10 - 3)      # 7
+print(10 * 3)      # 30
+print("Hi" * 3)    # HiHiHi  (string repetition)
 ```
 
-Output:
-
-```text
-5
-```
-
----
-
-### `*` Multiplication
-
-Multiplies values.
-
-```python
-a = 10
-b = 5
-
-print(a * b)
-```
-
-Output:
-
-```text
-50
-```
-
-It can also repeat strings:
-
-```python
-print("Hi " * 3)
-```
-
-Output:
-
-```text
-Hi Hi Hi
-```
-
----
-
-### `/` Division
-
-Divides one value by another.
+### Division always gives a float
 
 ```python
 print(10 / 2)
+print(type(10 / 2))
+print(10 / 3)
 ```
 
 Output:
 
 ```text
 5.0
-```
-
-Important: `/` normally returns a `float`.
-
-```python
-print(type(10 / 2))
-```
-
-Output:
-
-```text
 <class 'float'>
-```
-
----
-
-### `//` Floor Division
-
-Performs division and returns the floor value.
-
-```python
-print(10 // 3)
-```
-
-Output:
-
-```text
-3
-```
-
-Normal division:
-
-```python
-10 / 3
-```
-
-gives:
-
-```text
 3.3333333333333335
 ```
 
-Floor division:
+> **Note** — Even `10 / 2` gives `5.0`, a float. Use `//` when you want an integer result.
+
+### Floor division
+
+`//` divides and discards the remainder, rounding **down** (toward negative infinity):
 
 ```python
-10 // 3
+print(10 // 3)       # 3
+print(10 // 2)       # 5
+print(-10 // 3)      # -4   ← note: down, not toward zero
 ```
 
-gives:
+That last line surprises people: `-10 // 3` is `-4`, because floor division rounds down, and `-3.33...` rounds down to `-4`.
+
+### Modulo
+
+`%` gives the remainder:
+
+```python
+print(10 % 3)      # 1
+print(10 % 2)      # 0
+print(15 % 5)      # 0
+```
+
+**The two classic uses:**
+
+Testing even/odd:
+
+```python
+n = 7
+
+if n % 2 == 0:
+    print("Even")
+else:
+    print("Odd")
+```
+
+Output:
 
 ```text
-3
+Odd
 ```
+
+Extracting digits:
+
+```python
+n = 47
+
+print(n % 10)      # 7  → last digit
+print(n // 10)     # 4  → remaining digits
+```
+
+### Exponentiation
+
+```python
+print(2 ** 3)      # 8
+print(5 ** 2)      # 25
+print(9 ** 0.5)    # 3.0  → square root
+```
+
+### Arithmetic with mixed types
+
+```python
+print(10 + 3.5)      # 13.5   (int + float → float)
+print(3 * 2.0)       # 6.0
+print(True + 5)      # 6      (bool acts as 1)
+```
+
+### Operator precedence
+
+Python follows standard mathematical order:
+
+```text
+**           highest
+*  /  //  %
++  -         lowest
+```
+
+```python
+print(2 + 3 * 4)        # 14, not 20
+print((2 + 3) * 4)      # 20
+print(2 ** 3 ** 2)      # 512 — ** is right-associative
+print(10 - 2 + 3)       # 11 — left to right
+```
+
+> **Note** — `2 ** 3 ** 2` is `2 ** (3 ** 2)` = `2 ** 9` = `512`, not `(2 ** 3) ** 2` = `64`. Exponentiation is the one operator that groups right-to-left.
 
 ---
 
-### `%` Modulus
+## 2. Comparison Operators
 
-Returns the **remainder** after division.
+Comparison operators compare two values and produce a **boolean**.
 
-```python
-print(10 % 3)
-```
+| Operator | Meaning |
+| -------- | ------- |
+| `==` | Equal to |
+| `!=` | Not equal to |
+| `>` | Greater than |
+| `<` | Less than |
+| `>=` | Greater than or equal to |
+| `<=` | Less than or equal to |
 
-Output:
-
-```text
-1
-```
-
-Because:
-
-```text
-10 ÷ 3 = 3 remainder 1
-```
-
-A common use is checking whether a number is even:
+### Basic comparisons
 
 ```python
-number = 10
+a = 10
+b = 3
 
-print(number % 2)
-```
-
-Output:
-
-```text
-0
-```
-
-If the remainder is `0`, the number is divisible by 2.
-
----
-
-### `**` Power
-
-Raises a number to a power.
-
-```python
-print(2 ** 3)
-```
-
-Output:
-
-```text
-8
-```
-
-Because:
-
-```text
-2 × 2 × 2 = 8
-```
-
-Another example:
-
-```python
-print(5 ** 2)
-```
-
-Output:
-
-```text
-25
-```
-
----
-
-# 2. Comparison Operators
-
-Comparison operators compare two values.
-
-The result is always:
-
-```python
-True
-```
-
-or:
-
-```python
-False
-```
-
-| Operator | Meaning                  |
-| -------- | ------------------------ |
-| `==`     | Equal to                 |
-| `!=`     | Not equal to             |
-| `>`      | Greater than             |
-| `<`      | Less than                |
-| `>=`     | Greater than or equal to |
-| `<=`     | Less than or equal to    |
-
-### `==` Equal to
-
-Checks whether two values are equal.
-
-```python
-print(10 == 10)
-```
-
-Output:
-
-```text
-True
-```
-
-```python
-print(10 == 5)
+print(a == b)      # False
+print(a != b)      # True
+print(a > b)       # True
+print(a < b)       # False
+print(a >= 10)     # True
+print(a <= 10)     # True
 ```
 
 Output:
 
 ```text
 False
-```
-
-### Important
-
-`=` means assignment:
-
-```python
-x = 10
-```
-
-`==` means comparison:
-
-```python
-x == 10
-```
-
----
-
-### `!=` Not equal to
-
-```python
-print(10 != 5)
-```
-
-Output:
-
-```text
-True
-```
-
-```python
-print(10 != 10)
-```
-
-Output:
-
-```text
-False
-```
-
----
-
-### `>` Greater than
-
-```python
-print(10 > 5)
-```
-
-Output:
-
-```text
-True
-```
-
-```python
-print(5 > 10)
-```
-
-Output:
-
-```text
-False
-```
-
----
-
-### `<` Less than
-
-```python
-print(5 < 10)
-```
-
-Output:
-
-```text
-True
-```
-
-```python
-print(10 < 5)
-```
-
-Output:
-
-```text
-False
-```
-
----
-
-### `>=` Greater than or equal to
-
-```python
-print(10 >= 10)
-```
-
-Output:
-
-```text
-True
-```
-
-```python
-print(10 >= 5)
-```
-
-Output:
-
-```text
-True
-```
-
----
-
-### `<=` Less than or equal to
-
-```python
-print(5 <= 5)
-```
-
-Output:
-
-```text
-True
-```
-
-```python
-print(5 <= 10)
-```
-
-Output:
-
-```text
-True
-```
-
----
-
-# 3. Logical Operators
-
-Logical operators are used to combine or reverse conditions.
-
-Python has:
-
-```text
-and
-or
-not
-```
-
-## `and`
-
-`and` returns `True` only when **both conditions are true**.
-
-```python
-age = 20
-
-print(age > 18 and age < 30)
-```
-
-Output:
-
-```text
-True
-```
-
-Both conditions are true:
-
-```text
-age > 18  → True
-age < 30  → True
-```
-
-Example:
-
-```python
-print(True and True)
-print(True and False)
-print(False and True)
-print(False and False)
-```
-
-Output:
-
-```text
-True
-False
-False
-False
-```
-
-Think:
-
-```text
-True AND True → True
-Anything else → False
-```
-
----
-
-## `or`
-
-`or` returns `True` when **at least one condition is true**.
-
-```python
-age = 17
-
-print(age < 18 or age > 60)
-```
-
-Output:
-
-```text
-True
-```
-
-The first condition is true.
-
-Example:
-
-```python
-print(True or False)
-print(False or True)
-print(True or True)
-print(False or False)
-```
-
-Output:
-
-```text
-True
 True
 True
 False
+True
+True
 ```
 
-Think:
+### `==` vs `=`
 
-```text
-At least one True → True
-Both False → False
-```
-
----
-
-## `not`
-
-`not` reverses a Boolean value.
+This is the most common early mistake:
 
 ```python
-print(not True)
+x = 10        # assignment: x now refers to 10
+x == 10       # comparison: is x equal to 10? → True
 ```
 
-Output:
-
-```text
-False
-```
+| Symbol | Purpose | Used in |
+| ------ | ------- | ------- |
+| `=` | Assign a value | Any statement |
+| `==` | Compare two values | Conditions |
 
 ```python
-print(not False)
+if x = 10:      # SyntaxError — you cannot assign in a condition
+```
+
+### Comparing different types
+
+```python
+print(10 == 10.0)       # True   — numerically equal
+print(10 == "10")       # False  — int vs str
+print("10" == "10")     # True
+```
+
+Numbers compare across `int` and `float`, but a number never equals a string.
+
+### Comparing strings
+
+Strings compare **lexicographically** (dictionary order, by character code):
+
+```python
+print("apple" < "banana")     # True
+print("Apple" < "apple")      # True — uppercase sorts first
+print("abc" < "abd")          # True
+```
+
+> **Why `"Apple" < "apple"` is True** — Uppercase letters have smaller character codes than lowercase ones. To compare case-insensitively, normalise first: `"Apple".lower() < "apple".lower()` → `False`.
+
+### Chained comparisons
+
+Python allows a form that most languages do not:
+
+```python
+age = 25
+
+print(18 <= age <= 65)
 ```
 
 Output:
@@ -571,362 +265,430 @@ Output:
 True
 ```
 
-Example:
+This is equivalent to `18 <= age and age <= 65`, but clearer.
+
+---
+
+## 3. Logical Operators
+
+Logical operators combine boolean values.
+
+| Operator | Meaning | True when |
+| -------- | ------- | --------- |
+| `and` | Both must be true | Both sides are true |
+| `or` | At least one is true | Either side is true |
+| `not` | Reverses the value | The value is false |
+
+### `and`
+
+```python
+print(True and True)       # True
+print(True and False)      # False
+print(False and False)     # False
+```
+
+Real use:
+
+```python
+age = 25
+has_license = True
+
+if age >= 18 and has_license:
+    print("Can drive")
+else:
+    print("Cannot drive")
+```
+
+Output:
+
+```text
+Can drive
+```
+
+### `or`
+
+```python
+print(True or False)       # True
+print(False or False)      # False
+```
+
+```python
+day = "Sunday"
+
+if day == "Saturday" or day == "Sunday":
+    print("Weekend")
+else:
+    print("Weekday")
+```
+
+Output:
+
+```text
+Weekend
+```
+
+### `not`
+
+```python
+print(not True)      # False
+print(not False)     # True
+```
 
 ```python
 is_logged_in = False
 
-print(not is_logged_in)
+if not is_logged_in:
+    print("Please log in")
 ```
 
 Output:
 
 ```text
-True
+Please log in
 ```
 
----
+### Short-circuit evaluation
 
-# 4. Assignment Operators
+This is important and often overlooked.
 
-Assignment operators are used to assign or update values.
-
-| Operator | Example  | Equivalent to |
-| -------- | -------- | ------------- |
-| `=`      | `x = 10` | `x = 10`      |
-| `+=`     | `x += 5` | `x = x + 5`   |
-| `-=`     | `x -= 5` | `x = x - 5`   |
-| `*=`     | `x *= 5` | `x = x * 5`   |
-| `/=`     | `x /= 5` | `x = x / 5`   |
-
-### `=`
-
-Assigns a value.
+**`and` stops as soon as it sees a false value:**
 
 ```python
-x = 10
+x = 0
+
+if x != 0 and 10 / x > 1:
+    print("Large")
+else:
+    print("Skipped safely")
 ```
 
-Now:
+Output:
 
 ```text
-x → 10
+Skipped safely
 ```
+
+No `ZeroDivisionError`, because `x != 0` is `False`, so Python never evaluates `10 / x`.
+
+**`or` stops as soon as it sees a true value.**
+
+```python
+name = "" or "Guest"
+
+print(name)
+```
+
+Output:
+
+```text
+Guest
+```
+
+The empty string is falsy, so `or` moves on and yields `"Guest"`. This is a common way to supply a default.
+
+> **Why this matters** — Short-circuiting is not just an optimisation. It is how Python programs avoid errors by checking a condition *before* an operation that would fail. Put the cheap, safe check first.
+
+### `and` / `or` return values, not just booleans
+
+```python
+print(0 or "fallback")      # fallback
+print(5 and "yes")          # yes
+print("" or 0 or None)      # None
+```
+
+They return the operand that decided the outcome, not `True`/`False`. That is why the default-value idiom works.
 
 ---
 
-### `+=`
+## 4. Assignment Operators
 
-Adds a value to the existing value.
+Assignment operators store values — and several of them update a variable in place.
+
+| Operator | Equivalent to | Example |
+| -------- | ------------- | ------- |
+| `=` | `x = 5` | Plain assignment |
+| `+=` | `x = x + 5` | Add and assign |
+| `-=` | `x = x - 5` | Subtract and assign |
+| `*=` | `x = x * 5` | Multiply and assign |
+| `/=` | `x = x / 5` | Divide and assign |
+| `//=` | `x = x // 5` | Floor divide and assign |
+| `%=` | `x = x % 5` | Modulo and assign |
+| `**=` | `x = x ** 5` | Exponentiate and assign |
+
+### Basic assignment
 
 ```python
 x = 10
-
-x += 5
-
 print(x)
 ```
 
 Output:
 
 ```text
-15
+10
 ```
 
-It is the same as:
-
-```python
-x = x + 5
-```
-
----
-
-### `-=`
-
-Subtracts from the existing value.
+### Augmented assignment
 
 ```python
 x = 10
 
-x -= 3
+x += 5      # x = x + 5
+print(x)    # 15
 
-print(x)
+x -= 3      # x = x - 3
+print(x)    # 12
+
+x *= 2      # x = x * 2
+print(x)    # 24
+
+x //= 5     # x = x // 5
+print(x)    # 4
+```
+
+### With strings and lists
+
+```python
+text = "Hello"
+text += " World"
+print(text)          # Hello World
+
+items = [1, 2]
+items += [3, 4]
+print(items)         # [1, 2, 3, 4]
+```
+
+### Multiple assignment
+
+```python
+a, b, c = 1, 2, 3
+x = y = 0
+```
+
+### The walrus operator `:=` (Python 3.8+)
+
+Assigns and returns the value in one step:
+
+```python
+values = [1, 2, 3]
+
+if (n := len(values)) > 2:
+    print(f"{n} values is a lot")
 ```
 
 Output:
 
 ```text
-7
+3 values is a lot
 ```
 
-Same as:
-
-```python
-x = x - 3
-```
+Use it sparingly — it is concise but can make code harder to read.
 
 ---
 
-### `*=`
+## 5. Membership Operators
 
-Multiplies the existing value.
+Membership operators test whether a value appears in a collection.
 
-```python
-x = 10
+| Operator | Meaning |
+| -------- | ------- |
+| `in` | Value is present |
+| `not in` | Value is absent |
 
-x *= 3
-
-print(x)
-```
-
-Output:
-
-```text
-30
-```
-
-Same as:
+### With lists
 
 ```python
-x = x * 3
-```
+fruits = ["apple", "banana", "mango"]
 
----
-
-### `/=`
-
-Divides the existing value.
-
-```python
-x = 10
-
-x /= 2
-
-print(x)
-```
-
-Output:
-
-```text
-5.0
-```
-
-Same as:
-
-```python
-x = x / 2
-```
-
----
-
-# 5. Membership Operators
-
-Membership operators check whether a value exists inside another object, such as a string.
-
-Python has:
-
-```text
-in
-not in
-```
-
-## `in`
-
-Checks whether something exists.
-
-```python
-name = "Mahesh"
-
-print("M" in name)
-```
-
-Output:
-
-```text
-True
-```
-
-Because `"M"` exists in `"Mahesh"`.
-
-Another example:
-
-```python
-print("z" in "Python")
-```
-
-Output:
-
-```text
-False
+print("apple" in fruits)        # True
+print("orange" in fruits)       # False
+print("orange" not in fruits)   # True
 ```
 
 ### With strings
 
-```python
-text = "Python is easy"
+For strings, `in` checks for a **substring**:
 
-print("Python" in text)
+```python
+text = "Python programming"
+
+print("Python" in text)      # True
+print("python" in text)      # False — case-sensitive
+print("Java" not in text)    # True
 ```
 
-Output:
+### With sets — the fast case
 
-```text
-True
+```python
+allowed = {"admin", "editor"}
+
+print("admin" in allowed)      # True
+```
+
+> **Performance note** — `in` on a **set** or **dict** is O(1): it takes roughly the same time regardless of size. On a **list** or **string** it is O(n): it scans item by item. If you check membership repeatedly on a large collection, convert it to a set first.
+
+```python
+# Slow for large lists
+if name in big_list:      # scans every element
+    ...
+
+# Fast
+if name in big_set:       # direct lookup
+    ...
 ```
 
 ---
 
-## `not in`
+## 6. Identity Operators
 
-Checks whether something does **not** exist.
+Identity operators check whether two names point at the **same object** — not merely equal values.
 
-```python
-text = "Python"
+| Operator | Meaning |
+| -------- | ------- |
+| `is` | Same object |
+| `is not` | Different objects |
 
-print("Java" not in text)
-```
-
-Output:
-
-```text
-True
-```
-
-Because `"Java"` does not exist in `"Python"`.
-
-Example:
-
-```python
-print("P" not in "Python")
-```
-
-Output:
-
-```text
-False
-```
-
-Because `"P"` exists.
-
----
-
-# 6. Identity Operators
-
-Identity operators check whether two variables refer to the **same object**.
-
-Python has:
-
-```text
-is
-is not
-```
-
-## `is`
-
-Checks whether two references point to the same object.
-
-```python
-a = None
-
-print(a is None)
-```
-
-Output:
-
-```text
-True
-```
-
-A common use of `is` is checking for `None`:
-
-```python
-result = None
-
-if result is None:
-    print("No result")
-```
-
----
-
-## `is not`
-
-Checks whether two references are not the same object.
-
-```python
-result = None
-
-print(result is not None)
-```
-
-Output:
-
-```text
-False
-```
-
-### `==` vs `is`
-
-This is very important.
-
-`==` checks whether **values are equal**.
-
-`is` checks whether two variables refer to the **same object**.
-
-Example:
+### `is` vs `==`
 
 ```python
 a = [1, 2, 3]
 b = [1, 2, 3]
 
-print(a == b)
-print(a is b)
+print(a == b)      # True  — same contents
+print(a is b)      # False — two separate lists
+```
+
+| Comparison | Asks |
+| ---------- | ---- |
+| `==` | Do these have the same value? |
+| `is` | Are these the same object in memory? |
+
+### When to use `is`
+
+Use `is` for **singletons**: `None`, `True`, `False`.
+
+```python
+value = None
+
+if value is None:
+    print("No value")
 ```
 
 Output:
 
 ```text
-True
-False
+No value
 ```
 
-Why?
+Always use `is None`, never `== None`.
 
-The values are the same:
+### A subtle trap: small integer caching
 
-```text
-a → [1, 2, 3]
-b → [1, 2, 3]
-```
-
-So:
+Python caches small integers (typically -5 to 256), which produces surprising results:
 
 ```python
-a == b
+a = 100
+b = 100
+print(a is b)      # True  — both point at the cached object
+
+x = 1000
+y = 1000
+print(x is y)      # False — two separate objects
+print(x == y)      # True
 ```
 
-is `True`.
-
-But they are separate list objects, so:
-
-```python
-a is b
-```
-
-is `False`.
-
-For normal value comparison, use `==`.
-
-For checking identity, especially `None`, use `is`.
+> **Rule** — Never use `is` to compare numbers or strings. Use `==` for values and `is` only for `None`, `True`, and `False`.
 
 ---
 
-# Quick Revision
+## Operator Precedence
 
-| Type       | Operators         | Main purpose                       |
-| ---------- | ----------------- | ---------------------------------- |
-| Arithmetic | `+ - * / // % **` | Mathematical operations            |
-| Comparison | `== != > < >= <=` | Compare values                     |
-| Logical    | `and or not`      | Combine/reverse conditions         |
-| Assignment | `= += -= *= /=`   | Assign/update values               |
-| Membership | `in`, `not in`    | Check whether a value exists       |
-| Identity   | `is`, `is not`    | Check whether objects are the same |
+When several operators appear in one expression, Python applies this order (highest first):
+
+| Level | Operators |
+| ----- | --------- |
+| 1 | `**` |
+| 2 | `*`, `/`, `//`, `%` |
+| 3 | `+`, `-` |
+| 4 | `in`, `not in`, `is`, `is not`, `<`, `<=`, `>`, `>=`, `!=`, `==` |
+| 5 | `not` |
+| 6 | `and` |
+| 7 | `or` |
+
+```python
+print(2 + 3 * 4)                    # 14
+print((2 + 3) * 4)                  # 20
+print(10 > 5 and 3 < 4)             # True
+print(not True or True)             # True — (not True) or True
+print(1 + 2 == 3)                   # True — (1 + 2) == 3
+```
+
+> **Practical advice** — Do not memorise the table. Use parentheses when an expression is not instantly obvious. `if (a or b) and c:` is clearer than relying on precedence, and it costs you nothing.
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | What happens | Fix |
+| ------- | ------------ | --- |
+| `=` instead of `==` in a condition | `SyntaxError` or always-true | Use `==` to compare |
+| `10 / 3` expecting `3` | Gives `3.333...` | Use `//` for integer division |
+| `"10" + 5` | `TypeError` | Convert: `int("10") + 5` |
+| `x is 1000` | Unreliable | Use `x == 1000` |
+| `x == None` | Works, but poor style | Use `x is None` |
+| Assuming `and` short-circuits silently | Later code skipped | Intentional — order your checks |
+| `not a == b` | Confusing | Write `a != b` |
+
+---
+
+## Quick Revision
+
+| Operator | Purpose | Example |
+| -------- | ------- | ------- |
+| `+ - * /` | Basic arithmetic | `10 + 3` |
+| `//` | Floor division (int) | `10 // 3` → `3` |
+| `%` | Remainder | `10 % 3` → `1` |
+| `**` | Power | `2 ** 3` → `8` |
+| `== !=` | Equality | `a == b` |
+| `> < >= <=` | Ordering | `a >= 18` |
+| `and` | Both true | `a and b` |
+| `or` | Either true | `a or b` |
+| `not` | Negate | `not a` |
+| `+= -= *=` | Update in place | `x += 5` |
+| `in` | Membership | `"a" in items` |
+| `is` | Identity (use for `None`) | `x is None` |
+
+### Core patterns
+
+```python
+n % 2 == 0                    # even?
+n // 10, n % 10               # split off the last digit
+18 <= age <= 65               # chained comparison
+x != 0 and 10 / x > 1         # short-circuit guard
+name = "" or "Guest"          # default value
+value is None                 # identity check for None
+if item in my_set:            # fast membership
+```
+
+### The main idea
+
+```text
+Operators
+ ├── Arithmetic  → calculate   (+ - * / // % **)
+ ├── Comparison  → compare     (== != > < >= <=)
+ ├── Logical     → combine     (and or not) — short-circuit
+ ├── Assignment  → store       (= += -= *= ...)
+ ├── Membership  → contains    (in, not in) — O(1) on sets
+ └── Identity    → same object (is) — only for None/True/False
+```
+
+---
+
+## Self-Check
+
+- [ ] What is the difference between `10 / 3`, `10 // 3`, and `10 % 3`?
+- [ ] Why does `10 == 10.0` return `True` but `10 == "10"` return `False`?
+- [ ] Why does `x != 0 and 10 / x > 1` not crash when `x` is `0`?
+- [ ] When should you use `is` instead of `==`?
+- [ ] Why is `in` faster on a set than on a list?
+- [ ] What is `2 ** 3 ** 2` and why?

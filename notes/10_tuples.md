@@ -1,254 +1,326 @@
-# Python Tuples and Sets — Notes
+# Python Tuples — Notes
 
-## Part 1: Tuples
+A **tuple** is an ordered, **unchangeable** collection, written in parentheses.
 
-A tuple is a collection used to store multiple values.
+> **Why this matters** — Tuples answer a question lists cannot: "how do I guarantee this data will not be modified?" They are used for fixed records (coordinates, RGB colours, database rows), dictionary keys, and multiple return values. Choosing a tuple over a list is a way of stating intent.
 
-Tuples are:
+### The mental model
 
-* Ordered
-* Allow duplicate values
-* **Immutable**, meaning their values cannot be changed after creation
-* Written using `()`
-
-Example:
-
-```python
-numbers = (10, 20, 30)
+```text
+Tuple  →  a sealed box: ordered, but the contents cannot be swapped out
+List   →  an open box:  ordered, and you can add, remove, and replace
 ```
+
+| Property | Tuple | List |
+| -------- | ----- | ---- |
+| Syntax | `(1, 2, 3)` | `[1, 2, 3]` |
+| Ordered | Yes | Yes |
+| Mutable | **No** | Yes |
+| Duplicates allowed | Yes | Yes |
+| Can be a dict key | Yes | No |
+| Performance | Slightly faster | Slightly slower |
 
 ---
 
-# 1. Creating Tuples
+## 1. Creating Tuples
 
-A tuple is usually created using parentheses:
+### Basic creation
 
 ```python
 fruits = ("apple", "banana", "mango")
-```
 
-A tuple can contain different data types:
-
-```python
-data = ("Mahesh", 24, 5.8, True)
-```
-
-An empty tuple:
-
-```python
-empty = ()
-```
-
-### Single-item tuple
-
-A tuple with one item needs a comma:
-
-```python
-number = (10,)
-```
-
-Without the comma:
-
-```python
-number = (10)
-```
-
-this is just an integer, not a tuple.
-
-```python
-print(type((10,)))
-print(type((10)))
+print(fruits)
+print(type(fruits))
 ```
 
 Output:
 
 ```text
+('apple', 'banana', 'mango')
 <class 'tuple'>
+```
+
+### Mixed types
+
+```python
+person = ("Mahesh", 24, "Akola")
+```
+
+### The single-item trap
+
+This is the classic tuple gotcha:
+
+```python
+not_a_tuple = (10)
+
+print(not_a_tuple)
+print(type(not_a_tuple))
+```
+
+Output:
+
+```text
+10
 <class 'int'>
+```
+
+The parentheses are just grouping here, not a tuple. You need a **trailing comma**:
+
+```python
+single = (10,)
+
+print(single)
+print(type(single))
+```
+
+Output:
+
+```text
+(10,)
+<class 'tuple'>
+```
+
+> **Rule** — A tuple is made by the **comma**, not the parentheses. `(10,)` is a tuple; `(10)` is an integer.
+
+### Parentheses are optional
+
+Because the comma does the work, these are equivalent:
+
+```python
+a = (1, 2, 3)
+b = 1, 2, 3        # "tuple packing"
+
+print(a == b)      # True
+```
+
+Most code includes the parentheses for readability, but you will see the bare form when returning multiple values.
+
+### Empty tuple
+
+```python
+empty = ()
+```
+
+### From another sequence
+
+```python
+print(tuple([1, 2, 3]))        # (1, 2, 3)
+print(tuple("Python"))         # ('P', 'y', 't', 'h', 'o', 'n')
 ```
 
 ---
 
-# 2. Indexing
+## 2. Indexing and Slicing
 
-Tuples use zero-based indexing, just like lists and strings.
+Tuples support the same indexing and slicing as lists.
 
-```python
-fruits = ("apple", "banana", "mango", "orange")
-```
-
-Indexes:
-
-```text
-apple    banana    mango    orange
-  0        1        2         3
-```
-
-Example:
+### Indexing
 
 ```python
-print(fruits[0])
-print(fruits[2])
+fruits = ("apple", "banana", "mango")
+
+print(fruits[0])       # apple
+print(fruits[1])       # banana
+print(fruits[-1])      # mango  → last item
+print(fruits[-2])      # banana
+```
+
+### Slicing
+
+```python
+numbers = (10, 20, 30, 40, 50)
+
+print(numbers[1:4])       # (20, 30, 40)
+print(numbers[:2])        # (10, 20)
+print(numbers[3:])        # (40, 50)
+print(numbers[::2])       # (10, 30, 50)
+print(numbers[::-1])      # (50, 40, 30, 20, 10)
+```
+
+> **Note** — Slicing a tuple returns a **tuple**, not a list.
+
+### Membership and length
+
+```python
+fruits = ("apple", "banana", "mango")
+
+print("apple" in fruits)       # True
+print(len(fruits))             # 3
+```
+
+### Iterating
+
+```python
+for fruit in fruits:
+    print(fruit)
 ```
 
 Output:
 
 ```text
 apple
+banana
 mango
 ```
 
-### Negative indexing
+With an index:
 
 ```python
-print(fruits[-1])
-```
-
-Output:
-
-```text
-orange
-```
-
-```python
-print(fruits[-2])
-```
-
-Output:
-
-```text
-mango
-```
-
-### Slicing
-
-Tuples also support slicing:
-
-```python
-print(fruits[1:3])
-```
-
-Output:
-
-```text
-('banana', 'mango')
-```
-
-### Important
-
-You cannot change an individual tuple item:
-
-```python
-fruits[0] = "grapes"
-```
-
-This causes a `TypeError` because tuples are immutable.
-
----
-
-# 3. Unpacking
-
-Tuple unpacking means assigning tuple values to separate variables.
-
-```python
-person = ("Mahesh", 24, "India")
-
-name, age, country = person
-
-print(name)
-print(age)
-print(country)
-```
-
-Output:
-
-```text
-Mahesh
-24
-India
-```
-
-The values are assigned in order:
-
-```text
-name    → "Mahesh"
-age     → 24
-country → "India"
-```
-
-The number of variables should normally match the number of values.
-
-```python
-a, b, c = (10, 20, 30)
-```
-
-This works.
-
-But:
-
-```python
-a, b = (10, 20, 30)
-```
-
-causes an error because there are two variables but three values.
-
-### Swapping values
-
-Tuple unpacking can also be used to swap variables:
-
-```python
-a = 10
-b = 20
-
-a, b = b, a
-
-print(a)
-print(b)
-```
-
-Output:
-
-```text
-20
-10
+for i, fruit in enumerate(fruits):
+    print(i, fruit)
 ```
 
 ---
 
-# 4. Tuple Methods
+## 3. Immutability
 
-Tuples have fewer methods than lists because tuples cannot be changed.
-
-The main tuple methods are:
-
-```text
-.count()
-.index()
-```
-
-## `.count()`
-
-`.count()` tells you how many times a value appears.
+Tuples **cannot be changed** after creation.
 
 ```python
-numbers = (10, 20, 10, 30, 10)
+fruits = ("apple", "banana")
 
-print(numbers.count(10))
+fruits[0] = "orange"
+```
+
+Output:
+
+```text
+TypeError: 'tuple' object does not support item assignment
+```
+
+There is no `.append()`, `.insert()`, `.remove()`, or `.pop()` on a tuple.
+
+### What immutability really means
+
+The tuple's structure is fixed: you cannot replace, add, or remove elements. But if an element is itself mutable, that element can still change inside:
+
+```python
+record = (1, [2, 3])
+
+record[1].append(4)      # allowed — the list is mutable
+
+print(record)
+```
+
+Output:
+
+```text
+(1, [2, 3, 4])
+```
+
+The tuple still holds the same list object; the list simply changed its contents.
+
+```text
+record ──→ ( 1 , ──→ [2, 3, 4] )
+                        ↑
+              the list is mutable, even inside a tuple
+```
+
+### Reassigning is not mutating
+
+```python
+point = (1, 2)
+point = (3, 4)        # this is allowed
+
+print(point)
+```
+
+Output:
+
+```text
+(3, 4)
+```
+
+The name `point` now refers to a **different** tuple. The original `(1, 2)` was never modified.
+
+### Working around immutability
+
+To "change" a tuple, build a new one:
+
+```python
+point = (1, 2)
+point = point + (3,)       # concatenation creates a new tuple
+
+print(point)
+```
+
+Output:
+
+```text
+(1, 2, 3)
+```
+
+Or convert, modify, and convert back:
+
+```python
+items = (1, 2, 3)
+
+temp = list(items)
+temp.append(4)
+items = tuple(temp)
+
+print(items)
+```
+
+Output:
+
+```text
+(1, 2, 3, 4)
+```
+
+### Why immutability is useful
+
+1. **Safety** — data cannot be changed by accident elsewhere in the program.
+2. **Hashability** — tuples can be dictionary keys; lists cannot.
+3. **Intent** — a tuple signals "this is a fixed record".
+4. **Performance** — Python can optimise immutable objects.
+
+```python
+# Works — tuples are hashable
+locations = {
+    (28.61, 77.20): "Delhi",
+    (19.07, 72.87): "Mumbai",
+}
+
+print(locations[(28.61, 77.20)])
+```
+
+Output:
+
+```text
+Delhi
+```
+
+A list key raises `TypeError: unhashable type: 'list'`.
+
+---
+
+## 4. Tuple Methods
+
+Tuples have only two methods, because they cannot be modified.
+
+| Method | Purpose |
+| ------ | ------- |
+| `.count(x)` | Count occurrences of `x` |
+| `.index(x)` | Index of the first occurrence of `x` |
+
+### `.count()`
+
+```python
+numbers = (1, 2, 2, 3, 2)
+
+print(numbers.count(2))
+print(numbers.count(5))
 ```
 
 Output:
 
 ```text
 3
+0
 ```
 
-The value `10` appears three times.
-
----
-
-## `.index()`
-
-`.index()` returns the index of the first occurrence of a value.
+### `.index()`
 
 ```python
 fruits = ("apple", "banana", "mango")
@@ -262,467 +334,270 @@ Output:
 1
 ```
 
-If a value appears multiple times:
+`.index()` raises `ValueError` if the item is absent:
 
 ```python
-numbers = (10, 20, 10, 30)
+print(fruits.index("orange"))      # ValueError: tuple.index(x): x not in tuple
+```
 
-print(numbers.index(10))
+Guard it:
+
+```python
+if "orange" in fruits:
+    print(fruits.index("orange"))
+```
+
+### Built-in functions work on tuples
+
+```python
+numbers = (4, 2, 9, 1)
+
+print(len(numbers))        # 4
+print(sum(numbers))        # 16
+print(min(numbers))        # 1
+print(max(numbers))        # 9
+print(sorted(numbers))     # [1, 2, 4, 9]  → returns a LIST
+```
+
+> **Note** — `sorted()` always returns a list, even when given a tuple.
+
+---
+
+## 5. Unpacking
+
+**Unpacking** assigns the elements of a tuple to separate variables in one step.
+
+```python
+point = (10, 20)
+
+x, y = point
+
+print(x)
+print(y)
 ```
 
 Output:
 
 ```text
-0
+10
+20
 ```
 
-It returns the index of the **first occurrence**.
-
----
-
-# Part 2: Sets
-
-A set is a collection used to store **unique values**.
-
-Sets are:
-
-* Unordered
-* Do not allow duplicate values
-* Changeable
-* Written using `{}`
-
-Example:
+### The count must match
 
 ```python
-numbers = {10, 20, 30}
+a, b = (1, 2, 3)       # ValueError: too many values to unpack
+a, b, c = (1, 2)       # ValueError: not enough values to unpack
 ```
 
-A set is useful when you care about unique values rather than their position.
-
----
-
-# 5. Creating Sets
-
-A set can be created using curly brackets:
+### Unpacking a record
 
 ```python
-fruits = {"apple", "banana", "mango"}
-```
+person = ("Mahesh", 24, "Akola")
 
-Numbers:
+name, age, city = person
 
-```python
-numbers = {10, 20, 30, 40}
-```
-
-Mixed values:
-
-```python
-data = {"Mahesh", 24, True}
-```
-
-### Empty set
-
-Be careful:
-
-```python
-empty = {}
-```
-
-This creates an empty dictionary, not a set.
-
-To create an empty set:
-
-```python
-empty = set()
-```
-
-Check it:
-
-```python
-print(type(empty))
+print(name)
+print(age)
+print(city)
 ```
 
 Output:
 
 ```text
-<class 'set'>
+Mahesh
+24
+Akola
 ```
 
-### Duplicate values
+### Swapping variables
 
-If you create a set with duplicates:
+Unpacking is what makes Python's swap work:
 
 ```python
-numbers = {10, 20, 10, 30, 20}
+a = 10
+b = 20
 
-print(numbers)
-```
+a, b = b, a
 
-The duplicates are removed automatically.
-
-The result contains only unique values.
-
-The order should not be relied on because sets are unordered.
-
----
-
-# 6. Adding and Removing Values
-
-Sets can be changed after creation.
-
-## `.add()`
-
-Adds one value to a set.
-
-```python
-fruits = {"apple", "banana"}
-
-fruits.add("mango")
-
-print(fruits)
-```
-
-The set now contains:
-
-```text
-apple
-banana
-mango
-```
-
-Because sets are unordered, you should not expect a fixed display order.
-
-### Adding an existing value
-
-```python
-numbers = {10, 20, 30}
-
-numbers.add(20)
-
-print(numbers)
-```
-
-Nothing changes because `20` is already present.
-
----
-
-## `.remove()`
-
-Removes a specific value.
-
-```python
-fruits = {"apple", "banana", "mango"}
-
-fruits.remove("banana")
-
-print(fruits)
-```
-
-`banana` is removed.
-
-If the value does not exist, `.remove()` causes a `KeyError`.
-
----
-
-## `.discard()`
-
-`.discard()` also removes a value.
-
-```python
-fruits = {"apple", "banana", "mango"}
-
-fruits.discard("banana")
-```
-
-The main difference is that `.discard()` does not give an error if the value doesn't exist.
-
-```python
-fruits.discard("orange")
-```
-
-This is safe even though `"orange"` isn't in the set.
-
----
-
-# 7. Union
-
-Union combines the values from two sets.
-
-It keeps each value only once.
-
-Example:
-
-```python
-a = {1, 2, 3}
-b = {3, 4, 5}
-
-result = a.union(b)
-
-print(result)
-```
-
-Result contains:
-
-```text
-{1, 2, 3, 4, 5}
-```
-
-You can also use `|`:
-
-```python
-result = a | b
-```
-
-Both mean union.
-
-Think:
-
-```text
-A = {1, 2, 3}
-
-B = {3, 4, 5}
-
-A ∪ B = {1, 2, 3, 4, 5}
-```
-
----
-
-# 8. Intersection
-
-Intersection returns values that exist in **both sets**.
-
-```python
-a = {1, 2, 3}
-b = {3, 4, 5}
-
-result = a.intersection(b)
-
-print(result)
-```
-
-Result:
-
-```text
-{3}
-```
-
-You can also use `&`:
-
-```python
-result = a & b
-```
-
-Think:
-
-```text
-A = {1, 2, 3}
-
-B = {3, 4, 5}
-
-A ∩ B = {3}
-```
-
-Only `3` exists in both sets.
-
----
-
-# 9. Difference
-
-Difference returns values that are in the **first set but not in the second set**.
-
-```python
-a = {1, 2, 3}
-b = {3, 4, 5}
-
-result = a.difference(b)
-
-print(result)
-```
-
-Result:
-
-```text
-{1, 2}
-```
-
-You can also use `-`:
-
-```python
-result = a - b
-```
-
-Think:
-
-```text
-A = {1, 2, 3}
-
-B = {3, 4, 5}
-
-A - B = {1, 2}
-```
-
-`3` is removed because it exists in `B`.
-
-### Direction matters
-
-```python
-a - b
-```
-
-is not necessarily the same as:
-
-```python
-b - a
-```
-
-For example:
-
-```python
-print(a - b)
-print(b - a)
-```
-
-Results:
-
-```text
-{1, 2}
-{4, 5}
-```
-
----
-
-# 10. Removing Duplicates
-
-One of the most useful uses of sets is removing duplicate values.
-
-Suppose you have a list:
-
-```python
-numbers = [10, 20, 10, 30, 20, 40, 10]
-
-print(numbers)
+print(a, b)
 ```
 
 Output:
 
 ```text
-[10, 20, 10, 30, 20, 40, 10]
+20 10
 ```
 
-Convert it to a set:
+The right side `(b, a)` is evaluated first, producing `(20, 10)`, then unpacked into `a, b`.
+
+### Ignoring values with `_`
 
 ```python
-unique_numbers = set(numbers)
+person = ("Mahesh", 24, "Akola")
 
-print(unique_numbers)
+name, _, city = person      # age is discarded
+print(name, city)
 ```
 
-Now only unique values remain:
+Output:
 
 ```text
-{10, 20, 30, 40}
+Mahesh Akola
 ```
 
-### Convert back to a list
+### Extended unpacking with `*`
 
-If you need a list again:
+Star one name to collect the remainder into a list:
 
 ```python
-numbers = [10, 20, 10, 30, 20, 40]
+numbers = (1, 2, 3, 4, 5)
 
-unique_numbers = list(set(numbers))
+first, *rest = numbers
+print(first)       # 1
+print(rest)        # [2, 3, 4, 5]
 
-print(unique_numbers)
+*beginning, last = numbers
+print(beginning)   # [1, 2, 3, 4]
+print(last)        # 5
+
+first, *middle, last = numbers
+print(first)       # 1
+print(middle)      # [2, 3, 4]
+print(last)        # 5
 ```
 
-The result contains unique values.
+> **Note** — The starred name always collects a **list**, even when unpacking a tuple.
 
-Remember that using a set does not keep the original list order in the general case.
+### Returning multiple values
+
+This is one of the most common uses of tuples:
+
+```python
+def min_max(numbers):
+    return min(numbers), max(numbers)      # packed into a tuple
+
+
+low, high = min_max([3, 1, 9, 4])          # unpacked
+
+print(low, high)
+```
+
+Output:
+
+```text
+1 9
+```
+
+Actually the function returns a single tuple; the unpacking on the calling line is what splits it.
 
 ---
 
-# Tuple vs Set
+## 6. Tuples vs Lists
 
-| Feature    | Tuple                      | Set                                 |
-| ---------- | -------------------------- | ----------------------------------- |
-| Syntax     | `(1, 2, 3)`                | `{1, 2, 3}`                         |
-| Ordered    | Yes                        | No                                  |
-| Duplicates | Allowed                    | Not allowed                         |
-| Changeable | No                         | Yes                                 |
-| Indexing   | Yes                        | No                                  |
-| Main use   | Fixed collection of values | Unique values and set operations    |
-| Methods    | `.count()`, `.index()`     | `.add()`, `.remove()`, `.discard()` |
+| Aspect | Tuple | List |
+| ------ | ----- | ---- |
+| Syntax | `( )` | `[ ]` |
+| Mutable | No | Yes |
+| Methods | `count`, `index` only | Many |
+| Dict key | Yes | No |
+| Use for | Fixed records, coordinates, keys | Collections that change |
+| Memory | Slightly less | Slightly more |
 
-# Quick Revision
+### When to use a tuple
 
-### Tuple
+* Data that should not change (constants, configuration)
+* Fixed records: coordinates `(x, y)`, colours `(255, 0, 0)`, a database row
+* Dictionary keys
+* Returning several values from a function
+* When you want to signal "this is one fixed thing"
 
-```python
-numbers = (10, 20, 30)
+### When to use a list
 
-print(numbers[0])
-```
-
-Unpacking:
-
-```python
-name, age = ("Mahesh", 24)
-```
-
-Methods:
+* Collections that grow, shrink, or get reordered
+* Anything you need to sort, append to, or filter
+* Homogeneous sequences you process item by item
 
 ```python
-numbers.count(10)
-numbers.index(20)
+# Tuple — a fixed record
+rgb_red = (255, 0, 0)
+coordinate = (19.07, 72.87)
+
+# List — a changing collection
+todo_items = []
+todo_items.append("Buy milk")
 ```
 
-### Set
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | What happens | Fix |
+| ------- | ------------ | --- |
+| `(10)` expecting a tuple | It is an `int` | Add a comma: `(10,)` |
+| Trying `t[0] = x` | `TypeError` | Build a new tuple |
+| Calling `.append()` on a tuple | `AttributeError` | Convert to a list first |
+| Unpacking with the wrong count | `ValueError` | Match the element count |
+| Using a list as a dict key | `TypeError: unhashable` | Use a tuple |
+| Expecting `sorted(t)` to give a tuple | It returns a list | `tuple(sorted(t))` |
+
+---
+
+## Quick Revision
+
+| Topic | Key point | Example |
+| ----- | --------- | ------- |
+| Create | Parentheses | `(1, 2, 3)` |
+| Single item | Needs a trailing comma | `(1,)` |
+| Empty | `()` | `t = ()` |
+| Index | Zero-based | `t[0]`, `t[-1]` |
+| Slice | Returns a tuple | `t[1:3]` |
+| Immutable | Cannot change items | `t[0] = x` → `TypeError` |
+| `.count(x)` | Count occurrences | `t.count(2)` |
+| `.index(x)` | Position of first match | `t.index("a")` |
+| Unpack | Assign to several names | `x, y = point` |
+| Extended unpack | Star collects the rest | `first, *rest = t` |
+| Swap | Tuple unpacking | `a, b = b, a` |
+| Multiple returns | Return a tuple | `return min(x), max(x)` |
+| Dict key | Tuples are hashable | `d[(1, 2)] = "x"` |
+
+### Core patterns
 
 ```python
-numbers = {10, 20, 30}
+point = (10, 20)                 # create
+x, y = point                     # unpack
+a, b = b, a                      # swap
+first, *rest = items             # extended unpack
+name, _, city = record           # ignore a value
+count = items.count(2)           # count
+pos = items.index("a")           # find position
+new = items + (4,)               # "add" by making a new tuple
+temp = list(items)               # convert to modify
+coords = {(1, 2): "A"}           # tuple as a dict key
 ```
 
-Add:
-
-```python
-numbers.add(40)
-```
-
-Remove:
-
-```python
-numbers.remove(20)
-```
-
-Union:
-
-```python
-a | b
-```
-
-Intersection:
-
-```python
-a & b
-```
-
-Difference:
-
-```python
-a - b
-```
-
-Remove duplicates:
-
-```python
-unique = set([1, 2, 2, 3, 3])
-```
-
-The main mental model is:
+### The main idea
 
 ```text
-Tuple → Ordered + Fixed + Duplicates allowed
-
-Set   → Unique values + No indexing + Set operations
+Tuples
+ ├── Ordered, immutable, duplicates allowed
+ ├── Created by the COMMA — (1,) not (1)
+ ├── Indexing and slicing work like lists
+ ├── Cannot add, remove, or replace items
+ ├── Only two methods: count() and index()
+ ├── Unpacking → x, y = point  (also enables swapping)
+ ├── Returning multiple values from a function
+ └── Hashable → valid dictionary keys
 ```
+
+---
+
+## Self-Check
+
+- [ ] Why is `(10)` not a tuple, and how do you fix it?
+- [ ] Can you change a list that is stored inside a tuple?
+- [ ] What are the only two methods tuples have, and why so few?
+- [ ] How does `a, b = b, a` work?
+- [ ] What does `first, *rest = (1, 2, 3)` assign to `rest`, and what type is it?
+- [ ] Why can a tuple be a dictionary key but a list cannot?
+- [ ] What does `sorted((3, 1, 2))` return?

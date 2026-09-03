@@ -1,42 +1,29 @@
 # Python Strings — Notes
 
-A string (`str`) is used to store **text**.
+A **string** is text: an ordered sequence of characters, written inside quotes.
 
-```python
-name = "Mahesh"
-city = "Akola"
-message = "Hello Python"
+> **Why this matters** — Almost every program handles text: names, messages, file paths, user input, API responses. Strings are also the first *sequence* type you meet, so indexing and slicing here carry over directly to lists and tuples.
+
+### The mental model
+
+A string is an ordered row of characters, each with a position:
+
+```text
+  P    y    t    h    o    n
+  ↑    ↑    ↑    ↑    ↑    ↑
+  0    1    2    3    4    5     ← forward index
+ -6   -5   -4   -3   -2   -1     ← negative index
 ```
 
-Strings can use single quotes or double quotes:
-
-```python
-name = "Mahesh"
-name = 'Mahesh'
-```
-
-Both are valid.
+Two things follow from this picture: you can reach any character by its position (**indexing**), and you can take a contiguous run of them (**slicing**).
 
 ---
 
-# 1. Indexing
+## 1. Indexing
 
-Indexing means accessing individual characters from a string.
+Indexing accesses a single character using square brackets.
 
-Python uses **zero-based indexing**, which means the first character has index `0`.
-
-```python
-text = "Python"
-```
-
-The indexes are:
-
-```text
- P   y   t   h   o   n
- 0   1   2   3   4   5
-```
-
-So:
+### Basic indexing
 
 ```python
 text = "Python"
@@ -54,34 +41,9 @@ y
 n
 ```
 
-### Negative indexing
+> **Indexing starts at 0.** The first character is at index `0`, not `1`. This is the single most common source of beginner bugs.
 
-Python also supports negative indexes.
-
-```text
- P   y   t   h   o   n
--6  -5  -4  -3  -2  -1
-```
-
-Example:
-
-```python
-text = "Python"
-
-print(text[-1])
-print(text[-2])
-```
-
-Output:
-
-```text
-n
-o
-```
-
-`-1` always means the **last character**.
-
-### Invalid index
+### Index out of range
 
 ```python
 text = "Python"
@@ -89,162 +51,140 @@ text = "Python"
 print(text[10])
 ```
 
-This causes an `IndexError` because the string does not have an index `10`.
+Output:
+
+```text
+IndexError: string index out of range
+```
+
+`"Python"` has length 6, so the valid indices are `0`–`5`.
+
+### Negative indexing
+
+Negative indices count **from the end**:
+
+```python
+text = "Python"
+
+print(text[-1])      # n  → last character
+print(text[-2])      # o  → second from last
+print(text[-6])      # P  → first
+```
+
+This is how you get the last character without knowing the length:
+
+```python
+name = "Mahesh"
+print(name[-1])      # h
+```
+
+### `len()`
+
+`len()` returns the number of characters:
+
+```python
+text = "Python"
+
+print(len(text))          # 6
+print(text[len(text) - 1])   # n  → last character
+print(text[-1])           # n  → simpler
+```
+
+### The membership test
+
+```python
+text = "Python programming"
+
+print("Python" in text)      # True
+print("python" in text)      # False — case-sensitive
+print("Java" not in text)    # True
+```
+
+### Iterating over a string
+
+```python
+for char in "Hi":
+    print(char)
+```
+
+Output:
+
+```text
+H
+i
+```
 
 ---
 
-# 2. Slicing
+## 2. Slicing
 
-Slicing is used to get a **part of a string**.
+Slicing extracts a portion of a string.
 
 ### Basic syntax
 
 ```python
-string[start:stop]
+text[start:stop]
 ```
 
-The `start` index is included.
-
-The `stop` index is not included.
-
-Example:
+`start` is included; **`stop` is excluded**.
 
 ```python
 text = "Python"
 
-print(text[0:3])
+print(text[0:2])      # Py
+print(text[1:4])      # yth
+print(text[2:6])      # thon
 ```
 
 Output:
 
 ```text
-Pyt
-```
-
-Indexes:
-
-```text
- P   y   t   h   o   n
- 0   1   2   3   4   5
- |-------|
- 0       3
-```
-
-Index `3` is not included.
-
-### More examples
-
-```python
-text = "Python"
-
-print(text[1:4])
-print(text[2:5])
-```
-
-Output:
-
-```text
+Py
 yth
-tho
-```
-
----
-
-## Slicing from the beginning
-
-You can leave out the start index.
-
-```python
-text = "Python"
-
-print(text[:3])
-```
-
-Output:
-
-```text
-Pyt
-```
-
-This means:
-
-```python
-text[0:3]
-```
-
----
-
-## Slicing to the end
-
-You can leave out the stop index.
-
-```python
-text = "Python"
-
-print(text[2:])
-```
-
-Output:
-
-```text
 thon
 ```
 
-This means from index `2` until the end.
+> **Why `stop` is exclusive** — It makes `text[0:len(text)]` the whole string, and `text[a:b]` has length `b - a`. Consistent and easy to reason about once you accept it.
 
----
-
-## Copying the whole string
+### Omitting start or stop
 
 ```python
 text = "Python"
 
-print(text[:])
+print(text[:3])       # Pyt  → from the beginning
+print(text[3:])       # hon  → to the end
+print(text[:])        # Python → the whole string (a copy)
 ```
 
-Output:
-
-```text
-Python
-```
-
----
-
-## Slicing with a step
-
-The full syntax is:
-
-```python
-string[start:stop:step]
-```
-
-Example:
+### Negative slicing
 
 ```python
 text = "Python"
 
-print(text[0:6:2])
+print(text[-3:])      # hon  → last 3
+print(text[:-3])      # Pyt  → everything except the last 3
+print(text[-4:-1])    # tho  → from -4 up to (not including) -1
 ```
 
-Output:
+### Step
 
-```text
-Pto
+A third value sets the step size:
+
+```python
+text[start:stop:step]
 ```
 
-It takes every second character.
+```python
+text = "Python"
 
-Indexes used:
-
-```text
-0 → P
-2 → t
-4 → o
+print(text[::2])      # Pto  → every second character
+print(text[1::2])     # yhn  → every second, starting at index 1
+print(text[::3])      # Ph
 ```
 
-### Reverse a string
+### Reversing a string
 
-A step of `-1` reverses the string:
+This is the classic trick:
 
 ```python
 text = "Python"
@@ -258,22 +198,70 @@ Output:
 nohtyP
 ```
 
----
+**How it works:** the default start is the beginning and the default stop is the end, but a step of `-1` makes Python walk backwards.
 
-# 3. String Methods
+> **This is a common interview and exercise question.** `text[::-1]` is the idiomatic Python reverse.
 
-String methods are built-in functions that can be used to work with strings.
+### Out-of-range slices are safe
 
-They use this format:
+Unlike indexing, slicing never raises an error for out-of-range positions:
 
 ```python
-string.method()
+text = "Python"
+
+print(text[2:100])     # thon  → clamped to the end
+print(text[50:100])    # (empty string)
 ```
 
-Example:
+### Slicing with a real example
 
 ```python
-text = "hello"
+filename = "report_2026.pdf"
+
+name = filename[:6]
+year = filename[7:11]
+extension = filename[-3:]
+
+print(name, year, extension)
+```
+
+Output:
+
+```text
+report 2026 pdf
+```
+
+---
+
+## 3. String Methods
+
+A **method** is a function called on a value using dot notation.
+
+```python
+text.method()
+```
+
+Methods covered below: `.upper()`, `.lower()`, `.strip()`, `.replace()`, `.split()`, `.join()` — plus several more in the summary table.
+
+> **Crucial point** — Strings are **immutable**: no method changes the original string. Every method **returns a new string**. You must assign the result.
+>
+> ```python
+> text = "python"
+> text.upper()          # computes "PYTHON" and throws it away
+> print(text)           # python  ← unchanged
+>
+> text = text.upper()   # assign the result
+> print(text)           # PYTHON
+> ```
+
+---
+
+## 4. `.upper()`
+
+Converts all characters to uppercase.
+
+```python
+text = "python"
 
 print(text.upper())
 ```
@@ -281,53 +269,52 @@ print(text.upper())
 Output:
 
 ```text
-HELLO
+PYTHON
 ```
 
-Important: Most string methods return a **new string**. They do not change the original string.
-
----
-
-# 4. `.upper()`
-
-`.upper()` converts all letters to uppercase.
+The original is unchanged:
 
 ```python
-text = "Hello Python"
+text = "python"
+result = text.upper()
 
-print(text.upper())
+print(text)        # python
+print(result)      # PYTHON
+```
+
+### Case-insensitive comparison
+
+```python
+answer = "YES"
+
+if answer.upper() == "YES":
+    print("Confirmed")
 ```
 
 Output:
 
 ```text
-HELLO PYTHON
+Confirmed
 ```
 
-Example:
+This lets you accept "yes", "Yes", and "YES" with one check.
+
+### Related methods
 
 ```python
-name = "mahesh"
-
-name = name.upper()
-
-print(name)
-```
-
-Output:
-
-```text
-MAHESH
+print("python".capitalize())      # Python → first letter uppercase
+print("python programming".title())   # Python Programming
+print("Python".swapcase())        # pYTHON
 ```
 
 ---
 
-# 5. `.lower()`
+## 5. `.lower()`
 
-`.lower()` converts all letters to lowercase.
+Converts all characters to lowercase.
 
 ```python
-text = "HELLO PYTHON"
+text = "PYTHON"
 
 print(text.lower())
 ```
@@ -335,57 +322,39 @@ print(text.lower())
 Output:
 
 ```text
-hello python
+python
 ```
 
-Example:
+### Normalising user input
 
 ```python
-name = "MAHESH"
+command = input("Continue? (yes/no): ")
 
-name = name.lower()
-
-print(name)
+if command.lower() == "yes":
+    print("Continuing")
+else:
+    print("Stopping")
 ```
 
-Output:
+Lowercasing input before comparing makes your program forgiving of "YES", "Yes", and "yes".
 
-```text
-mahesh
-```
+### Case-insensitive search
 
-### `.upper()` vs `.lower()`
+```python
+text = "Python Programming"
 
-```text
-"Python".upper() → "PYTHON"
-
-"Python".lower() → "python"
+print("python" in text)                  # False
+print("python" in text.lower())          # True
 ```
 
 ---
 
-# 6. `.strip()`
+## 6. `.strip()`
 
-`.strip()` removes spaces and certain whitespace characters from the **beginning and end** of a string.
-
-Example:
+Removes whitespace from the **beginning and end** of a string.
 
 ```python
-name = "   Mahesh   "
-
-print(name.strip())
-```
-
-Output:
-
-```text
-Mahesh
-```
-
-It does not remove spaces between words.
-
-```python
-text = "  Hello Python  "
+text = "   Hello   "
 
 print(text.strip())
 ```
@@ -393,42 +362,50 @@ print(text.strip())
 Output:
 
 ```text
-Hello Python
+Hello
 ```
 
-The space between `Hello` and `Python` remains.
-
-### Common use
-
-It is useful when handling user input:
+> **Why this matters** — Input read from a file or the user often carries stray spaces or a trailing newline. Stripping before comparing prevents bugs that are nearly invisible: `"yes\n" == "yes"` is `False`.
 
 ```python
-name = input("Enter your name: ").strip()
-
-print(name)
+name = input("Name: ")      # user types "  Mahesh  "
+name = name.strip()         # "Mahesh"
 ```
 
-If the user enters:
+### Variants
 
-```text
-   Mahesh
+```python
+text = "   Hello   "
+
+print(text.lstrip())     # "Hello   "  → left side only
+print(text.rstrip())     # "   Hello"  → right side only
+print(text.strip())      # "Hello"     → both sides
 ```
 
-the extra spaces at the beginning and end are removed.
+### Stripping specific characters
+
+`.strip()` accepts a set of characters to remove:
+
+```python
+text = "***Hello***"
+
+print(text.strip("*"))      # Hello
+
+price = "Rs. 500"
+print(price.strip("Rs. "))  # 500
+```
+
+> **Note** — The argument is a *set of characters*, not a prefix or suffix. `strip("Rs. ")` removes any leading/trailing `R`, `s`, `.`, or space.
 
 ---
 
-# 7. `.replace()`
+## 7. `.replace()`
 
-`.replace()` replaces one part of a string with another.
-
-### Syntax
+Replaces occurrences of one substring with another.
 
 ```python
-string.replace(old, new)
+text.replace(old, new)
 ```
-
-Example:
 
 ```python
 text = "I like Java"
@@ -442,90 +419,93 @@ Output:
 I like Python
 ```
 
-### Replacing characters
+### Replacing all occurrences
 
 ```python
-text = "banana"
+text = "a-b-c-d"
 
-print(text.replace("a", "o"))
+print(text.replace("-", "/"))
 ```
 
 Output:
 
 ```text
-bonono
+a/b/c/d
 ```
 
-By default, it replaces all matching occurrences.
+### Limiting the number of replacements
 
-### Important
-
-The original string does not change unless you store the result:
+The optional third argument caps the count:
 
 ```python
-text = "Hello Java"
+text = "one one one"
 
+print(text.replace("one", "two", 2))
+```
+
+Output:
+
+```text
+two two one
+```
+
+### Removing characters
+
+Replace with an empty string to delete:
+
+```python
+text = "Hello, World!"
+
+print(text.replace(",", ""))
+print(text.replace(" ", ""))
+```
+
+Output:
+
+```text
+Hello World!
+Hello,World!
+```
+
+### It returns a new string
+
+```python
+text = "I like Java"
 text.replace("Java", "Python")
 
-print(text)
+print(text)      # I like Java  ← unchanged
 ```
 
-Output:
-
-```text
-Hello Java
-```
-
-To change the variable:
+Assign the result:
 
 ```python
-text = "Hello Java"
-
 text = text.replace("Java", "Python")
-
-print(text)
-```
-
-Output:
-
-```text
-Hello Python
 ```
 
 ---
 
-# 8. `.split()`
+## 8. `.split()`
 
-`.split()` breaks a string into multiple parts and returns them as a list.
-
-### Basic example
+Splits a string into a **list** of parts.
 
 ```python
-text = "Python is easy"
+text = "Python is fun"
 
-words = text.split()
-
-print(words)
+print(text.split())
 ```
 
 Output:
 
 ```text
-['Python', 'is', 'easy']
+['Python', 'is', 'fun']
 ```
 
-By default, `.split()` uses whitespace to separate the words.
-
-### Split using a specific character
-
-You can give a separator:
+### Splitting on a specific character
 
 ```python
-text = "apple,banana,mango"
+data = "apple,banana,mango"
 
-fruits = text.split(",")
-
-print(fruits)
+print(data.split(","))
 ```
 
 Output:
@@ -534,125 +514,155 @@ Output:
 ['apple', 'banana', 'mango']
 ```
 
-Here, `,` tells Python where to split.
+### Default behaviour
 
-### Another example
+With no argument, `.split()` splits on **any run of whitespace** and discards empty pieces:
 
 ```python
-data = "10-20-30-40"
+text = "Python    is   fun"
 
-numbers = data.split("-")
-
-print(numbers)
+print(text.split())
 ```
 
 Output:
 
 ```text
-['10', '20', '30', '40']
+['Python', 'is', 'fun']
 ```
 
-Notice that the results are strings.
+Compare with splitting on a single space:
+
+```python
+print(text.split(" "))
+```
+
+Output:
+
+```text
+['Python', '', '', '', 'is', '', '', 'fun']
+```
+
+> **Use `.split()` with no argument** unless you specifically need to preserve empty fields.
+
+### Splitting lines
+
+```python
+data = "line1\nline2\nline3"
+
+print(data.splitlines())
+```
+
+Output:
+
+```text
+['line1', 'line2', 'line3']
+```
+
+### Limiting the number of splits
+
+```python
+data = "a,b,c,d"
+
+print(data.split(",", 2))
+```
+
+Output:
+
+```text
+['a', 'b', 'c,d']
+```
+
+### The classic input pattern
+
+```python
+a, b = map(int, input().split())
+```
+
+With input `10 20`, this gives `a = 10` and `b = 20`.
+
+```python
+numbers = list(map(int, input().split()))
+```
+
+With input `1 2 3`, this gives `[1, 2, 3]`.
 
 ---
 
-# 9. `.join()`
+## 9. `.join()`
 
-`.join()` does the opposite of `.split()`.
-
-It joins multiple strings into one string.
-
-### Basic example
+Joins a list of strings into one string, inserting a separator between elements.
 
 ```python
-words = ["Python", "is", "easy"]
+separator.join(list_of_strings)
+```
 
-text = " ".join(words)
+> **Note the direction** — `.join()` is called on the **separator**, with the list as the argument. This reads backwards to many beginners.
 
-print(text)
+```python
+words = ["Python", "is", "fun"]
+
+print(" ".join(words))
 ```
 
 Output:
 
 ```text
-Python is easy
+Python is fun
 ```
 
-Here:
+### Different separators
 
 ```python
-" ".join(words)
+words = ["a", "b", "c"]
+
+print("-".join(words))       # a-b-c
+print(", ".join(words))      # a, b, c
+print("".join(words))        # abc
+print("\n".join(words))      # each on its own line
 ```
 
-means:
-
-> Join the words using a space.
-
-### Join using a comma
+### `split()` and `join()` are inverses
 
 ```python
-fruits = ["apple", "banana", "mango"]
+text = "Python is fun"
 
-text = ", ".join(fruits)
+parts = text.split()          # ['Python', 'is', 'fun']
+back = " ".join(parts)        # 'Python is fun'
 
-print(text)
+print(back)
 ```
 
 Output:
 
 ```text
-apple, banana, mango
+Python is fun
 ```
 
-### Join using `-`
+### All elements must be strings
 
 ```python
-parts = ["2026", "08", "09"]
+numbers = [1, 2, 3]
 
-date = "-".join(parts)
+print("-".join(numbers))      # TypeError
+```
 
-print(date)
+Convert first:
+
+```python
+print("-".join(str(n) for n in numbers))
 ```
 
 Output:
 
 ```text
-2026-08-09
-```
-
-### `split()` and `join()` together
-
-```python
-text = "Python is easy"
-
-words = text.split()
-
-result = "-".join(words)
-
-print(result)
-```
-
-Output:
-
-```text
-Python-is-easy
-```
-
-Think:
-
-```text
-split() → String → List
-
-join()  → List → String
+1-2-3
 ```
 
 ---
 
-# 10. f-Strings
+## 10. f-Strings
 
-f-strings are used to insert variables and expressions directly into strings.
-
-An f-string starts with `f`.
+An **f-string** embeds values directly inside text. Put `f` before the quote and wrap expressions in `{}`.
 
 ### Basic example
 
@@ -669,181 +679,263 @@ Output:
 My name is Mahesh and I am 24 years old.
 ```
 
-The values inside `{}` are replaced with their actual values.
-
-### Expressions
-
-You can also put expressions inside `{}`:
+### Expressions inside braces
 
 ```python
 a = 10
 b = 20
 
-print(f"Sum = {a + b}")
+print(f"{a} + {b} = {a + b}")
+print(f"Next year: {age + 1}")
+print(f"Shout: {name.upper()}")
 ```
 
 Output:
 
 ```text
-Sum = 30
+10 + 20 = 30
+Next year: 25
+Shout: MAHESH
 ```
 
-Another example:
+### Formatting numbers
 
 ```python
-price = 100
-quantity = 3
+price = 99.56789
+count = 1400000
 
-print(f"Total = {price * quantity}")
+print(f"Price: {price:.2f}")
+print(f"Count: {count:,}")
 ```
 
 Output:
 
 ```text
-Total = 300
+Price: 99.57
+Count: 1,400,000
+```
+
+### Alignment and padding
+
+```python
+print(f"|{'Hi':<10}|")      # left
+print(f"|{'Hi':>10}|")      # right
+print(f"|{'Hi':^10}|")      # centre
+```
+
+Output:
+
+```text
+|Hi        |
+|        Hi|
+|    Hi    |
+```
+
+### Escaping braces
+
+To show a literal brace, double it:
+
+```python
+print(f"{{literal}}")
+```
+
+Output:
+
+```text
+{literal}
+```
+
+### Escape characters
+
+Inside any string, a backslash starts an escape sequence:
+
+| Escape | Meaning |
+| ------ | ------- |
+| `\n` | Newline |
+| `\t` | Tab |
+| `\\` | Literal backslash |
+| `\"` | Literal double quote |
+| `\'` | Literal single quote |
+
+```python
+print("Line one\nLine two")
+print("Col1\tCol2")
+print("Path: C:\\Users\\Mahesh")
+print("She said \"hello\"")
+```
+
+Output:
+
+```text
+Line one
+Line two
+Col1	Col2
+Path: C:\Users\Mahesh
+She said "hello"
+```
+
+Use a **raw string** (`r"..."`) to disable escapes — handy for Windows paths and regular expressions:
+
+```python
+print(r"C:\Users\Mahesh")
+```
+
+Output:
+
+```text
+C:\Users\Mahesh
 ```
 
 ---
 
-## f-String Formatting
+## Important: Strings Are Immutable
 
-You can control how values are displayed.
-
-### Decimal places
-
-```python
-price = 99.5678
-
-print(f"{price:.2f}")
-```
-
-Output:
-
-```text
-99.57
-```
-
-`.2f` means two digits after the decimal point.
-
-### Percentage
-
-```python
-rate = 0.75
-
-print(f"{rate:.0%}")
-```
-
-Output:
-
-```text
-75%
-```
-
-### Number formatting
-
-```python
-number = 1000000
-
-print(f"{number:,}")
-```
-
-Output:
-
-```text
-1,000,000
-```
-
----
-
-# Important: Strings Are Immutable
-
-A string cannot be changed directly after it is created.
-
-For example:
-
-```python
-text = "Python"
-```
-
-You cannot directly change one character like:
-
-```python
-text[0] = "J"
-```
-
-This causes an error.
-
-Instead, create a new string:
+Once created, a string **cannot be changed**.
 
 ```python
 text = "Python"
 
-text = "J" + text[1:]
-
-print(text)
+text[0] = "J"      # TypeError: 'str' object does not support item assignment
 ```
 
-Output:
+### What really happens on reassignment
+
+```python
+text = "Python"
+text = "Java"
+```
+
+This does not modify `"Python"`. It makes the name `text` point at a **new** string `"Java"`.
 
 ```text
-Jython
+Before:  text ──→ "Python"
+After:   text ──→ "Java"     ("Python" is discarded)
 ```
 
-String methods also return new strings:
+### Every method returns a new string
 
 ```python
 text = "python"
 
-new_text = text.upper()
-
-print(text)
-print(new_text)
+print(text.upper())      # PYTHON  → a new string
+print(text)              # python  → original untouched
+print(id(text) == id(text.upper()))   # False — different objects
 ```
 
-Output:
+### Building a string efficiently
+
+Because strings are immutable, repeated `+` in a loop creates a new string every pass:
+
+```python
+# Works, but slow for large loops
+result = ""
+for word in words:
+    result += word + " "
+```
+
+The idiomatic approach is to collect the pieces and join once:
+
+```python
+result = " ".join(words)
+```
+
+> **Note** — CPython optimises many `+=` cases, so this is rarely a real problem in small scripts. For large text-building, `join()` is both faster and clearer.
+
+---
+
+## String Methods Reference
+
+| Method | Purpose | Example | Result |
+| ------ | ------- | ------- | ------ |
+| `.upper()` | Uppercase | `"py".upper()` | `"PY"` |
+| `.lower()` | Lowercase | `"PY".lower()` | `"py"` |
+| `.title()` | Capitalise each word | `"py code".title()` | `"Py Code"` |
+| `.capitalize()` | Capitalise first | `"py code".capitalize()` | `"Py code"` |
+| `.strip()` | Remove ends | `"  x  ".strip()` | `"x"` |
+| `.lstrip()` / `.rstrip()` | One side | `"  x".lstrip()` | `"x"` |
+| `.replace(a, b)` | Substitute | `"a-b".replace("-", "+")` | `"a+b"` |
+| `.split(sep)` | String → list | `"a,b".split(",")` | `["a", "b"]` |
+| `.splitlines()` | Split on newlines | `"a\nb".splitlines()` | `["a", "b"]` |
+| `sep.join(list)` | List → string | `"-".join(["a","b"])` | `"a-b"` |
+| `.find(x)` | Index of first match, `-1` if absent | `"abc".find("b")` | `1` |
+| `.index(x)` | Like `find` but raises | `"abc".index("z")` | `ValueError` |
+| `.count(x)` | Count occurrences | `"aaa".count("a")` | `3` |
+| `.startswith(x)` | Prefix test | `"py".startswith("p")` | `True` |
+| `.endswith(x)` | Suffix test | `"file.py".endswith(".py")` | `True` |
+| `.isdigit()` | All digits? | `"123".isdigit()` | `True` |
+| `.isalpha()` | All letters? | `"abc".isalpha()` | `True` |
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | What happens | Fix |
+| ------- | ------------ | --- |
+| Expecting methods to modify in place | String unchanged | Assign: `text = text.upper()` |
+| `text[0] = "X"` | `TypeError` | Build a new string |
+| Forgetting `stop` is exclusive | Off-by-one | `text[0:3]` is 3 characters |
+| Index beyond the end | `IndexError` | Check with `len()` |
+| Case-sensitive comparison | Unexpected `False` | Normalise with `.lower()` |
+| `"-".join([1, 2])` | `TypeError` | Convert: `str(n) for n in ...` |
+| Not stripping input | Invisible mismatch | `input().strip()` |
+
+---
+
+## Quick Revision
+
+| Topic | Key point | Example |
+| ----- | --------- | ------- |
+| Creation | Quotes on either side | `"Hi"`, `'Hi'` |
+| Indexing | Zero-based | `text[0]`, `text[-1]` |
+| Slicing | `[start:stop]`, stop excluded | `text[1:4]` |
+| Step | Third value | `text[::2]` |
+| Reverse | Negative step | `text[::-1]` |
+| Immutability | Never changes in place | Assign the result |
+| `.upper()` / `.lower()` | Change case | `text.upper()` |
+| `.strip()` | Trim ends | `text.strip()` |
+| `.replace()` | Substitute | `text.replace("a", "b")` |
+| `.split()` | String → list | `text.split(",")` |
+| `.join()` | List → string | `"-".join(parts)` |
+| f-strings | Embed values | `f"Hi {name}"` |
+| Formatting | `:.2f`, `:,` | `f"{x:.2f}"` |
+| `in` | Substring test | `"py" in text` |
+
+### Core patterns
+
+```python
+text[0]                       # first character
+text[-1]                      # last character
+text[::-1]                    # reversed
+len(text)                     # length
+text.lower() == other.lower() # case-insensitive compare
+input().strip()               # clean input
+text.split(",")               # split into a list
+"-".join(parts)               # build from a list
+f"Name: {name}"               # interpolate
+f"{price:.2f}"                # format
+"py" in text                  # contains?
+```
+
+### The main idea
 
 ```text
-python
-PYTHON
+Strings
+ ├── Ordered sequence of characters
+ ├── Indexing → one character (0-based, negatives from the end)
+ ├── Slicing  → a portion [start:stop:step]
+ ├── Immutable → methods return new strings
+ ├── Methods: upper, lower, strip, replace, split, join
+ └── f-strings embed values and format them
 ```
 
 ---
 
-# Quick Revision
+## Self-Check
 
-| Topic             | Example                               | Result                      |
-| ----------------- | ------------------------------------- | --------------------------- |
-| Indexing          | `"Python"[0]`                         | `P`                         |
-| Negative indexing | `"Python"[-1]`                        | `n`                         |
-| Slicing           | `"Python"[0:3]`                       | `Pyt`                       |
-| Reverse           | `"Python"[::-1]`                      | `nohtyP`                    |
-| `.upper()`        | `"hello".upper()`                     | `HELLO`                     |
-| `.lower()`        | `"HELLO".lower()`                     | `hello`                     |
-| `.strip()`        | `"  Hi  ".strip()`                    | `Hi`                        |
-| `.replace()`      | `"Hi Java".replace("Java", "Python")` | `Hi Python`                 |
-| `.split()`        | `"a,b,c".split(",")`                  | `['a', 'b', 'c']`           |
-| `.join()`         | `"-".join(["a","b","c"])`             | `a-b-c`                     |
-| f-string          | `f"Hello {name}"`                     | Inserts the value of `name` |
-
-### Most important mental model
-
-```text
-String
-  │
-  ├── Indexing → get one character
-  │
-  ├── Slicing → get part of the string
-  │
-  ├── Methods → change/process the string
-  │
-  └── f-string → put values inside text
-```
-
-And remember:
-
-```python
-text[0]       # Indexing
-text[1:4]     # Slicing
-text.upper()  # Method
-f"{text}"     # f-string
-```
+- [ ] What is `"Python"[1:4]`?
+- [ ] How do you get the last character of a string without using `len()`?
+- [ ] Why does `text.upper()` alone not change `text`?
+- [ ] What does `"a,b,c".split(",", 1)` return?
+- [ ] How do you reverse a string in one expression?
+- [ ] What is the difference between `text.find("x")` and `text.index("x")`?
+- [ ] Why might `input()` return `"yes\n"`, and how do you handle it?

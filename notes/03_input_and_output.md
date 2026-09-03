@@ -1,107 +1,90 @@
 # Python Input and Output — Notes
 
-Input and output are used to communicate between the **user and the program**.
+Programs become useful when they can **receive data** (`input()`) and **present results** (`print()`). Together these form the I/O boundary of your program.
 
-* **Input** → Get data from the user.
-* **Output** → Show data to the user.
+> **Why this matters** — Every exercise on this platform follows the same shape: read input, process it, print the answer. Mastering `input()`, `print()`, and f-strings is most of what you need to solve them.
+
+### The mental model
+
+```text
+input()  →  your program  →  print()
+(read)      (process)        (write)
+```
+
+A critical detail sits at the left arrow: **`input()` always gives you a string.** Converting it is your job.
 
 ---
 
-# 1. `input()`
+## 1. `input()`
 
-`input()` is used to take input from the user through the keyboard.
+`input()` pauses the program, waits for the user to type something, and returns what they typed.
 
 ### Basic syntax
 
 ```python
-input()
+value = input()
+
+print("You typed:", value)
 ```
 
-Example:
-
-```python
-name = input()
-
-print(name)
-```
-
-If the user enters:
+If the user types `Mahesh`:
 
 ```text
-Mahesh
+You typed: Mahesh
 ```
 
-Output:
-
-```text
-Mahesh
-```
-
-### Using a message
-
-You can give a message inside `input()`:
+### Showing a prompt
 
 ```python
 name = input("Enter your name: ")
 
-print(name)
-```
-
-Example:
-
-```text
-Enter your name: Mahesh
-Mahesh
-```
-
----
-
-## Important: `input()` returns a string
-
-By default, everything entered using `input()` is a `str`.
-
-```python
-age = input("Enter your age: ")
-
-print(type(age))
-```
-
-If the user enters:
-
-```text
-24
+print("Hello,", name)
 ```
 
 Output:
 
 ```text
+Enter your name: Mahesh
+Hello, Mahesh
+```
+
+The prompt string is displayed; it is **not** part of the returned value.
+
+### Reading a number
+
+```python
+age = input("Enter your age: ")
+
+print(age)
+print(type(age))
+```
+
+If the user types `24`:
+
+```text
+24
 <class 'str'>
 ```
 
-Even though `24` looks like a number, Python receives it as text.
+> **The single most important rule in this topic** — `input()` returns a **string**, always. Even when the user types digits. `"24"` is text until you convert it.
 
 ### Converting input to an integer
-
-Use `int()`:
 
 ```python
 age = int(input("Enter your age: "))
 
 print(age)
 print(type(age))
-```
-
-If the user enters:
-
-```text
-24
+print("Next year:", age + 1)
 ```
 
 Output:
 
 ```text
+Enter your age: 24
 24
 <class 'int'>
+Next year: 25
 ```
 
 ### Converting input to a float
@@ -110,36 +93,98 @@ Output:
 price = float(input("Enter price: "))
 
 print(price)
-```
-
-If the user enters:
-
-```text
-99.50
+print(type(price))
 ```
 
 Output:
 
 ```text
+Enter price: 99.50
 99.5
+<class 'float'>
 ```
+
+### What happens if you forget?
+
+```python
+a = input("First: ")      # user types 10
+b = input("Second: ")     # user types 20
+
+print(a + b)
+```
+
+Output:
+
+```text
+1020
+```
+
+Not `30`. Python received `"10"` and `"20"`, and `+` on strings **concatenates**. Convert first:
+
+```python
+a = int(input("First: "))
+b = int(input("Second: "))
+
+print(a + b)
+```
+
+Output:
+
+```text
+30
+```
+
+### Reading several values from one line
+
+A very common pattern on this platform:
+
+```python
+a, b = map(int, input().split())
+
+print(a + b)
+```
+
+If the input is `10 20`, the output is `30`.
+
+**How it works, step by step:**
+
+```text
+input()          →  "10 20"
+.split()         →  ["10", "20"]      splits on whitespace
+map(int, ...)    →  10, 20            converts each piece
+a, b = ...       →  a = 10, b = 20    unpacks into names
+```
+
+Reading into a list:
+
+```python
+numbers = list(map(int, input().split()))
+```
+
+Input `1 2 3 4 5` gives `[1, 2, 3, 4, 5]`.
+
+> **Note** — `split()` with no argument splits on any run of whitespace, so double spaces are handled correctly. Use `split(",")` when the input is comma-separated.
 
 ---
 
-# 2. `print()`
+## 2. `print()`
 
-`print()` is used to display output on the screen.
+`print()` writes values to the screen. Section 1 of *Python Basics* covered the fundamentals; here we focus on the two parameters that control layout.
 
 ### Basic example
 
 ```python
-print("Hello, Python!")
+print("Hello")
+print(10)
+print(3.14)
 ```
 
 Output:
 
 ```text
-Hello, Python!
+Hello
+10
+3.14
 ```
 
 ### Printing variables
@@ -161,8 +206,6 @@ Mahesh
 
 ### Printing multiple values
 
-You can separate values with commas:
-
 ```python
 name = "Mahesh"
 age = 24
@@ -176,105 +219,63 @@ Output:
 Name: Mahesh Age: 24
 ```
 
----
+Comma-separated values are joined with a space.
 
-## `sep`
+### `sep` — what goes between values
 
-`sep` controls what is placed between multiple values.
-
-By default, `print()` uses a space.
+The default separator is a single space.
 
 ```python
-print("Python", "JavaScript", "Java")
+print("2026", "09", "03", sep="-")
+print("a", "b", "c", sep="")
+print("x", "y", sep=" -> ")
 ```
 
 Output:
 
 ```text
-Python JavaScript Java
+2026-09-03
+abc
+x -> y
 ```
 
-You can change it:
+### `end` — what goes at the end
+
+The default is a newline.
 
 ```python
-print("Python", "JavaScript", "Java", sep=", ")
+print("Loading", end="")
+print("...done")
+
+print("one", end=", ")
+print("two", end=", ")
+print("three")
 ```
 
 Output:
 
 ```text
-Python, JavaScript, Java
+Loading...done
+one, two, three
 ```
 
-Another example:
+### Combining `sep` and `end`
 
 ```python
-print("2026", "08", "09", sep="-")
+print("10", "20", "30", sep=" | ", end="  <- values\n")
 ```
 
 Output:
 
 ```text
-2026-08-09
-```
-
----
-
-## `end`
-
-By default, `print()` moves to a new line after printing.
-
-```python
-print("Hello")
-print("World")
-```
-
-Output:
-
-```text
-Hello
-World
-```
-
-You can change this using `end`:
-
-```python
-print("Hello", end=" ")
-print("World")
-```
-
-Output:
-
-```text
-Hello World
-```
-
-Another example:
-
-```python
-print("Loading", end="...")
-print("Done")
-```
-
-Output:
-
-```text
-Loading...Done
+10 | 20 | 30  <- values
 ```
 
 ---
 
-# 3. f-Strings
+## 3. f-Strings
 
-f-strings are a simple way to put variables and expressions inside strings.
-
-An f-string starts with `f` before the string:
-
-```python
-f"..."
-```
-
-Variables are placed inside `{}`.
+An **f-string** (formatted string literal) lets you embed values directly inside text. Put `f` before the opening quote and wrap expressions in `{}`.
 
 ### Basic example
 
@@ -291,284 +292,410 @@ Output:
 My name is Mahesh and I am 24 years old.
 ```
 
-Without an f-string, you would need to join the values separately.
+### Why f-strings are preferred
 
-With f-strings, the code is cleaner.
+The older approaches do the same thing but are harder to read:
 
----
+```python
+# Concatenation — clumsy, needs str()
+print("My name is " + name + " and I am " + str(age) + " years old.")
 
-## Using expressions in f-strings
+# .format() — better, but noisier
+print("My name is {} and I am {} years old.".format(name, age))
 
-You can put expressions inside `{}`.
+# f-string — clearest
+print(f"My name is {name} and I am {age} years old.")
+```
+
+With an f-string you can see the final sentence in the source, and no `str()` conversion is needed.
+
+### Expressions inside f-strings
+
+The braces hold a full expression, not just a name:
 
 ```python
 a = 10
 b = 20
 
-print(f"Sum = {a + b}")
+print(f"{a} + {b} = {a + b}")
+print(f"Next year: {age + 1}")
+print(f"Upper: {name.upper()}")
 ```
 
 Output:
 
 ```text
-Sum = 30
+10 + 20 = 30
+Next year: 25
+Upper: MAHESH
 ```
 
-Another example:
+### Multiple variables
 
 ```python
-price = 100
-quantity = 3
+product = "Laptop"
+price = 55000
+quantity = 2
 
-print(f"Total = {price * quantity}")
+print(f"Item: {product}, Price: {price}, Total: {price * quantity}")
 ```
 
 Output:
 
 ```text
-Total = 300
+Item: Laptop, Price: 55000, Total: 110000
 ```
+
+### Calling functions inside braces
+
+```python
+items = [3, 1, 4]
+
+print(f"Count: {len(items)}, Sum: {sum(items)}")
+```
+
+Output:
+
+```text
+Count: 3, Sum: 8
+```
+
+> **Note** — To print a literal brace, double it: `f"{{literal}}"` prints `{literal}`.
 
 ---
 
-## Using multiple variables
+## 4. Formatting Output
 
-```python
-name = "Mahesh"
-city = "Akola"
-age = 24
+Inside an f-string, follow an expression with `:` and a **format spec** to control how it appears.
 
-print(f"{name} is {age} years old and lives in {city}.")
-```
-
-Output:
+The general shape is:
 
 ```text
-Mahesh is 24 years old and lives in Akola.
+{value:[[fill]align][width][,][.precision][type]}
 ```
 
----
+You rarely need all of it at once — the sections below cover each part.
 
-# 4. Formatting Output
+### Decimal places
 
-Formatting output means controlling **how the information appears** on the screen.
-
-f-strings are commonly used for this.
-
-## Decimal places
-
-Suppose:
+`.2f` means "a float with 2 decimal places":
 
 ```python
 price = 99.56789
-```
 
-You can display only 2 decimal places:
-
-```python
-print(f"{price:.2f}")
-```
-
-Output:
-
-```text
-99.57
-```
-
-Here:
-
-```text
-.2f
-```
-
-means:
-
-* `.2` → show 2 digits after the decimal
-* `f` → floating-point format
-
-Example:
-
-```python
-pi = 3.14159265
-
-print(f"{pi:.2f}")
+print(f"Price: {price:.2f}")
+print(f"Price: {price:.1f}")
+print(f"Price: {price:.0f}")
 ```
 
 Output:
 
 ```text
-3.14
+Price: 99.57
+Price: 99.6
+Price: 100
 ```
+
+> **Note** — This **rounds**, it does not truncate. `99.56789` at `.2f` gives `99.57`.
+
+Useful for currency:
+
+```python
+total = 1234.5
+print(f"Total: Rs. {total:.2f}")
+```
+
+Output:
+
+```text
+Total: Rs. 1234.50
+```
+
+### Thousands separators
+
+```python
+population = 1400000000
+
+print(f"Population: {population:,}")
+```
+
+Output:
+
+```text
+Population: 1,400,000,000
+```
+
+Combine with decimal places:
+
+```python
+revenue = 1234567.891
+
+print(f"Revenue: Rs. {revenue:,.2f}")
+```
+
+Output:
+
+```text
+Revenue: Rs. 1,234,567.89
+```
+
+### Percentages
+
+`.1%` multiplies by 100 and adds the sign:
+
+```python
+ratio = 0.4567
+
+print(f"Progress: {ratio:.1%}")
+print(f"Progress: {ratio:.2%}")
+print(f"Progress: {ratio:.0%}")
+```
+
+Output:
+
+```text
+Progress: 45.7%
+Progress: 45.67%
+Progress: 46%
+```
+
+### Width and alignment
+
+Width reserves a minimum number of characters, padding with spaces.
+
+**Right alignment** (default for numbers):
+
+```python
+for n in [1, 10, 100]:
+    print(f"|{n:>6}|")
+```
+
+Output:
+
+```text
+|     1|
+|    10|
+|   100|
+```
+
+**Left alignment** (default for text):
+
+```python
+for s in ["a", "bb", "ccc"]:
+    print(f"|{s:<6}|")
+```
+
+Output:
+
+```text
+|a     |
+|bb    |
+|ccc   |
+```
+
+**Centre alignment:**
+
+```python
+print(f"|{'Hi':^10}|")
+```
+
+Output:
+
+```text
+|    Hi    |
+```
+
+**Custom fill character:**
+
+```python
+print(f"{'Hi':*^10}")
+print(f"{42:0>5}")
+```
+
+Output:
+
+```text
+****Hi****
+00042
+```
+
+### Building a table
+
+Combined, these make neat columns:
+
+```python
+items = [("Apple", 30), ("Banana", 5), ("Mango", 120)]
+
+print(f"{'Item':<10} {'Qty':>5}")
+print("-" * 16)
+for name, qty in items:
+    print(f"{name:<10} {qty:>5}")
+```
+
+Output:
+
+```text
+Item         Qty
+----------------
+Apple         30
+Banana         5
+Mango        120
+```
+
+### Common format specs
+
+| Spec | Meaning | Example | Result |
+| ---- | ------- | ------- | ------ |
+| `:.2f` | 2 decimal places | `f"{3.14159:.2f}"` | `3.14` |
+| `:,` | Thousands separator | `f"{1000000:,}"` | `1,000,000` |
+| `:,.2f` | Both | `f"{1234.5:,.2f}"` | `1,234.50` |
+| `:.1%` | Percentage | `f"{0.456:.1%}"` | `45.6%` |
+| `:>8` | Right align, width 8 | `f"{5:>8}"` | `       5` |
+| `:<8` | Left align, width 8 | `f"{'hi':<8}"` | `hi      ` |
+| `:^8` | Centre, width 8 | `f"{'hi':^8}"` | `   hi   ` |
+| `:0>4` | Zero pad | `f"{42:0>4}"` | `0042` |
+| `:b` / `:x` | Binary / hex | `f"{10:b}"` | `1010` |
 
 ---
 
-## Formatting numbers with commas
+## 5. Combining Input, Processing, and Output
 
-Large numbers can be easier to read with comma separators.
-
-```python
-number = 1000000
-
-print(f"{number:,}")
-```
-
-Output:
-
-```text
-1,000,000
-```
-
----
-
-## Percentage formatting
-
-You can format a decimal as a percentage.
+Real programs combine all three steps. This is the pattern every problem on this platform follows.
 
 ```python
-rate = 0.75
-
-print(f"{rate:.0%}")
-```
-
-Output:
-
-```text
-75%
-```
-
-Another example:
-
-```python
-rate = 0.7567
-
-print(f"{rate:.2%}")
-```
-
-Output:
-
-```text
-75.67%
-```
-
----
-
-## Width and alignment
-
-You can control the space used by a value.
-
-### Right alignment
-
-```python
-name = "Python"
-
-print(f"{name:>10}")
-```
-
-Output:
-
-```text
-    Python
-```
-
-### Left alignment
-
-```python
-name = "Python"
-
-print(f"{name:<10}")
-```
-
-Output:
-
-```text
-Python    
-```
-
-### Center alignment
-
-```python
-name = "Python"
-
-print(f"{name:^10}")
-```
-
-Output:
-
-```text
-  Python  
-```
-
-The number `10` means the total width is 10 characters.
-
----
-
-## Formatting currency
-
-```python
-price = 1250.5
-
-print(f"Price: ₹{price:.2f}")
-```
-
-Output:
-
-```text
-Price: ₹1250.50
-```
-
----
-
-# Combining Input, Processing, and Output
-
-A very common Python pattern is:
-
-```text
-Input → Process → Output
-```
-
-Example:
-
-```python
+# 1. Input
 name = input("Enter your name: ")
 age = int(input("Enter your age: "))
 
-next_age = age + 1
+# 2. Process
+next_year = age + 1
 
-print(f"Hello {name}!")
-print(f"Next year you will be {next_age}.")
+# 3. Output
+print(f"Hello, {name}!")
+print(f"You are {age} now, and {next_year} next year.")
 ```
 
-Example run:
+Output:
 
 ```text
 Enter your name: Mahesh
 Enter your age: 24
-Hello Mahesh!
-Next year you will be 25.
+Hello, Mahesh!
+You are 24 now, and 25 next year.
 ```
 
-This pattern is important because many beginner Python programs follow:
+### A calculation example
+
+```python
+# Input
+price = float(input("Enter price: "))
+quantity = int(input("Enter quantity: "))
+
+# Process
+subtotal = price * quantity
+tax = subtotal * 0.18
+total = subtotal + tax
+
+# Output
+print(f"Subtotal: Rs. {subtotal:,.2f}")
+print(f"Tax (18%): Rs. {tax:,.2f}")
+print(f"Total:     Rs. {total:,.2f}")
+```
+
+Output:
 
 ```text
-Take input
-     ↓
-Process data
-     ↓
-Display result
+Enter price: 250
+Enter quantity: 4
+Subtotal: Rs. 1,000.00
+Tax (18%): Rs. 180.00
+Total:     Rs. 1,180.00
 ```
 
-# Quick Revision
+### The pattern to internalise
 
-| Topic     | Main idea                   | Example                |
-| --------- | --------------------------- | ---------------------- |
-| `input()` | Takes user input            | `name = input()`       |
-| `print()` | Displays output             | `print(name)`          |
-| `sep`     | Changes separator           | `print(a, b, sep="-")` |
-| `end`     | Changes ending              | `print("Hi", end=" ")` |
-| f-string  | Inserts values into strings | `f"Hello {name}"`      |
-| `.2f`     | 2 decimal places            | `f"{price:.2f}"`       |
-| `:,`      | Number commas               | `f"{number:,}"`        |
-| `:.2%`    | Percentage                  | `f"{rate:.2%}"`        |
-| `:>10`    | Right align                 | `f"{name:>10}"`        |
-| `:<10`    | Left align                  | `f"{name:<10}"`        |
-| `:^10`    | Center align                | `f"{name:^10}"`        |
+```text
+┌─────────────┐
+│  1. Input   │   input() → convert if needed
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│ 2. Process  │   calculations, logic
+└──────┬──────┘
+       ↓
+┌─────────────┐
+│  3. Output  │   print() / f-strings
+└─────────────┘
+```
+
+Keeping those three phases separate makes programs easier to read and debug. When output looks wrong, you know whether the bug is in what you read or what you computed.
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | What happens | Fix |
+| ------- | ------------ | --- |
+| Forgetting `int()` around `input()` | Numbers concatenate: `"10" + "20"` → `"1020"` | `int(input())` |
+| `int(input())` when input is `24.5` | `ValueError` | Use `float(input())` |
+| Using `+` to join text and a number | `TypeError` | Use an f-string |
+| Forgetting the `f` prefix | Prints `{name}` literally | `f"Hello {name}"` |
+| Expecting `:.2f` to truncate | It rounds | Use `math.floor` if you need truncation |
+| Comparing floats for equality | Unreliable | `math.isclose()` |
+
+---
+
+## Quick Revision
+
+| Task | Code | Notes |
+| ---- | ---- | ----- |
+| Read text | `name = input()` | Always returns `str` |
+| Read with prompt | `input("Name: ")` | Prompt is not part of the result |
+| Read an integer | `int(input())` | Convert explicitly |
+| Read a float | `float(input())` | Accepts decimals |
+| Read two ints | `a, b = map(int, input().split())` | Split then convert |
+| Read a list | `list(map(int, input().split()))` | Common in exercises |
+| Print several values | `print("a", "b")` | Joined by a space |
+| Custom separator | `print("a", "b", sep="-")` | `a-b` |
+| No trailing newline | `print("x", end="")` | Suppresses the newline |
+| Embed a value | `f"Age: {age}"` | Needs the `f` prefix |
+| 2 decimal places | `f"{x:.2f}"` | Rounds |
+| Thousands separator | `f"{x:,}"` | `1,000,000` |
+| Percentage | `f"{x:.1%}"` | Multiplies by 100 |
+| Padding / alignment | `f"{x:>8}"` | Right align in width 8 |
+
+### Core patterns
+
+```python
+name = input()                              # read text
+age = int(input())                          # read a number
+a, b = map(int, input().split())            # read two numbers
+nums = list(map(int, input().split()))      # read many numbers
+
+print(f"Hello {name}")                      # f-string
+print(f"{price:.2f}")                       # 2 decimals
+print(f"{count:,}")                         # thousands
+print(f"{ratio:.1%}")                       # percentage
+print(f"{name:<10}{qty:>5}")                # aligned columns
+```
+
+### The main idea
+
+```text
+Input and Output
+ ├── input()  → always returns a string → convert it
+ ├── print()  → sep between values, end at the end
+ ├── f-strings → f"{value}" embeds values in text
+ └── Format specs → {value:.2f} ,  {value:,}  {value:>8}
+```
+
+---
+
+## Self-Check
+
+- [ ] What does `input()` return when the user types `42`?
+- [ ] What does `print("10" + "20")` produce, and why?
+- [ ] Explain `a, b = map(int, input().split())` step by step.
+- [ ] What is the difference between `sep` and `end`?
+- [ ] How do you print `1234.5678` as `1,234.57`?
+- [ ] What does `f"{0.456:.1%}"` output?

@@ -15,11 +15,24 @@ A focused, serverless client-side web application for learning and mastering Pyt
 ## Pages
 
 - `index.html` — Landing page with stats, resume card, and roadmap
+- `learn.html` — Long-form curriculum notes for all 18 topics
 - `topics.html` — Topic library and live search/filter
 - `practice.html` — Topic + difficulty question list
 - `problem.html` — Monaco coding workspace and test runner
 - `progress.html` — Analytics dashboard
 - `guide.html` — 5-stage Python roadmap
+
+## Topic Notes
+
+The Learn page's curriculum notes live in `notes/*.md` — one file per topic, named `NN_topic_name.md` so the number matches the topic's position in `js/topics-data.js`.
+
+Edit those `.md` files when you want to change note content. The browser can't fetch them directly, so they're compiled into `js/topic-notes-data.js`:
+
+```bash
+npm run build:notes   # recompile js/topic-notes-data.js from notes/*.md
+```
+
+**`js/topic-notes-data.js` is generated — never edit it by hand.** Any hand edit is lost on the next build. `npm test` fails if the compiled file is stale, so an out-of-date build can't slip through unnoticed.
 
 ## How to Run
 

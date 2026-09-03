@@ -1,468 +1,652 @@
 # Python Exception Handling — Notes
 
-Exception handling is used to **handle errors in a controlled way** so that your program does not stop suddenly when an error happens.
+An **exception** is an error detected while a program runs. Exception handling lets your program respond to errors instead of crashing.
 
-For example:
+> **Why this matters** — Real programs meet bad input, missing files, and unreachable services. Handling exceptions is the difference between a program that dies with a stack trace and one that says "that file was not found, try again". It is also how you write cleanup code that always runs.
 
-```python id="m8j6q1"
-number = int(input("Enter a number: "))
-print(number)
-```
-
-If the user enters:
+### The mental model
 
 ```text
-hello
+try:      →  "attempt this, it might fail"
+except:   →  "if it failed, do this instead"
+else:     →  "if it succeeded, do this"
+finally:  →  "always do this, whatever happened"
 ```
 
-Python raises an error because `"hello"` cannot be converted into an integer.
+### Errors vs exceptions
 
-Exception handling lets you handle this situation.
+| | Meaning | Example |
+| - | ------- | ------- |
+| Syntax error | Code cannot be parsed | `if True` (missing colon) |
+| Exception | Valid code fails at runtime | `int("abc")`, `1 / 0` |
+
+Syntax errors must be fixed. Exceptions can be handled.
 
 ---
 
-# 1. `try`
+## 1. `try`
 
-The `try` block contains code that **might cause an error**.
+`try` wraps code that might fail.
 
-### Basic syntax
-
-```python id="y7d4w2"
+```python
 try:
-    # code that might cause an error
-```
-
-Example:
-
-```python id="4q1j5d"
-try:
-    number = int("hello")
-```
-
-The conversion causes an exception.
-
-Usually, `try` is used together with `except`.
-
----
-
-# 2. `except`
-
-`except` is used to **handle an exception**.
-
-### Basic syntax
-
-```python id="0bqg7n"
-try:
-    # risky code
+    number = int(input("Enter a number: "))
+    print("You entered:", number)
 except:
-    # code to run if an error happens
+    print("That was not a valid number")
 ```
 
-Example:
+If `int()` fails, the `except` block runs instead of the program crashing.
 
-```python id="0v8m7h"
+### `try` alone is not enough
+
+```python
 try:
-    number = int("hello")
+    print(10 / 0)
+# SyntaxError — a try must have at least one except or finally
+```
+
+### What happens without `try`
+
+```python
+number = int(input("Enter a number: "))
+```
+
+If the user types `abc`:
+
+```text
+ValueError: invalid literal for int() with base 10: 'abc'
+```
+
+The program stops. With `try`/`except`, it recovers.
+
+### Only wrap what can fail
+
+```python
+# Too broad — hides bugs elsewhere
+try:
+    name = input()
+    age = int(input())
+    save_to_database(name, age)
 except:
     print("Something went wrong")
+
+# Better — wraps only the risky line
+name = input()
+try:
+    age = int(input())
+except ValueError:
+    print("Please enter a number")
+    age = 0
 ```
 
-Output:
-
-```text id="t7a5pg"
-Something went wrong
-```
-
-Instead of the program stopping with an error message, the `except` block runs.
+> **Rule** — Keep the `try` block as small as possible. A large `try` makes it impossible to know which line failed.
 
 ---
 
-## Handling a specific exception
+## 2. `except`
 
-It is better to catch the type of error you expect.
+`except` catches and handles an exception.
 
-Example:
+### Catching a specific exception
 
-```python id="r7c7j4"
+```python
 try:
-    number = int("hello")
+    number = int("abc")
 except ValueError:
-    print("Please enter a valid number")
+    print("Could not convert to a number")
 ```
 
 Output:
 
-```text id="n5c0y2"
-Please enter a valid number
+```text
+Could not convert to a number
 ```
 
-Here, `ValueError` is the type of exception caused by the invalid conversion.
+> **Always catch specific exceptions.** `except ValueError` says what you expect to go wrong. A bare `except` swallows everything, including bugs you did not anticipate.
 
-### Another example
+### Why bare `except` is dangerous
 
-```python id="j4k6g3"
+```python
 try:
-    result = 10 / 0
+    value = data["key"]
+except:                      # catches everything
+    value = None
+```
+
+This also catches `KeyboardInterrupt` (Ctrl+C) and `SystemExit`, and it hides typos like `dat["key"]`. Catch what you mean:
+
+```python
+try:
+    value = data["key"]
+except KeyError:
+    value = None
+```
+
+### Catching several exception types
+
+```python
+try:
+    value = int(input("Enter a number: "))
+    result = 100 / value
+except ValueError:
+    print("That was not a number")
 except ZeroDivisionError:
     print("Cannot divide by zero")
 ```
 
+Or as a tuple, when the handling is the same:
+
+```python
+try:
+    value = int(input("Enter a number: "))
+    result = 100 / value
+except (ValueError, ZeroDivisionError):
+    print("Invalid input")
+```
+
+### Getting the exception object
+
+Use `as` to inspect the error:
+
+```python
+try:
+    number = int("abc")
+except ValueError as e:
+    print("Error:", e)
+    print("Type:", type(e).__name__)
+```
+
 Output:
 
-```text id="5asq1v"
-Cannot divide by zero
+```text
+Error: invalid literal for int() with base 10: 'abc'
+Type: ValueError
 ```
+
+This is invaluable for logging and for showing the user what actually happened.
+
+### Common exception types
+
+| Exception | Raised when |
+| --------- | ----------- |
+| `ValueError` | Right type, wrong value — `int("abc")` |
+| `TypeError` | Wrong type — `"10" + 5` |
+| `IndexError` | Index out of range — `list[99]` |
+| `KeyError` | Missing dict key |
+| `ZeroDivisionError` | Division by zero |
+| `FileNotFoundError` | Missing file |
+| `AttributeError` | Missing attribute or method |
+| `NameError` | Undefined name |
+| `ImportError` | Module cannot be imported |
+
+### Multiple `except` blocks
+
+Order matters — Python uses the **first** matching block:
+
+```python
+try:
+    values = [1, 2]
+    print(values[5])
+except LookupError:          # parent of IndexError and KeyError
+    print("A lookup failed")
+except IndexError:           # never reached
+    print("Index problem")
+```
+
+Output:
+
+```text
+A lookup failed
+```
+
+> **Rule** — Put the most **specific** exception types first, the more general ones last.
+
+### Catching everything (when you really must)
+
+```python
+try:
+    risky_operation()
+except Exception as e:        # catches all normal exceptions
+    print("Failed:", e)
+```
+
+`except Exception` still lets `KeyboardInterrupt` and `SystemExit` through, so it is safer than a bare `except`.
 
 ---
 
-# 3. `else`
+## 3. `else`
 
-The `else` block runs when **no exception occurs** in the `try` block.
+`else` runs only when the `try` block completed **without** an exception.
 
-### Syntax
-
-```python id="ip7n7c"
+```python
 try:
-    # code
-except:
-    # runs if error occurs
-else:
-    # runs if no error occurs
-```
-
-Example:
-
-```python id="n5o5b9"
-try:
-    number = int("25")
+    number = int(input("Enter a number: "))
 except ValueError:
     print("Invalid number")
 else:
-    print("Number is valid")
+    print("Valid number:", number)
 ```
 
-Output:
+If the user types `42`:
 
-```text id="f8vwmr"
-Number is valid
+```text
+Valid number: 42
 ```
 
-If an exception occurs:
+If they type `abc`:
 
-```python id="l65s9d"
-try:
-    number = int("hello")
-except ValueError:
-    print("Invalid number")
-else:
-    print("Number is valid")
-```
-
-Output:
-
-```text id="0r3fzo"
+```text
 Invalid number
 ```
 
-The `else` block does not run because there was an error.
+### Why use `else`?
 
-### Simple idea
+It keeps the success path separate from the risky operation:
 
-```text id="v7l8n3"
-try
- ↓
-Error?
- ├── Yes → except
- └── No  → else
+```python
+# Without else — the second call is also protected
+try:
+    value = int(input())
+    print("Doubled:", value * 2)      # an error here would be caught too
+except ValueError:
+    print("Invalid")
+
+# With else — only the conversion is protected
+try:
+    value = int(input())
+except ValueError:
+    print("Invalid")
+else:
+    print("Doubled:", value * 2)      # errors here propagate normally
 ```
+
+> **Rule** — Put only the code that can raise the exception you are catching inside `try`. Put everything that should run on success in `else`.
 
 ---
 
-# 4. `finally`
+## 4. `finally`
 
-The `finally` block runs **no matter what happens**.
+`finally` runs **no matter what** — success, exception, or `return`.
 
-It runs whether an exception occurs or not.
-
-### Syntax
-
-```python id="3qj9w6"
+```python
 try:
-    # code
-except:
-    # error handling
-finally:
-    # always runs
-```
-
-Example:
-
-```python id="2r0u4e"
-try:
-    number = int("25")
+    number = int("abc")
 except ValueError:
-    print("Invalid number")
+    print("Conversion failed")
 finally:
-    print("Program finished")
+    print("This always runs")
 ```
 
 Output:
 
-```text id="j0xkfc"
-Program finished
+```text
+Conversion failed
+This always runs
 ```
 
-Even if an error happens:
+### What `finally` is for: cleanup
 
-```python id="8q0x9s"
+```python
+file = open("data.txt", "r")
+
 try:
-    number = int("hello")
-except ValueError:
-    print("Invalid number")
+    content = file.read()
+    print(content)
+except FileNotFoundError:
+    print("File not found")
 finally:
-    print("Program finished")
+    file.close()          # runs whether or not reading succeeded
+    print("File closed")
+```
+
+Without `finally`, an exception would skip `close()` and leak the file handle.
+
+### `finally` runs even with `return`
+
+```python
+def test():
+    try:
+        return "from try"
+    finally:
+        print("cleanup runs before returning")
+
+
+print(test())
 ```
 
 Output:
 
-```text id="1t2jkc"
-Invalid number
-Program finished
+```text
+cleanup runs before returning
+from try
 ```
 
-The `finally` block still runs.
+### `finally` without `except`
 
-### Common use
+A `try`/`finally` pair is legal and means "clean up, but let errors propagate":
 
-`finally` is useful when something must happen at the end, such as cleanup work.
+```python
+resource = acquire()
 
-For example:
-
-```python id="8p7hwd"
 try:
-    print("Doing some work")
-except:
-    print("An error occurred")
+    process(resource)
 finally:
-    print("Finished")
+    release(resource)      # always released; any error still propagates
 ```
+
+> **Modern alternative** — For files, the `with` statement (see *File Handling*) does this automatically and should be preferred.
 
 ---
 
-# 5. `raise`
+## 5. `raise`
 
-`raise` is used to **manually create an exception**.
+`raise` **throws** an exception yourself.
 
-You use it when you want to stop normal execution and report a problem yourself.
-
-### Basic syntax
-
-```python id="a7u0x4"
-raise Exception("message")
-```
-
-Example:
-
-```python id="m0rhpx"
-age = -5
+```python
+age = int(input("Enter age: "))
 
 if age < 0:
     raise ValueError("Age cannot be negative")
+
+print("Age:", age)
 ```
 
-This raises:
+If the user types `-5`:
 
-```text id="3yjg4d"
+```text
 ValueError: Age cannot be negative
 ```
 
-Here, Python did not automatically find the problem. You chose to raise the exception because the value is not valid.
+### Why raise exceptions?
 
----
+To signal that something is wrong rather than continuing with bad data:
 
-## `raise` with `try-except`
+```python
+def calculate_area(radius):
+    if radius < 0:
+        raise ValueError("radius must be non-negative")
+    return 3.14159 * radius ** 2
 
-You can raise an exception and then handle it.
 
-```python id="p8o5ep"
+print(calculate_area(5))       # 78.53975
+print(calculate_area(-1))      # ValueError
+```
+
+### Re-raising
+
+Catch, log, then pass the exception along:
+
+```python
 try:
-    age = -5
+    process_data()
+except ValueError as e:
+    print("Logging error:", e)
+    raise                      # re-raises the same exception
+```
 
-    if age < 0:
-        raise ValueError("Age cannot be negative")
+Bare `raise` inside an `except` re-raises the current exception, preserving the traceback.
 
-except ValueError as error:
-    print(error)
+### Custom exceptions
+
+Define your own by subclassing `Exception`:
+
+```python
+class InsufficientFundsError(Exception):
+    """Raised when an account has insufficient balance."""
+    pass
+
+
+def withdraw(balance, amount):
+    if amount > balance:
+        raise InsufficientFundsError(
+            f"Need {amount}, but only {balance} available"
+        )
+    return balance - amount
+
+
+try:
+    withdraw(100, 150)
+except InsufficientFundsError as e:
+    print("Transaction failed:", e)
 ```
 
 Output:
 
-```text id="tr8h1s"
-Age cannot be negative
+```text
+Transaction failed: Need 150, but only 100 available
 ```
 
-The `as error` part stores the exception message in the variable `error`.
+Custom exceptions make error handling precise — callers can catch your error specifically.
+
+### `raise ... from`
+
+Chain exceptions to show cause:
+
+```python
+try:
+    value = int(user_input)
+except ValueError as e:
+    raise ValueError(f"Invalid age: {user_input!r}") from e
+```
 
 ---
 
-# Combining `try`, `except`, `else`, and `finally`
+## Combining `try`, `except`, `else`, and `finally`
 
-You can use all four together:
+All four in one block, showing the full flow:
 
-```python id="59u1qf"
+```python
+def divide(a, b):
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        print("Cannot divide by zero")
+        return None
+    except TypeError as e:
+        print("Invalid types:", e)
+        return None
+    else:
+        print("Division succeeded")
+        return result
+    finally:
+        print("Cleanup: done")
+
+
+print(divide(10, 2))
+print("---")
+print(divide(10, 0))
+```
+
+Output:
+
+```text
+Division succeeded
+Cleanup: done
+5.0
+---
+Cannot divide by zero
+Cleanup: done
+None
+```
+
+### The order is fixed
+
+```python
 try:
-    number = int(input("Enter a number: "))
-except ValueError:
-    print("Invalid input")
+    ...
+except SomeError:
+    ...
 else:
-    print(f"You entered {number}")
+    ...
 finally:
-    print("Done")
+    ...
 ```
 
-### If the user enters `25`
+`else` and `finally` are both optional; `except` and `else` cannot be combined without `except`.
 
-```text id="t8ve0v"
-Enter a number: 25
-You entered 25
-Done
-```
+### Execution flow
 
-### If the user enters `hello`
-
-```text id="7f0c7o"
-Enter a number: hello
-Invalid input
-Done
-```
-
-The flow is:
-
-```text id="cv4zxl"
+```text
 try
- │
- ├── Error → except
- │
- └── No error → else
-             │
-             ↓
-          finally
-```
-
-`finally` runs in both cases.
-
----
-
-# Multiple `except` Blocks
-
-You can handle different exception types separately.
-
-```python id="e8b9bt"
-try:
-    number = int(input("Enter a number: "))
-    result = 10 / number
-
-except ValueError:
-    print("Please enter a valid number")
-
-except ZeroDivisionError:
-    print("Number cannot be zero")
-```
-
-For example, entering:
-
-```text id="q9n1m4"
-abc
-```
-
-produces:
-
-```text id="8q4f7c"
-Please enter a valid number
-```
-
-Entering:
-
-```text id="x8z7l2"
-0
-```
-
-produces:
-
-```text id="w2y1f8"
-Number cannot be zero
+ ├── success?
+ │    ├── yes → else (if present) → finally
+ │    └── no  → matching except?
+ │                ├── yes → except → finally
+ │                └── no  → finally → exception propagates
 ```
 
 ---
 
-# Important Difference: `except` vs `raise`
+## Important Difference: `except` vs `raise`
 
-`except` is used to **handle** an exception:
+| | `except` | `raise` |
+| - | -------- | ------- |
+| Purpose | Handle an error | Create an error |
+| Effect | Program continues | Program stops unless caught |
+| Used for | Recovery | Reporting invalid state |
 
-```python id="j15c1k"
+```python
+# Handling
 try:
-    number = int("hello")
+    value = int(text)
 except ValueError:
-    print("Invalid number")
+    value = 0              # recover with a default
+
+# Raising
+if value < 0:
+    raise ValueError("value must be positive")
 ```
 
-`raise` is used to **create an exception yourself**:
+A robust function often does both: raise on invalid input, and let the caller decide how to handle it.
 
-```python id="c0b6ny"
-if age < 0:
-    raise ValueError("Invalid age")
-```
+```python
+def get_positive_number(text):
+    value = int(text)                     # may raise ValueError
+    if value <= 0:
+        raise ValueError("must be positive")
+    return value
 
-Think:
 
-```text id="1z4o3c"
-raise  → "There is a problem!"
-except → "I will handle that problem."
+try:
+    n = get_positive_number(input("Enter: "))
+except ValueError as e:
+    print("Invalid:", e)
 ```
 
 ---
 
-# Quick Revision
+## Best Practices
 
-| Keyword   | Purpose                                   |
-| --------- | ----------------------------------------- |
-| `try`     | Contains code that may cause an exception |
-| `except`  | Handles the exception                     |
-| `else`    | Runs when no exception occurs             |
-| `finally` | Runs whether an exception occurs or not   |
-| `raise`   | Manually raises an exception              |
+1. **Catch specific exceptions**, not bare `except`.
+2. **Keep `try` blocks small** — wrap only the risky line.
+3. **Use `else`** for code that should run only on success.
+4. **Use `finally`** (or `with`) for cleanup.
+5. **Do not silently swallow** exceptions — at minimum, log them.
+6. **Raise with a message** so the error explains itself.
+7. **Fail fast** — raise early rather than propagating bad data.
 
-### Core pattern
-
-```python id="k2l9xq"
+```python
+# Poor
 try:
-    # code that may cause an error
+    do_everything()
+except:
+    pass                     # silently ignores everything
 
+# Good
+try:
+    config = load_config(path)
+except FileNotFoundError:
+    print(f"Config not found at {path}; using defaults")
+    config = DEFAULT_CONFIG
+```
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | Why it is bad | Fix |
+| ------- | ------------- | --- |
+| Bare `except:` | Hides real bugs, catches Ctrl+C | `except ValueError:` |
+| `except:` with `pass` | Errors disappear silently | Log it or handle it |
+| Catching too broad a block | Cannot tell which line failed | Narrow the `try` |
+| General exception before specific | Specific handler never runs | Order specific → general |
+| Using `finally` where `with` fits | More code, easy to forget | Use `with open(...)` |
+| Raising without a message | Unhelpful errors | `raise ValueError("why")` |
+| Using exceptions for normal control flow | Slow and confusing | Use `if`/`else` for expected cases |
+
+---
+
+## Quick Revision
+
+| Block | Runs when | Purpose |
+| ----- | --------- | ------- |
+| `try` | Always attempted | Wrap risky code |
+| `except E` | That exception occurred | Handle a specific error |
+| `except (A, B)` | Either occurred | Handle several the same way |
+| `except E as e` | That exception occurred | Inspect the error |
+| `else` | No exception occurred | Success path |
+| `finally` | Always | Cleanup |
+| `raise E("msg")` | You call it | Signal an error |
+| `raise` | Inside `except` | Re-raise the current error |
+
+### Core patterns
+
+```python
+try:
+    value = int(text)
 except ValueError:
-    # handle the error
+    value = 0
 
+try:
+    value = int(text)
+except ValueError as e:
+    print("Error:", e)
 else:
-    # runs if there is no error
-
+    print("OK:", value)
 finally:
-    # always runs
+    print("done")
+
+try:
+    f = open("data.txt")
+    data = f.read()
+except FileNotFoundError:
+    data = ""
+finally:
+    f.close()
+
+# Better — no manual close needed
+with open("data.txt") as f:
+    data = f.read()
+
+if x < 0:
+    raise ValueError("x must be non-negative")
+
+class MyError(Exception):
+    pass
 ```
 
-### Simple mental model
+### The main idea
 
-```text id="g9s4tj"
-try
-  ↓
-Something goes wrong?
-  ↓
-Yes ──→ except
-  │
-  No
-  ↓
-else
-  │
-  ↓
-finally
+```text
+Exception handling
+ ├── try      → attempt code that may fail
+ ├── except   → handle a specific error (never bare except)
+ ├── else     → run only if nothing failed
+ ├── finally  → always run (cleanup)
+ ├── raise    → signal an error yourself
+ └── Custom exceptions → subclass Exception for precise errors
 ```
 
-The key idea is that **exception handling lets your program deal with errors instead of stopping unexpectedly**.
+---
+
+## Self-Check
+
+- [ ] Why is a bare `except:` considered bad practice?
+- [ ] What runs in `else`, and why is it better than putting that code in `try`?
+- [ ] Does `finally` run if the `try` block returns a value?
+- [ ] How do you catch a `ValueError` and print its message?
+- [ ] What does a bare `raise` (inside `except`) do?
+- [ ] Why must specific exceptions be listed before general ones?
+- [ ] How do you define your own exception type?
+- [ ] What is the difference between `except` and `raise`?

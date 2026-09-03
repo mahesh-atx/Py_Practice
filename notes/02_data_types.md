@@ -1,49 +1,33 @@
 # Python Data Types — Notes
 
-A data type tells Python **what kind of value** a piece of data is.
+A **data type** describes what kind of value a variable holds. Python's core built-in types are `int`, `float`, `str`, `bool`, and `NoneType`.
 
-For example:
+> **Why this matters** — The type of a value decides what you can do with it. `"10" + "20"` gives `"1020"`, but `10 + 20` gives `30`. Same symbol, completely different result. Nearly every beginner bug involving "why is my number wrong?" is really a type problem.
 
-```python
-age = 24
-name = "Mahesh"
-height = 5.8
-is_student = True
+### The mental model
+
+```text
+Value  →  has a type  →  which permits certain operations
+
+"24"   →  str         →  concatenate, slice, upper()
+ 24    →  int         →  add, multiply, compare
+ 24.0  →  float       →  same as int, but approximate
+True   →  bool        →  and / or / not
+None   →  NoneType    →  nothing; a placeholder
 ```
 
-Here, each value has a different data type.
+Python attaches the type to the **value**, not to the variable name. That is why one variable can hold an `int` now and a `str` later.
 
 ---
 
 ## 1. `int`
 
-`int` means **integer**.
-
-It represents whole numbers without a decimal point.
-
-Examples:
+An **integer** is a whole number — positive, negative, or zero — with no decimal point.
 
 ```python
 age = 24
-marks = 85
 temperature = -5
-zero = 0
-```
-
-Positive, negative, and zero are all integers.
-
-```python
-print(10)
-print(-20)
-print(0)
-```
-
-Output:
-
-```text
-10
--20
-0
+count = 0
 ```
 
 ### Checking an integer
@@ -51,22 +35,79 @@ Output:
 ```python
 age = 24
 
+print(age)
 print(type(age))
 ```
 
 Output:
 
 ```text
+24
 <class 'int'>
 ```
+
+### What you can do with integers
+
+```python
+a = 10
+b = 3
+
+print(a + b)      # addition
+print(a - b)      # subtraction
+print(a * b)      # multiplication
+print(a // b)     # floor division
+print(a % b)      # remainder (modulo)
+print(a ** b)     # power
+```
+
+Output:
+
+```text
+13
+7
+30
+3
+1
+1000
+```
+
+### Integers have no size limit
+
+Unlike many languages, Python integers can grow as large as memory allows:
+
+```python
+big = 10 ** 100
+
+print(big)
+```
+
+Output:
+
+```text
+10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+```
+
+### Underscores for readability
+
+```python
+population = 1_400_000_000
+
+print(population)
+```
+
+Output:
+
+```text
+1400000000
+```
+
+The underscores are ignored by Python — they exist purely to help you read the number.
 
 ---
 
 ## 2. `float`
 
-`float` is used for numbers containing a decimal point.
-
-Examples:
+A **float** is a number with a decimal point.
 
 ```python
 price = 99.50
@@ -74,272 +115,308 @@ height = 5.8
 temperature = -2.5
 ```
 
-```python
-print(10.5)
-print(-3.14)
-print(0.5)
-```
-
-Output:
-
-```text
-10.5
--3.14
-0.5
-```
-
 ### Checking a float
 
 ```python
 price = 99.50
 
+print(price)
 print(type(price))
 ```
 
 Output:
 
 ```text
+99.5
 <class 'float'>
 ```
 
 ### Integer vs float
 
+The division operator `/` **always** produces a float, even when the result is a whole number:
+
 ```python
-x = 10
-y = 10.0
+print(10 / 2)
+print(type(10 / 2))
 ```
 
-`x` is an `int`.
+Output:
 
-`y` is a `float`.
+```text
+5.0
+<class 'float'>
+```
 
-Even though both represent the number 10, their types are different.
+Compare with floor division:
+
+```python
+print(10 / 3)      # 3.3333333333333335  (float)
+print(10 // 3)     # 3                   (int)
+print(round(10 / 3, 2))   # 3.33
+```
+
+### Floats are approximations
+
+Floats are stored in binary, and some decimal values cannot be represented exactly:
+
+```python
+print(0.1 + 0.2)
+```
+
+Output:
+
+```text
+0.30000000000000004
+```
+
+This is not a Python bug — it is how binary floating point works in every language.
+
+> **Practical rule** — Never compare floats with `==`. Check whether they are close enough instead:
+>
+> ```python
+> import math
+> print(math.isclose(0.1 + 0.2, 0.3))    # True
+> ```
+>
+> For money, use integers (paise/cents) or the `decimal` module rather than floats.
+
+### Scientific notation
+
+Very large or small floats display using `e`:
+
+```python
+print(1.5e6)      # 1500000.0
+print(2.5e-3)     # 0.0025
+```
 
 ---
 
 ## 3. `str`
 
-`str` means **string**.
-
-A string is a sequence of text characters.
-
-Strings are written inside quotes.
+A **string** is text — a sequence of characters.
 
 ```python
 name = "Mahesh"
-city = "Akola"
-message = "Hello Python"
+city = 'Akola'
 ```
 
-You can use single quotes:
+Double and single quotes both work. Use whichever avoids escaping:
 
 ```python
-name = 'Mahesh'
+print('She said "hello"')
+print("It's fine")
 ```
 
-or double quotes:
+### Strings can contain digits
 
 ```python
-name = "Mahesh"
+postal_code = "400001"
 ```
 
-Both are valid.
-
-### Strings can contain numbers
+This looks like a number but is text. You cannot do arithmetic with it:
 
 ```python
-age = "24"
+print(postal_code + 1)    # TypeError
 ```
-
-Here `24` is **text**, not a number.
-
-Therefore:
-
-```python
-age = "24"
-```
-
-is a `str`, while:
-
-```python
-age = 24
-```
-
-is an `int`.
 
 ### Checking a string
 
 ```python
 name = "Mahesh"
 
+print(name)
 print(type(name))
 ```
 
 Output:
 
 ```text
+Mahesh
 <class 'str'>
+```
+
+### Multi-line strings
+
+```python
+message = """Line one
+Line two
+Line three"""
+
+print(message)
+```
+
+Output:
+
+```text
+Line one
+Line two
+Line three
+```
+
+### Common string operations
+
+```python
+text = "Python"
+
+print(len(text))        # length
+print(text + " 3")      # concatenation
+print(text * 3)         # repetition
+print(text[0])          # indexing
+print(text.upper())     # method
+```
+
+Output:
+
+```text
+6
+Python 3
+PythonPythonPython
+P
+PYTHON
 ```
 
 ---
 
 ## 4. `bool`
 
-`bool` means **Boolean**.
-
-It has only two possible values:
+A **boolean** is one of two values: `True` or `False`.
 
 ```python
-True
-False
-```
-
-Notice that `True` and `False` start with capital letters.
-
-Example:
-
-```python
-is_student = True
-is_logged_in = False
+is_active = True
+has_permission = False
 ```
 
 ### Checking a Boolean
 
 ```python
-is_student = True
+is_active = True
 
-print(type(is_student))
+print(is_active)
+print(type(is_active))
 ```
 
 Output:
 
 ```text
+True
 <class 'bool'>
 ```
 
-### Important
-
-These are Boolean values:
+### Booleans come from comparisons
 
 ```python
+print(10 > 5)      # True
+print(10 < 5)      # False
+print(10 == 10)    # True
+print(10 != 10)    # False
+```
+
+Output:
+
+```text
+True
+False
 True
 False
 ```
 
-These are strings:
+> **Important** — `True` and `False` are capitalised in Python. `true` and `false` are `NameError`. This is one of the most common early mistakes.
+
+### Booleans are also numbers
+
+Under the hood, `True` behaves like `1` and `False` like `0`:
 
 ```python
-"True"
-"False"
+print(True + True)      # 2
+print(False + 10)       # 10
 ```
 
-For example:
+This is occasionally useful for counting:
 
 ```python
-x = True
-y = "True"
+scores = [True, False, True, True]
+print(sum(scores))      # 3 — counts the True values
+```
 
-print(type(x))
-print(type(y))
+### Truthiness
+
+Every value has a boolean sense. These are **falsy** (behave like `False`):
+
+```text
+False, 0, 0.0, "", None, [], (), {}
+```
+
+Everything else is **truthy**. That is why this works:
+
+```python
+name = ""
+
+if name:
+    print("Hello", name)
+else:
+    print("No name given")
 ```
 
 Output:
 
 ```text
-<class 'bool'>
-<class 'str'>
+No name given
 ```
 
 ---
 
 ## 5. `None`
 
-`None` represents **no value** or **no value currently available**.
-
-Example:
-
-```python
-result = None
-```
-
-This means `result` currently has no value.
-
-`None` has its own data type:
+`None` represents **no value**. It is the type `NoneType`.
 
 ```python
 result = None
 
+print(result)
 print(type(result))
 ```
 
 Output:
 
 ```text
+None
 <class 'NoneType'>
 ```
 
-### Example
-
-Imagine a program that is waiting for a result:
+### Example: a function with no return
 
 ```python
-result = None
+def greet(name):
+    print("Hello", name)
 
-print(result)
+
+value = greet("Mahesh")
+print(value)
 ```
 
 Output:
 
 ```text
+Hello Mahesh
 None
 ```
 
-Later, the value can be changed:
+`greet()` prints but never returns anything, so `value` receives `None`.
 
-```python
-result = None
-
-result = 100
-
-print(result)
-```
-
-Output:
-
-```text
-100
-```
-
-### Important
-
-`None` is different from:
-
-```python
-0
-```
-
-```python
-""
-```
-
-```python
-False
-```
-
-They are different values.
-
-```python
-x = None
-y = 0
-z = ""
-a = False
-```
+> **Important** — `None` is not `0`, not `""`, and not `False`. It is its own thing, meaning "nothing here". Always test for it with `is`:
+>
+> ```python
+> if value is None:
+>     print("No result")
+> ```
+>
+> Use `is None`, not `== None`.
 
 ---
 
-# 6. Checking Types with `type()`
+## 6. Checking Types with `type()`
 
-Python provides the `type()` function to find the type of a value.
+`type()` tells you what a value is.
 
 ### Basic syntax
 
@@ -347,34 +424,12 @@ Python provides the `type()` function to find the type of a value.
 type(value)
 ```
 
-Example:
-
 ```python
-age = 24
-
-print(type(age))
-```
-
-Output:
-
-```text
-<class 'int'>
-```
-
-### More examples
-
-```python
-x = 10
-y = 10.5
-name = "Mahesh"
-is_student = True
-result = None
-
-print(type(x))
-print(type(y))
-print(type(name))
-print(type(is_student))
-print(type(result))
+print(type(10))
+print(type(10.5))
+print(type("Hello"))
+print(type(True))
+print(type(None))
 ```
 
 Output:
@@ -387,74 +442,67 @@ Output:
 <class 'NoneType'>
 ```
 
-### Quick way to remember
-
-```text
-10        → int
-10.5      → float
-"Hello"   → str
-True      → bool
-None      → NoneType
-```
-
----
-
-# 7. Type Conversion
-
-Type conversion means **changing a value from one data type to another**.
-
-Python provides functions such as:
+### With variables
 
 ```python
-int()
-float()
-str()
-bool()
-```
+name = "Mahesh"
+age = 24
 
----
-
-## `int()`
-
-`int()` converts a value into an integer when the conversion is valid.
-
-### Float to int
-
-```python
-x = 10.8
-
-y = int(x)
-
-print(y)
+print(type(name))
+print(type(age))
 ```
 
 Output:
 
 ```text
-10
+<class 'str'>
+<class 'int'>
 ```
 
-The decimal part is removed. It does **not** round the number.
+### `isinstance()` — the practical alternative
+
+`type(x) == int` fails for subclasses. `isinstance()` is the idiomatic check:
 
 ```python
-print(int(10.9))
+age = 24
+
+print(isinstance(age, int))      # True
+print(isinstance(age, str))      # False
+print(isinstance(3.14, (int, float)))   # True — matches either
 ```
 
-Output:
+Use `type()` when you are exploring and want to know exactly what something is. Use `isinstance()` in real code.
 
-```text
-10
+---
+
+## 7. Type Conversion
+
+Converting between types is called **type casting**. Python provides `int()`, `float()`, `str()`, and `bool()`.
+
+### `int()`
+
+**Float to int** — truncates toward zero, it does *not* round:
+
+```python
+print(int(3.99))      # 3
+print(int(2.5))       # 2
+print(int(-2.9))      # -2
 ```
 
-### String to int
+Use `round()` if you want rounding:
+
+```python
+print(round(3.99))    # 4
+```
+
+**String to int** — only works if the string is a valid whole number:
 
 ```python
 age = "24"
+age_int = int(age)
 
-age = int(age)
-
-print(age)
-print(type(age))
+print(age_int)
+print(type(age_int))
 ```
 
 Output:
@@ -464,258 +512,198 @@ Output:
 <class 'int'>
 ```
 
-This is useful when numbers come from user input as text.
-
----
-
-## `float()`
-
-`float()` converts a value into a floating-point number.
-
-### Integer to float
+These fail with `ValueError`:
 
 ```python
-x = 10
-
-y = float(x)
-
-print(y)
+int("24.5")     # not a whole number
+int("abc")      # not a number at all
+int("")         # empty string
 ```
 
-Output:
+### `float()`
 
-```text
-10.0
+**Integer to float:**
+
+```python
+print(float(10))      # 10.0
 ```
 
-### String to float
+**String to float:**
 
 ```python
 price = "99.50"
+price_float = float(price)
 
-price = float(price)
-
-print(price)
+print(price_float)
+print(type(price_float))
 ```
 
 Output:
 
 ```text
 99.5
+<class 'float'>
 ```
 
----
+Unlike `int()`, `float()` accepts decimals:
 
-## `str()`
+```python
+print(float("24.5"))      # 24.5
+```
 
-`str()` converts a value into a string.
+### `str()`
 
-### Integer to string
+Converts almost anything to text:
+
+```python
+print(str(10))        # "10"
+print(str(99.5))      # "99.5"
+print(str(True))      # "True"
+print(str(None))      # "None"
+```
+
+This is how you combine a number with text:
 
 ```python
 age = 24
 
-age = str(age)
+# Fails — cannot add int and str
+# print("Age: " + age)
 
-print(age)
-print(type(age))
+# Works
+print("Age: " + str(age))
 ```
 
 Output:
 
 ```text
-24
-<class 'str'>
+Age: 24
 ```
 
-### Float to string
+### `bool()`
+
+**Numbers** — `0` is false, everything else is true:
 
 ```python
-price = 99.5
-
-price = str(price)
-
-print(type(price))
+print(bool(0))        # False
+print(bool(1))        # True
+print(bool(-5))       # True
+print(bool(0.0))      # False
 ```
 
-Output:
-
-```text
-<class 'str'>
-```
-
-### Boolean to string
+**Strings** — empty string is false, anything else is true:
 
 ```python
-x = True
-
-x = str(x)
-
-print(x)
-print(type(x))
+print(bool(""))       # False
+print(bool("Hi"))     # True
+print(bool("0"))      # True  ← a non-empty string!
 ```
 
-Output:
+> **Watch out** — `bool("0")` is `True`, because `"0"` is a non-empty string. Only the empty string `""` is false. This catches people converting user input.
 
-```text
-True
-<class 'str'>
-```
-
----
-
-## `bool()`
-
-`bool()` converts a value into `True` or `False`.
-
-Some values are treated as `False`, while most other values are treated as `True`.
-
-### Numbers
+**`None`:**
 
 ```python
-print(bool(1))
-print(bool(10))
-print(bool(0))
+print(bool(None))     # False
 ```
 
-Output:
+### Type conversion summary
 
-```text
-True
-True
-False
-```
+| Function | Purpose | Example | Result |
+| -------- | ------- | ------- | ------ |
+| `int()` | Convert to integer | `int("24")` | `24` |
+| `int()` | Truncate float | `int(3.99)` | `3` |
+| `float()` | Convert to float | `float("24.5")` | `24.5` |
+| `str()` | Convert to text | `str(24)` | `"24"` |
+| `bool()` | Convert to boolean | `bool("")` | `False` |
 
-So:
+### Important difference
 
-```python
-bool(0)     # False
-bool(10)    # True
-```
-
-### Strings
-
-```python
-print(bool("Hello"))
-print(bool(""))
-```
-
-Output:
-
-```text
-True
-False
-```
-
-A non-empty string is `True`.
-
-An empty string is `False`.
-
-### `None`
-
-```python
-print(bool(None))
-```
-
-Output:
-
-```text
-False
-```
-
----
-
-# Type Conversion Examples
-
-### `int()` → integer
-
-```python
-int("25")       # 25
-int(10.9)       # 10
-```
-
-### `float()` → floating-point number
-
-```python
-float("25.5")   # 25.5
-float(10)       # 10.0
-```
-
-### `str()` → string
-
-```python
-str(25)         # "25"
-str(10.5)       # "10.5"
-```
-
-### `bool()` → Boolean
-
-```python
-bool(1)         # True
-bool(0)         # False
-bool("Hello")   # True
-bool("")        # False
-```
-
----
-
-## Important Difference
-
-Look carefully at these two:
-
-```python
-age = 24
-```
-
-and:
+Converting changes the **value**, not the original variable:
 
 ```python
 age = "24"
+int(age)              # result is thrown away
+
+print(age)            # still "24"
+print(type(age))      # <class 'str'>
 ```
 
-The first is an integer:
-
-```text
-24 → int
-```
-
-The second is a string:
-
-```text
-"24" → str
-```
-
-You can convert the string into an integer:
+You must assign the result:
 
 ```python
 age = "24"
+age = int(age)        # now age is the int 24
 
-age = int(age)
-
-print(age + 1)
+print(type(age))      # <class 'int'>
 ```
 
-Output:
+---
 
-```text
-25
-```
+## Common Mistakes to Avoid
 
-Without conversion, `"24"` is text, not a number.
+| Mistake | What happens | Fix |
+| ------- | ------------ | --- |
+| `"10" + "20"` expecting `30` | Gives `"1020"` | Convert first: `int("10") + int("20")` |
+| `"Age: " + 24` | `TypeError` | `str(24)` or use an f-string |
+| `int("24.5")` | `ValueError` | Use `float("24.5")` |
+| `true` instead of `True` | `NameError` | Capitalise: `True` |
+| Comparing floats with `==` | Unreliable | Use `math.isclose()` |
+| `if x == None` | Works, but wrong style | Use `if x is None` |
+| Forgetting to assign the conversion | Type stays unchanged | `age = int(age)` |
 
 ---
 
 ## Quick Revision
 
-| Data type  | Example         | Meaning             |
-| ---------- | --------------- | ------------------- |
-| `int`      | `24`            | Whole number        |
-| `float`    | `24.5`          | Decimal number      |
-| `str`      | `"Hello"`       | Text                |
-| `bool`     | `True`          | True/False          |
-| `NoneType` | `None`          | No value            |
-| `type()`   | `type(x)`       | Checks the type     |
-| `int()`    | `int("10")`     | Converts to integer |
-| `float()`  | `float("10.5")` | Converts to float   |
-| `str()`    | `str(10)`       | Converts to string  |
-| `bool()`   | `bool(1)`       | Converts to Boolean |
+| Type | Meaning | Example | Notes |
+| ---- | ------- | ------- | ----- |
+| `int` | Whole number | `24`, `-5`, `0` | No size limit |
+| `float` | Decimal number | `99.5`, `-2.5` | Approximate; do not use `==` |
+| `str` | Text | `"Mahesh"`, `'Akola'` | Immutable sequence |
+| `bool` | True / False | `True`, `False` | Capitalised; acts like 1 / 0 |
+| `NoneType` | No value | `None` | Test with `is None` |
+| `type()` | Exact type | `type(24)` | For exploring |
+| `isinstance()` | Type check | `isinstance(24, int)` | Preferred in real code |
+| `int()` | To integer | `int("24")` | Truncates floats |
+| `float()` | To float | `float("24.5")` | Accepts decimals |
+| `str()` | To text | `str(24)` | Works on anything |
+| `bool()` | To boolean | `bool("")` | `""`, `0`, `None` are false |
+
+### Core patterns
+
+```python
+type(value)                  # what type is this?
+isinstance(value, int)       # is it an int?
+int("24")                    # string → int
+float("24.5")                # string → float
+str(24)                      # int → string
+bool("")                     # False
+round(3.99)                  # 4
+math.isclose(0.1 + 0.2, 0.3) # True
+```
+
+### The main idea
+
+```text
+Data types
+ ├── int      → whole numbers
+ ├── float    → decimals (approximate)
+ ├── str      → text
+ ├── bool     → True / False
+ └── None     → no value
+      ↓
+ type() asks what it is
+ int() / float() / str() / bool() convert it
+```
+
+---
+
+## Self-Check
+
+- [ ] What is the difference between `10 / 2` and `10 // 2`?
+- [ ] Why does `0.1 + 0.2` not equal `0.3` exactly?
+- [ ] What does `bool("0")` return, and why is that surprising?
+- [ ] How do you combine the number `24` into the sentence "Age: 24"?
+- [ ] What is the difference between `type()` and `isinstance()`?
+- [ ] Why does `int(age)` alone not change `age`?
