@@ -5,6 +5,75 @@
 
 let monacoEditorInstance = null;
 
+/* --------------------------------------------------------------------------
+   Mobile pane switcher (Problem | Code)
+
+   Below the `lg` breakpoint the two-column locked workspace would squeeze
+   the statement and the editor into a non-scrolling box, so CSS stacks them
+   and shows one at a time. These buttons pick which one is mounted.
+   -------------------------------------------------------------------------- */
+const PANE_MOBILE_QUERY = '(max-width: 1023px)';
+
+function relayoutEditor() {
+  requestAnimationFrame(() => {
+    try {
+      if (monacoEditorInstance) monacoEditorInstance.layout();
+    } catch (e) { /* editor not ready yet — automaticLayout will catch up */ }
+    window.dispatchEvent(new Event('resize'));
+  });
+}
+
+function setWorkspacePane(pane) {
+  const workspace = document.getElementById('problemWorkspace');
+  if (!workspace) return;
+
+  const next = pane === 'code' ? 'code' : 'problem';
+  workspace.setAttribute('data-pane', next);
+
+  document.querySelectorAll('[data-pane-btn]').forEach(btn => {
+    const isActive = btn.getAttribute('data-pane-btn') === next;
+    btn.classList.toggle('active', isActive);
+    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  });
+
+  // Monaco measures 0x0 while its host is display:none, so it needs an
+  // explicit re-measure the moment the editor is revealed.
+  if (next === 'code') relayoutEditor();
+
+  // On phones the pane replaces the other in place, so land at the top
+  // rather than wherever the previous pane happened to be scrolled to.
+  try {
+    if (window.matchMedia(PANE_MOBILE_QUERY).matches) {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  } catch (e) {}
+
+  try { localStorage.setItem('pypractice-pane-v1', next); } catch (e) {}
+}
+
+function initWorkspacePaneSwitcher() {
+  if (!document.getElementById('problemWorkspace')) return;
+
+  let remembered = 'problem';
+  try {
+    const v = localStorage.getItem('pypractice-pane-v1');
+    if (v === 'code' || v === 'problem') remembered = v;
+  } catch (e) {}
+
+  document.querySelectorAll('[data-pane-btn]').forEach(btn => {
+    btn.addEventListener('click', () => setWorkspacePane(btn.getAttribute('data-pane-btn')));
+  });
+
+  setWorkspacePane(remembered);
+
+  // Crossing back into the desktop range restores the side-by-side layout,
+  // which renders both panes regardless of the attribute.
+  const mq = window.matchMedia(PANE_MOBILE_QUERY);
+  const onChange = (e) => { if (!e.matches) relayoutEditor(); };
+  if (mq.addEventListener) mq.addEventListener('change', onChange);
+  else if (mq.addListener) mq.addListener(onChange);
+}
+
 function initBottomTabs() {
   const tabTerminalBtn = document.getElementById('tabTerminalBtn');
   const tabTestCasesBtn = document.getElementById('tabTestCasesBtn');
@@ -230,6 +299,7 @@ function initProblemPage() {
 
   initTerminal();
   initBottomTabs();
+  initWorkspacePaneSwitcher();
 
   const params = new URLSearchParams(location.search);
   const topic = params.get('topic') || topics[0].name;
@@ -328,6 +398,7 @@ function initProblemPage() {
     if (editorState) editorState.textContent = 'Reset';
     document.getElementById('resultPanel')?.classList.add('hidden');
     if (explanation) explanation.classList.add('hidden');
+    clearTimeout(window.__hintTimer);
     if (testTabBadge) testTabBadge.classList.add('hidden');
     // Clear custom output if present
     const customOut = document.getElementById('customOutputPanel');
@@ -440,13 +511,19 @@ function initProblemPage() {
   renderTestCasePills();
   renderActiveCaseDetail();
 
-  // Helper to show explanation safely
+  // Helper to show explanation safely — now as fixed toast so it never pushes the image/banner
   function showExplanation() {
     if (!explanation) return;
+    const hintText = explanationFor(q);
     explanation.classList.remove('hidden');
-    explanation.innerHTML = `<div class="text-sm leading-6">${escapeHtml(explanationFor(q))}</div>`;
+    explanation.innerHTML = `<div class="text-sm leading-6">${escapeHtml(hintText)}</div>`;
     const explText = document.getElementById('explanationText');
-    if (explText) explText.textContent = explanationFor(q);
+    if (explText) explText.textContent = hintText;
+    // auto-hide after longer than normal toast (2600) so hint stays ~5s like a toast
+    clearTimeout(window.__hintTimer);
+    window.__hintTimer = setTimeout(() => {
+      explanation.classList.add('hidden');
+    }, 5000);
   }
 
   async function runCode(mode = 'sample') {

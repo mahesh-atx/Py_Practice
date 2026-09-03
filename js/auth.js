@@ -171,7 +171,9 @@ function wrapSaves(uid){
       if(k && (k.startsWith('code:') || k.startsWith('pypractice-')) && auth?.currentUser?.uid){
         // debounce
         clearTimeout(window._firestoreSaveTimer);
-        window._firestoreSaveTimer = setTimeout(()=> saveUserData(auth.currentUser.uid), 800);
+        window._firestoreSaveTimer = setTimeout(()=> {
+          if (auth?.currentUser?.uid) saveUserData(auth.currentUser.uid);
+        }, 800);
       }
       return r;
     };

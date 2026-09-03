@@ -14,6 +14,152 @@ const state = {
   activity: JSON.parse(localStorage.getItem(activityKey) || '[]')
 };
 
+/* Topics that share a question bucket must share progress too. Variables
+   and Data Types both draw on the "Variables and Data Types" bucket, so a
+   question solved under one heading was still unsolved under the other.
+   Filing ids under the SOURCE topic makes them the same question. */
+function canonicalTopic(name) {
+  return (typeof TOPIC_SOURCE !== 'undefined' && TOPIC_SOURCE[name]) || name;
+}
+
+function migrateSeparateLoops() {
+  const flag = 'pypractice-loops-split-v1';
+  if (localStorage.getItem(flag)) return;
+  let changed = false;
+  const basicMap = {
+    1: 'For Loops__basic__1', 2: 'For Loops__basic__2', 3: 'For Loops__basic__3', 4: 'For Loops__basic__4',
+    5: 'For Loops__basic__5', 6: 'For Loops__basic__6', 7: 'For Loops__basic__7', 8: 'For Loops__basic__8',
+    9: 'For Loops__basic__9', 10: 'For Loops__basic__10',
+    11: 'While Loops__basic__5', 12: 'While Loops__basic__6', 13: 'While Loops__basic__7',
+    14: 'While Loops__basic__8', 15: 'While Loops__basic__9', 16: 'While Loops__basic__10',
+    17: 'Nested Loops__basic__1', 18: 'Nested Loops__basic__2', 19: 'Nested Loops__basic__3',
+    20: 'Nested Loops__basic__4', 21: 'Nested Loops__basic__5', 22: 'Nested Loops__basic__6',
+    23: 'Nested Loops__basic__7', 24: 'Nested Loops__basic__8', 25: 'Nested Loops__basic__9',
+    26: 'Nested Loops__basic__10'
+  };
+
+  for (const id of Object.keys(state.solved)) {
+    if (id.startsWith('Loops__')) {
+      const parts = id.split('__');
+      const lvl = parts[1];
+      const num = parseInt(parts[2], 10);
+      let newId;
+      if (lvl === 'basic') {
+        newId = basicMap[num];
+      } else if (lvl === 'intermediate' || lvl === 'advanced') {
+        if (num <= 10) newId = `For Loops__${lvl}__${num}`;
+        else if (num <= 20) newId = `While Loops__${lvl}__${num - 10}`;
+        else newId = `Nested Loops__${lvl}__${num - 20}`;
+      }
+      if (newId) {
+        if (!(newId in state.solved)) state.solved[newId] = state.solved[id];
+        delete state.solved[id];
+        changed = true;
+      }
+    }
+  }
+  localStorage.setItem(flag, '1');
+  if (changed) save();
+}
+migrateSeparateLoops();
+
+function migrateSeparateStringMethods() {
+  const flag = 'pypractice-string-methods-split-v1';
+  if (localStorage.getItem(flag)) return;
+  let changed = false;
+  for (const id of Object.keys(state.solved)) {
+    if (id.startsWith('Strings__')) {
+      const parts = id.split('__');
+      const lvl = parts[1];
+      const num = parseInt(parts[2], 10);
+      if (num > 10) {
+        const newId = `String Methods__${lvl}__${num - 10}`;
+        if (!(newId in state.solved)) state.solved[newId] = state.solved[id];
+        delete state.solved[id];
+        changed = true;
+      }
+    }
+  }
+  localStorage.setItem(flag, '1');
+  if (changed) save();
+}
+migrateSeparateStringMethods();
+
+/* Saved progress predates canonical ids: anyone who solved something under
+   "Variables" has it stored as `Variables__basic__1`. Re-key those entries
+   once so history carries across instead of looking wiped. */
+function migrateCanonicalIds() {
+  const flag = 'pypractice-canonical-ids-v1';
+  if (localStorage.getItem(flag)) return;
+  let changed = false;
+  for (const id of Object.keys(state.solved)) {
+    const sep = id.indexOf('__');
+    if (sep === -1) continue;
+    const topic = id.slice(0, sep);
+    const canonical = canonicalTopic(topic);
+    if (canonical === topic) continue;
+    const newId = canonical + id.slice(sep);
+    if (!(newId in state.solved)) state.solved[newId] = state.solved[id];
+    delete state.solved[id];
+    changed = true;
+  }
+  localStorage.setItem(flag, '1');
+  if (changed) save();
+}
+migrateCanonicalIds();
+
+const legacyVarDtMap = {
+  'Variables and Data Types__basic__1': 'Variables__basic__1',
+  'Variables and Data Types__basic__2': 'Data Types__basic__1',
+  'Variables and Data Types__basic__3': 'Data Types__basic__2',
+  'Variables and Data Types__basic__4': 'Variables__basic__2',
+  'Variables and Data Types__basic__5': 'Variables__basic__3',
+  'Variables and Data Types__basic__6': 'Data Types__basic__3',
+  'Variables and Data Types__basic__7': 'Variables__basic__6',
+  'Variables and Data Types__basic__8': 'Variables__basic__4',
+  'Variables and Data Types__basic__9': 'Variables__basic__5',
+  'Variables and Data Types__basic__10': 'Data Types__basic__4',
+  'Variables and Data Types__intermediate__1': 'Variables__intermediate__1',
+  'Variables and Data Types__intermediate__2': 'Variables__intermediate__2',
+  'Variables and Data Types__intermediate__3': 'Variables__intermediate__3',
+  'Variables and Data Types__intermediate__4': 'Data Types__intermediate__5',
+  'Variables and Data Types__intermediate__5': 'Variables__intermediate__4',
+  'Variables and Data Types__intermediate__6': 'Data Types__intermediate__1',
+  'Variables and Data Types__intermediate__7': 'Data Types__intermediate__2',
+  'Variables and Data Types__intermediate__8': 'Data Types__intermediate__3',
+  'Variables and Data Types__intermediate__9': 'Data Types__intermediate__4',
+  'Variables and Data Types__intermediate__10': 'Variables__intermediate__5',
+  'Variables and Data Types__advanced__1': 'Data Types__advanced__1',
+  'Variables and Data Types__advanced__2': 'Data Types__advanced__2',
+  'Variables and Data Types__advanced__3': 'Data Types__advanced__3',
+  'Variables and Data Types__advanced__4': 'Variables__advanced__4',
+  'Variables and Data Types__advanced__5': 'Data Types__advanced__4',
+  'Variables and Data Types__advanced__6': 'Variables__advanced__1',
+  'Variables and Data Types__advanced__7': 'Data Types__advanced__5',
+  'Variables and Data Types__advanced__8': 'Variables__advanced__2',
+  'Variables and Data Types__advanced__9': 'Variables__advanced__3',
+  'Variables and Data Types__advanced__10': 'Variables__advanced__5'
+};
+
+function migrateSeparateVariablesAndDataTypes() {
+  const flag = 'pypractice-variables-datatypes-split-v1';
+  if (localStorage.getItem(flag)) return;
+  let changed = false;
+  for (const id of Object.keys(state.solved)) {
+    if (legacyVarDtMap[id]) {
+      const newId = legacyVarDtMap[id];
+      if (!(newId in state.solved)) state.solved[newId] = state.solved[id];
+      delete state.solved[id];
+      changed = true;
+    }
+  }
+  localStorage.setItem(flag, '1');
+  if (changed) save();
+}
+migrateSeparateVariablesAndDataTypes();
+
+
+
 const levels = ['basic', 'intermediate', 'advanced'];
 const levelMeta = {
   basic: { label: 'Basic', note: 'Learn the core idea and write the first working solution.' },
@@ -37,7 +183,7 @@ function questionsFor(topicName, level) {
     const testCases = [primaryCase, ...extraCases];
 
     return {
-      id: `${topicName}__${level}__${i + 1}`,
+      id: `${canonicalTopic(topicName)}__${level}__${i + 1}`,
       number: i + 1,
       title: x[0],
       description: x[1],
@@ -54,10 +200,45 @@ function solved(id) {
   return !!state.solved[id];
 }
 
+/* Every count the UI shows is derived from the data. These used to be
+   hardcoded as "162" and "18" in sixteen places across nine files, and
+   went stale the moment any question was added. Two topics can share a
+   question bucket, so questions are counted by distinct id. */
+function totalQuestions() {
+  const seen = new Set();
+  for (const q of allQuestions()) seen.add(q.id);
+  return seen.size;
+}
+
+function totalTopics() {
+  return topics.length;
+}
+
+/* Pages mark up the number itself (<span data-total-questions>162</span>)
+   so the surrounding copy stays readable in the source while the value
+   always comes from the data. */
+function syncDerivedCounts() {
+  document.querySelectorAll('[data-total-topics]').forEach(el => {
+    el.textContent = totalTopics();
+  });
+  document.querySelectorAll('[data-total-questions]').forEach(el => {
+    el.textContent = totalQuestions();
+  });
+}
+
 function overall() {
-  const qs = allQuestions();
-  const done = qs.filter(q => solved(q.id)).length;
-  return { total: qs.length, done, pct: qs.length ? Math.round(done / qs.length * 100) : 0 };
+  // Aliased topics list the same question under two headings, so walking
+  // every topic would count those twice. Count each distinct id once.
+  const seen = new Set();
+  let total = 0;
+  let done = 0;
+  for (const q of allQuestions()) {
+    if (seen.has(q.id)) continue;
+    seen.add(q.id);
+    total++;
+    if (solved(q.id)) done++;
+  }
+  return { total, done, pct: total ? Math.round(done / total * 100) : 0 };
 }
 
 function topicProgress(name) {
@@ -95,7 +276,8 @@ function initTheme() {
   setTheme(localStorage.getItem(themeKey) || 'light');
 }
 
-function toast(msg) {
+function toast(msg, durationMs) {
+  const duration = typeof durationMs === 'number' && durationMs > 0 ? durationMs : 2600;
   let el = document.getElementById('toast');
   if (!el) {
     el = document.createElement('div');
@@ -110,7 +292,7 @@ function toast(msg) {
   clearTimeout(window.__toast);
   window.__toast = setTimeout(() => {
     el.classList.remove('show');
-  }, 2600);
+  }, duration);
 }
 
 function setupHeader() {
@@ -205,7 +387,7 @@ function syncAllStats() {
   setText('progressSolved', o.done);
   setText('profileSolved', o.done);
   setText('progressStarted', started);
-  setText('profileTopicsStarted', `${started}/18`);
+  setText('profileTopicsStarted', `${started}/${topics.length}`);
   setText('profileTopicsDone', `${started} topics started`);
   setText('progressOverall', pctStr);
   setText('profileOverall', pctStr);
@@ -218,7 +400,7 @@ function syncAllStats() {
   setWidth('profileOverallBar', o.pct + '%');
   renderHeaderProgress();
   const preview = document.getElementById('profileProgressPreview');
-  if (preview) preview.textContent = `${started}/18 topics · ${pctStr} complete`;
+  if (preview) preview.textContent = `${started}/${topics.length} topics · ${pctStr} complete`;
 }
 
 const defaultCodes = {

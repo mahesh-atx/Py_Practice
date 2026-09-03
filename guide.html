@@ -32,7 +32,7 @@
     <div class="site-shell min-h-screen flex flex-col">
       <header class="header-blur sticky top-0 z-50 border-b border-line shrink-0">
         <div class="app-max h-[76px] flex items-center justify-between">
-          <a href="index.html" class="text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+          <a href="index.html" class="text-[21px] sm:text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2 sm:gap-2.5 shrink-0"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
           <nav class="hidden md:flex items-center gap-8 text-sm text-muted">
             <a href="index.html" class="hover:text-ink">Home</a>
             <a href="learn.html" class="hover:text-ink">Learn</a>
@@ -51,7 +51,7 @@
             </div>
 
             <!-- AUTH ONLY: Logged-in Progress & User Chip & Logout -->
-            <div data-auth-only class="hidden inline-flex items-center gap-2">
+            <div data-auth-only class="hidden inline-flex items-center gap-2 auth-chip">
               <a href="progress.html" class="btn-ghost px-2.5 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 border border-line" title="Your Progress">
                 <i class="fa-solid fa-chart-simple text-[var(--green)] text-[11px]"></i>
                 <span data-overall-pct class="font-mono text-xs font-semibold text-ink">0%</span>
@@ -244,20 +244,6 @@
                         <p class="text-xs text-muted leading-relaxed mt-0.5">Did you do <code>x = my_list.sort()</code> (which evaluates to <code>None</code>)? Remember that Python in-place methods return <code>None</code>.</p>
                       </div>
                     </div>
-                    <div class="flex items-start gap-3.5 p-3 rounded-[12px] bg-[var(--soft)]/50 border border-line/50">
-                      <span class="h-6 w-6 rounded-lg bg-[var(--paper)] border border-line text-xs font-mono font-bold grid place-items-center text-muted shrink-0 mt-0.5">5</span>
-                      <div>
-                        <div class="text-sm font-semibold text-ink">Rubber-duck your algorithm out loud</div>
-                        <p class="text-xs text-muted leading-relaxed mt-0.5">Explain what each line is supposed to accomplish in full spoken sentences. The gap between your mental model and the code will emerge immediately.</p>
-                      </div>
-                    </div>
-                    <div class="flex items-start gap-3.5 p-3 rounded-[12px] bg-[var(--soft)]/50 border border-line/50">
-                      <span class="h-6 w-6 rounded-lg bg-[var(--paper)] border border-line text-xs font-mono font-bold grid place-items-center text-muted shrink-0 mt-0.5">6</span>
-                      <div>
-                        <div class="text-sm font-semibold text-ink">Step away for a 5-minute break</div>
-                        <p class="text-xs text-muted leading-relaxed mt-0.5">Tunnel vision is real. Walking away resets dopamine and working memory — you’ll spot the missing index within seconds of returning.</p>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -281,21 +267,21 @@
 
                   <div class="mt-8 space-y-4 text-sm">
                     <div class="flex items-start gap-3">
-                      <span class="h-7 w-7 rounded-lg bg-rose-50 text-rose-600 dark:bg-rose-950/30 dark:text-rose-300 border border-rose-200/60 dark:border-rose-800/40 grid place-items-center text-xs shrink-0 mt-0.5"><i class="fa-solid fa-message"></i></span>
+                      <span class="h-7 w-7 rounded-lg bg-[var(--soft)] text-ink dark:bg-[#242220] dark:text-[#f4efe6] border border-line dark:border-[var(--dark-line)] grid place-items-center text-xs shrink-0 mt-0.5"><i class="fa-solid fa-message"></i></span>
                       <div>
                         <span class="font-semibold text-ink">Summarize the invariant:</span>
                         <p class="text-xs text-muted leading-5 mt-1">State in one sentence what condition stays true on every single loop iteration.</p>
                       </div>
                     </div>
                     <div class="flex items-start gap-3">
-                      <span class="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/40 grid place-items-center text-xs shrink-0 mt-0.5"><i class="fa-solid fa-scale-balanced"></i></span>
+                      <span class="h-7 w-7 rounded-lg bg-[var(--soft)] text-ink dark:bg-[#242220] dark:text-[#f4efe6] border border-line dark:border-[var(--dark-line)] grid place-items-center text-xs shrink-0 mt-0.5"><i class="fa-solid fa-scale-balanced"></i></span>
                       <div>
                         <span class="font-semibold text-ink">Compare trade-offs:</span>
                         <p class="text-xs text-muted leading-5 mt-1">Did you choose a hash map (O(1) lookups, higher memory) or sorted list (O(log n) lookups, zero extra memory)?</p>
                       </div>
                     </div>
                     <div class="flex items-start gap-3">
-                      <span class="h-7 w-7 rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/30 dark:text-sky-300 border border-sky-200/60 dark:border-sky-800/40 grid place-items-center text-xs shrink-0 mt-0.5"><i class="fa-solid fa-share-nodes"></i></span>
+                      <span class="h-7 w-7 rounded-lg bg-[var(--soft)] text-ink dark:bg-[#242220] dark:text-[#f4efe6] border border-line dark:border-[var(--dark-line)] grid place-items-center text-xs shrink-0 mt-0.5"><i class="fa-solid fa-share-nodes"></i></span>
                       <div>
                         <span class="font-semibold text-ink">Teach a beginner:</span>
                         <p class="text-xs text-muted leading-5 mt-1">If you can explain recursion or list comprehensions without jargon, you have truly mastered the concept.</p>
@@ -374,14 +360,17 @@
                   Local-first, no backend. Progress saved in this browser. Zero setup, instant feedback.
                 </p>
                 <div class="text-xs text-muted mt-4 leading-5">
-                  <div>18 topics · 3 levels · 162 questions</div>
+                  <div><span data-total-topics>21</span> topics · 3 levels · <span data-total-questions>579</span> questions</div>
                   <div class="mt-1">Run with Pyodide &amp; Monaco</div>
                 </div>
               </div>
             </div>
-            <div class="mt-10 pt-6 border-t border-line flex flex-col sm:flex-row justify-between gap-3 text-xs text-muted">
+            <div class="mt-10 pt-6 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">
               <span>© 2026 PyPractice — Python practice, one problem at a time.</span>
-              <span>HTML · Tailwind CSS · Vanilla JavaScript · Pyodide</span>
+              <div class="flex items-center gap-4">
+                <span>HTML · Tailwind CSS · Vanilla JavaScript · Pyodide</span>
+                <a href="https://mahesh-atx.vercel.app/" target="_blank" rel="noopener noreferrer" class="hover:text-ink transition inline-flex items-center gap-1">Developer <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-60"></i></a>
+              </div>
             </div>
           </div>
         </div>

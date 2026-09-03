@@ -28,7 +28,7 @@
       <header class="header-blur sticky top-0 z-50 border-b border-line shrink-0">
         <div class="app-max h-[76px] flex items-center justify-between">
           <div class="flex items-center gap-3">
-            <a href="index.html" class="text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+            <a href="index.html" class="text-[21px] sm:text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2 sm:gap-2.5 shrink-0"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
           </div>
           <nav class="hidden md:flex items-center gap-8 text-sm text-muted">
             <a href="index.html" class="hover:text-ink">Home</a>
@@ -48,7 +48,7 @@
             </div>
 
             <!-- AUTH ONLY: Logged-in Progress & User Chip & Logout -->
-            <div data-auth-only class="hidden inline-flex items-center gap-2">
+            <div data-auth-only class="hidden inline-flex items-center gap-2 auth-chip">
               <a href="progress.html" class="btn-ghost px-2.5 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 border border-line" title="Your Progress">
                 <i class="fa-solid fa-chart-simple text-[var(--green)] text-[11px]"></i>
                 <span data-overall-pct class="font-mono text-xs font-semibold text-ink">0%</span>
@@ -115,7 +115,7 @@
                     <span class="opacity-40">/</span>
                     <span id="practiceBreadcrumbTopic" class="text-[var(--green)] font-semibold">Topic</span>
                   </nav>
-                  <h1 id="practicePageTitle" class="text-5xl tracking-[-.05em] font-medium">Basic practice</h1>
+                  <h1 id="practicePageTitle" class="text-[32px] sm:text-5xl tracking-[-.05em] font-medium">Basic practice</h1>
                 </div>
                 <div class="flex flex-wrap gap-2 shrink-0 mb-1">
                   <a data-level-link data-level="basic" class="btn-ghost px-4 py-2.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"><i class="fa-solid fa-leaf text-[11px] opacity-70"></i> Basic</a>
@@ -135,7 +135,7 @@
           <div class="px-5 sm:px-8 lg:px-12 py-8">
             <div class="content-max">
               <div class="flex justify-between text-xs text-muted mb-5 font-mono">
-                <span id="practiceCount" class="inline-flex items-center gap-1.5"><i class="fa-solid fa-list-ol text-[11px] opacity-60"></i> 3 questions</span>
+                <span id="practiceCount" class="inline-flex items-center gap-1.5"><i class="fa-solid fa-list-ol text-[11px] opacity-60"></i></span>
                 <span id="practiceProgress" class="inline-flex items-center gap-1.5"><i class="fa-solid fa-chart-pie text-[11px] opacity-60"></i> 0% complete</span>
               </div>
               <div id="practiceQuestionList" class="space-y-4"></div>

@@ -26,7 +26,7 @@
     <div class="site-shell min-h-screen flex flex-col">
       <header class="header-blur sticky top-0 z-50 border-b border-line shrink-0">
         <div class="app-max h-[76px] flex items-center justify-between">
-          <a href="index.html" class="text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+          <a href="index.html" class="text-[21px] sm:text-[27px] tracking-[-.05em] font-medium inline-flex items-center gap-2 sm:gap-2.5 shrink-0"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
           <nav class="hidden md:flex items-center gap-8 text-sm text-muted">
             <a href="index.html" class="hover:text-ink">Home</a>
             <a href="learn.html" class="hover:text-ink">Learn</a>
@@ -45,7 +45,7 @@
             </div>
 
             <!-- AUTH ONLY: Logged-in Progress & User Chip & Logout -->
-            <div data-auth-only class="hidden inline-flex items-center gap-2">
+            <div data-auth-only class="hidden inline-flex items-center gap-2 auth-chip">
               <a href="progress.html" class="btn-ghost px-2.5 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 border border-line" title="Your Progress">
                 <i class="fa-solid fa-chart-simple text-[var(--green)] text-[11px]"></i>
                 <span data-overall-pct class="font-mono text-xs font-semibold text-ink">0%</span>
@@ -147,12 +147,12 @@
 
             <div class="card reveal rounded-[14px] overflow-hidden divide-y divide-line hidden lg:block">
               <div class="flex items-center justify-between gap-4 p-4">
-                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826]"><i class="fa-solid fa-circle-half-stroke text-xs"></i></div><div><div class="text-sm font-medium">Theme</div><div class="text-xs text-muted">Paper / ink</div></div></div>
-                <button data-theme-toggle class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"><i class="fa-solid fa-moon text-[11px]"></i> <span data-theme-icon>◐</span></button>
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826] dark:text-[#f4efe6] dark:border-[var(--dark-line)] shrink-0"><i class="fa-solid fa-circle-half-stroke text-xs" aria-hidden="true"></i></div><div><div class="text-sm font-medium">Theme</div><div class="text-xs text-muted">Paper / ink</div></div></div>
+                <button data-theme-toggle class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-moon text-[11px]" aria-hidden="true"></i> <span data-theme-icon>◐</span></button>
               </div>
               <div class="flex items-center justify-between gap-4 p-4">
-                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826]"><i class="fa-solid fa-download text-xs"></i></div><div><div class="text-sm font-medium">Export</div><div class="text-xs text-muted">JSON</div></div></div>
-                <button id="exportBtn" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"><i class="fa-solid fa-file-arrow-down text-[11px]"></i> Export</button>
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826] dark:text-[#f4efe6] dark:border-[var(--dark-line)] shrink-0"><i class="fa-solid fa-download text-xs" aria-hidden="true"></i></div><div><div class="text-sm font-medium">Export</div><div class="text-xs text-muted">JSON</div></div></div>
+                <button id="exportBtn" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-file-arrow-down text-[11px]" aria-hidden="true"></i> Export</button>
               </div>
               <div class="flex items-center justify-between gap-4 p-4">
                 <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-red-50 border border-red-100 text-red-600 grid place-items-center dark:bg-red-900/20 dark:border-red-800"><i class="fa-solid fa-trash text-xs"></i></div><div><div class="text-sm font-medium text-[#c0392b]">Reset</div><div class="text-xs text-muted">Clear data</div></div></div>
@@ -167,20 +167,20 @@
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-4 stagger">
               <!-- Solved Card -->
               <div class="card rounded-[16px] p-5 flex flex-col justify-between hover:shadow-[0_12px_28px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
-                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-emerald-500"></div>
+                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--line)]"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-[11px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Solved</span>
-                  <span class="h-8 w-8 rounded-[10px] bg-emerald-50 text-emerald-600 border border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40 grid place-items-center text-xs shrink-0 shadow-xs">
-                    <i class="fa-solid fa-check"></i>
+                  <span class="h-8 w-8 rounded-[10px] bg-[var(--soft)] text-ink border border-line dark:bg-[#2a2826] dark:text-[#f4efe6] dark:border-[var(--dark-line)] grid place-items-center text-xs shrink-0 shadow-xs">
+                    <i class="fa-solid fa-check" aria-hidden="true"></i>
                   </span>
                 </div>
                 <div class="mt-4">
                   <div class="flex items-baseline gap-2">
                     <span id="profileSolved" class="text-3xl font-bold tracking-tight text-ink leading-none font-mono">0</span>
-                    <span class="text-xs text-muted font-mono font-medium">/ 162 total</span>
+                    <span class="text-xs text-muted font-mono font-medium">/ <span data-total-questions>579</span> total</span>
                   </div>
                   <div class="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted font-medium">
-                    <i class="fa-solid fa-arrow-trend-up text-emerald-500 text-[10px]"></i>
+                    <i class="fa-solid fa-arrow-trend-up text-muted text-[10px]" aria-hidden="true"></i>
                     <span>Questions solved</span>
                   </div>
                 </div>
@@ -188,11 +188,11 @@
 
               <!-- Streak Card -->
               <div class="card rounded-[16px] p-5 flex flex-col justify-between hover:shadow-[0_12px_28px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
-                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-amber-500"></div>
+                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--line)]"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-[11px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Day Streak</span>
-                  <span class="h-8 w-8 rounded-[10px] bg-amber-50 text-amber-600 border border-amber-200/80 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40 grid place-items-center text-xs shrink-0 shadow-xs">
-                    <i class="fa-solid fa-fire"></i>
+                  <span class="h-8 w-8 rounded-[10px] bg-[var(--soft)] text-ink border border-line dark:bg-[#2a2826] dark:text-[#f4efe6] dark:border-[var(--dark-line)] grid place-items-center text-xs shrink-0 shadow-xs">
+                    <i class="fa-solid fa-fire" aria-hidden="true"></i>
                   </span>
                 </div>
                 <div class="mt-4">
@@ -201,7 +201,7 @@
                     <span class="text-xs text-muted font-mono font-medium">days active</span>
                   </div>
                   <div class="mt-2.5 flex items-center gap-1.5 text-[11px] text-muted font-medium">
-                    <i class="fa-solid fa-bolt text-amber-500 text-[10px]"></i>
+                    <i class="fa-solid fa-bolt text-muted text-[10px]" aria-hidden="true"></i>
                     <span>Daily study habit</span>
                   </div>
                 </div>
@@ -209,11 +209,11 @@
 
               <!-- Completion Card -->
               <div class="card rounded-[16px] p-5 flex flex-col justify-between hover:shadow-[0_12px_28px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_28px_rgba(0,0,0,0.35)] hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden border border-line">
-                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--green)]"></div>
+                <div class="absolute top-0 left-0 right-0 h-[2.5px] bg-[var(--line)]"></div>
                 <div class="flex items-center justify-between gap-2">
                   <span class="text-[11px] uppercase tracking-[.14em] font-mono font-semibold text-muted">Completion</span>
-                  <span class="h-8 w-8 rounded-[10px] bg-[var(--soft)] text-[var(--green)] border border-line grid place-items-center text-xs shrink-0 shadow-xs dark:bg-[#2a2826] dark:border-[var(--dark-line)]">
-                    <i class="fa-solid fa-chart-pie"></i>
+                  <span class="h-8 w-8 rounded-[10px] bg-[var(--soft)] text-ink border border-line dark:bg-[#2a2826] dark:text-[#f4efe6] dark:border-[var(--dark-line)] grid place-items-center text-xs shrink-0 shadow-xs">
+                    <i class="fa-solid fa-chart-pie" aria-hidden="true"></i>
                   </span>
                 </div>
                 <div class="mt-4">
@@ -252,7 +252,7 @@
                 <h2 class="text-lg font-semibold tracking-[-.02em] mt-1">See your full progress</h2>
                 <p class="text-sm text-muted leading-6 mt-1 max-w-md">Topic map, completion and streak — all in one place.</p>
                 <div class="flex gap-3 text-xs text-muted mt-3 font-mono">
-                  <span id="profileProgressPreview" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--soft)] border border-line"><i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> 0/18 topics · 0% complete</span>
+                  <span id="profileProgressPreview" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[var(--soft)] border border-line"><i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> 0/21 topics · 0% complete</span>
                 </div>
               </div>
               <a href="progress.html" class="btn-primary px-5 py-2.5 text-xs rounded-[10px] shrink-0 inline-flex items-center gap-2"><i class="fa-solid fa-arrow-right text-[11px]"></i> Open progress</a>
@@ -261,12 +261,12 @@
             <!-- Settings for mobile (hidden on lg, already in left) -->
             <div class="lg:hidden card reveal rounded-[14px] overflow-hidden divide-y divide-line">
               <div class="flex items-center justify-between gap-4 p-4">
-                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center"><i class="fa-solid fa-circle-half-stroke text-xs"></i></div><div><div class="text-sm font-medium">Theme</div><div class="text-xs text-muted">Paper / ink</div></div></div>
-                <button data-theme-toggle class="btn-ghost px-3 py-1.5 text-xs rounded-[10px]"><span data-theme-icon>◐</span></button>
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826] dark:text-[#f4efe6] dark:border-[var(--dark-line)] shrink-0"><i class="fa-solid fa-circle-half-stroke text-xs" aria-hidden="true"></i></div><div><div class="text-sm font-medium">Theme</div><div class="text-xs text-muted">Paper / ink</div></div></div>
+                <button data-theme-toggle class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-moon text-[11px]" aria-hidden="true"></i> <span data-theme-icon>◐</span></button>
               </div>
               <div class="flex items-center justify-between gap-4 p-4">
-                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center"><i class="fa-solid fa-download text-xs"></i></div><div><div class="text-sm font-medium">Export progress</div><div class="text-xs text-muted">Download JSON</div></div></div>
-                <button id="exportBtnMobile" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5"><i class="fa-solid fa-file-arrow-down text-[11px]"></i> Export</button>
+                <div class="flex items-center gap-3"><div class="h-8 w-8 rounded-[10px] bg-[var(--soft)] border border-line grid place-items-center text-ink dark:bg-[#2a2826] dark:text-[#f4efe6] dark:border-[var(--dark-line)] shrink-0"><i class="fa-solid fa-download text-xs" aria-hidden="true"></i></div><div><div class="text-sm font-medium">Export progress</div><div class="text-xs text-muted">Download JSON</div></div></div>
+                <button id="exportBtnMobile" class="btn-ghost px-3 py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 shrink-0"><i class="fa-solid fa-file-arrow-down text-[11px]" aria-hidden="true"></i> Export</button>
               </div>
             </div>
           </div>

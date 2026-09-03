@@ -4,8 +4,8 @@ const assert = require('node:assert/strict');
 const { topics, questionSeeds } = require('../js/topics-data.js');
 
 describe('topics-data.js - topics array', () => {
-  it('should have 18 topics', () => {
-    assert.equal(topics.length, 18);
+  it('should have 21 topics', () => {
+    assert.equal(topics.length, 21);
   });
 
   it('each topic should have name, desc, icon', () => {
@@ -27,7 +27,7 @@ describe('topics-data.js - topics array', () => {
 
   it('should include expected core topics', () => {
     const names = topics.map(t => t.name);
-    const mustHave = ['Python Basics', 'Variables', 'Data Types', 'Input and Output', 'Operators', 'Conditional Statements', 'Loops', 'Strings', 'Functions', 'Lists', 'Dictionaries', 'Comprehension', 'Exception Handling', 'File Handling', 'Object-Oriented Programming'];
+    const mustHave = ['Python Basics', 'Variables', 'Data Types', 'Input and Output', 'Operators', 'Conditional Statements', 'For Loops', 'While Loops', 'Nested Loops', 'Strings', 'String Methods', 'Functions', 'Lists', 'Dictionaries', 'Comprehension', 'Exception Handling', 'File Handling', 'Object-Oriented Programming'];
     for (const n of mustHave) {
       assert.ok(names.includes(n), `missing topic ${n}`);
     }
@@ -114,9 +114,52 @@ describe('topics-data.js - questionSeeds structure', () => {
   });
 
   it('should have aliases correctly wired', () => {
-    assert.equal(questionSeeds['Variables'], questionSeeds['Variables and Data Types']);
-    assert.equal(questionSeeds['Data Types'], questionSeeds['Variables and Data Types']);
-    assert.equal(questionSeeds['Loops'], questionSeeds['For Loops']);
+    assert.equal(questionSeeds['List Comprehension'], questionSeeds['Comprehension']);
+    assert.equal(questionSeeds['Comprehensions'], questionSeeds['Comprehension']);
+  });
+
+  it('Variables and Data Types should have separate question buckets', () => {
+    assert.notEqual(questionSeeds['Variables'], questionSeeds['Data Types']);
+    assert.equal(questionSeeds['Variables'].basic.length, 6);
+    assert.equal(questionSeeds['Data Types'].basic.length, 4);
+    assert.equal(questionSeeds['Variables'].intermediate.length, 5);
+    assert.equal(questionSeeds['Data Types'].intermediate.length, 5);
+    assert.equal(questionSeeds['Variables'].advanced.length, 5);
+    assert.equal(questionSeeds['Data Types'].advanced.length, 5);
+  });
+
+  it('For Loops, While Loops, and Nested Loops should have separate question buckets', () => {
+    for (const name of ['For Loops', 'While Loops', 'Nested Loops']) {
+      assert.equal(questionSeeds[name].basic.length, 10);
+      assert.equal(questionSeeds[name].intermediate.length, 10);
+      assert.equal(questionSeeds[name].advanced.length, 10);
+    }
+  });
+
+  it('Strings and String Methods should have separate question buckets', () => {
+    for (const name of ['Strings', 'String Methods']) {
+      assert.equal(questionSeeds[name].basic.length, 10);
+      assert.equal(questionSeeds[name].intermediate.length, 10);
+      assert.equal(questionSeeds[name].advanced.length, 10);
+    }
+  });
+
+  it('topics with their own content keep their own namespace', () => {
+    const { TOPIC_SOURCE } = require('../js/topics-data.js');
+    const canonical = n => TOPIC_SOURCE[n] || n;
+    // Variables and Data Types now keep their own distinct namespaces.
+    assert.equal(canonical('Variables'), 'Variables');
+    assert.equal(canonical('Data Types'), 'Data Types');
+    assert.notEqual(canonical('Variables'), canonical('Data Types'));
+    assert.equal(canonical('For Loops'), 'For Loops');
+    assert.equal(canonical('While Loops'), 'While Loops');
+    assert.equal(canonical('Nested Loops'), 'Nested Loops');
+    assert.equal(canonical('Strings'), 'Strings');
+    assert.equal(canonical('String Methods'), 'String Methods');
+    // Aliased topics resolve to their source topic
+    assert.equal(canonical('List Comprehension'), 'Comprehension');
+    assert.equal(canonical('Comprehensions'), 'Comprehension');
+    assert.equal(canonical('Loops'), 'For Loops');
   });
 });
 

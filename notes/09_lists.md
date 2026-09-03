@@ -1,269 +1,66 @@
 # Python Lists — Notes
 
-A list is used to store **multiple values in a single variable**.
+A **list** is an ordered, changeable collection of items, written in square brackets.
 
-Lists are:
+> **Why this matters** — Lists are the workhorse collection type. They hold rows of data, results of a loop, lines of a file, and almost everything else. Lists also introduce the idea of **mutability**, which changes how you think about assignment.
 
-* Ordered
-* Changeable
-* Able to contain duplicate values
-* Able to store different data types
+### The mental model
 
-Example:
-
-```python
-fruits = ["apple", "banana", "mango"]
+```text
+["apple", "banana", "mango"]
+    ↑         ↑         ↑
+    0         1         2      ← index (0-based)
+   -3        -2        -1      ← negative index
 ```
 
-Here, one variable `fruits` stores three values.
+| Property | Lists |
+| -------- | ----- |
+| Ordered | Yes — items keep their position |
+| Mutable | Yes — you can change, add, remove |
+| Duplicates allowed | Yes |
+| Indexed | Yes — by position |
+| Mixed types allowed | Yes |
 
 ---
 
-# 1. Creating Lists
+## 1. Creating Lists
 
-A list is created using square brackets `[]`.
+### Basic creation
 
 ```python
 fruits = ["apple", "banana", "mango"]
+
+print(fruits)
 ```
 
-A list can contain numbers:
+Output:
 
-```python
-numbers = [10, 20, 30, 40]
+```text
+['apple', 'banana', 'mango']
 ```
 
-It can contain strings:
-
-```python
-names = ["Mahesh", "Rahul", "Amit"]
-```
-
-It can contain different data types:
-
-```python
-data = ["Mahesh", 24, 5.8, True]
-```
-
-An empty list:
+### An empty list
 
 ```python
 items = []
 ```
 
-You can check the type:
+### Mixed types
 
 ```python
-fruits = ["apple", "banana"]
-
-print(type(fruits))
+data = ["Mahesh", 24, 5.8, True]
 ```
 
-Output:
-
-```text
-<class 'list'>
-```
-
----
-
-# 2. Indexing and Slicing
-
-Lists use **zero-based indexing**, just like strings.
+Lists can hold anything, including other lists:
 
 ```python
-fruits = ["apple", "banana", "mango", "orange"]
+matrix = [[1, 2, 3], [4, 5, 6]]
 ```
 
-Indexes:
-
-```text
-apple    banana    mango    orange
-  0         1        2         3
-```
-
-### Accessing an item
+### From `range()`
 
 ```python
-print(fruits[0])
-```
-
-Output:
-
-```text
-apple
-```
-
-```python
-print(fruits[2])
-```
-
-Output:
-
-```text
-mango
-```
-
-### Negative indexing
-
-Negative indexes start from the end.
-
-```text
-apple    banana    mango    orange
- -4        -3       -2        -1
-```
-
-Example:
-
-```python
-print(fruits[-1])
-```
-
-Output:
-
-```text
-orange
-```
-
-```python
-print(fruits[-2])
-```
-
-Output:
-
-```text
-mango
-```
-
----
-
-## List Slicing
-
-Slicing gets a part of a list.
-
-### Syntax
-
-```python
-list[start:stop]
-```
-
-Example:
-
-```python
-fruits = ["apple", "banana", "mango", "orange"]
-
-print(fruits[1:3])
-```
-
-Output:
-
-```text
-['banana', 'mango']
-```
-
-The `stop` index is not included.
-
-### From the beginning
-
-```python
-print(fruits[:3])
-```
-
-Output:
-
-```text
-['apple', 'banana', 'mango']
-```
-
-### Until the end
-
-```python
-print(fruits[2:])
-```
-
-Output:
-
-```text
-['mango', 'orange']
-```
-
-### Reverse a list using slicing
-
-```python
-print(fruits[::-1])
-```
-
-Output:
-
-```text
-['orange', 'mango', 'banana', 'apple']
-```
-
----
-
-# 3. Adding and Removing Items
-
-Lists are **mutable**, which means their contents can be changed after creation.
-
-For example:
-
-```python
-fruits = ["apple", "banana"]
-
-fruits.append("mango")
-
-print(fruits)
-```
-
-Output:
-
-```text
-['apple', 'banana', 'mango']
-```
-
-Python provides several methods for adding and removing items:
-
-```text
-.append()
-.insert()
-.remove()
-.pop()
-```
-
----
-
-# 4. `.append()`
-
-`.append()` adds an item to the **end of a list**.
-
-### Syntax
-
-```python
-list.append(item)
-```
-
-Example:
-
-```python
-fruits = ["apple", "banana"]
-
-fruits.append("mango")
-
-print(fruits)
-```
-
-Output:
-
-```text
-['apple', 'banana', 'mango']
-```
-
-Another example:
-
-```python
-numbers = [1, 2, 3]
-
-numbers.append(4)
+numbers = list(range(5))
 
 print(numbers)
 ```
@@ -271,40 +68,287 @@ print(numbers)
 Output:
 
 ```text
-[1, 2, 3, 4]
+[0, 1, 2, 3, 4]
 ```
 
-You can append different types:
+### From a string
 
 ```python
-items = []
+print(list("Python"))          # ['P', 'y', 't', 'h', 'o', 'n']
+print("a,b,c".split(","))      # ['a', 'b', 'c']
+```
 
-items.append("Python")
-items.append(10)
-items.append(True)
+### `len()`
 
-print(items)
+```python
+fruits = ["apple", "banana", "mango"]
+
+print(len(fruits))
 ```
 
 Output:
 
 ```text
-['Python', 10, True]
+3
 ```
 
 ---
 
-# 5. `.insert()`
+## 2. Indexing and Slicing
 
-`.insert()` adds an item at a **specific position**.
+Lists use the same indexing and slicing syntax as strings.
 
-### Syntax
+### Indexing
 
 ```python
-list.insert(index, item)
+fruits = ["apple", "banana", "mango"]
+
+print(fruits[0])      # apple
+print(fruits[1])      # banana
+print(fruits[-1])     # mango  → last item
+print(fruits[-2])     # banana
 ```
 
-Example:
+### Out of range
+
+```python
+print(fruits[5])      # IndexError: list index out of range
+```
+
+### Slicing
+
+```python
+numbers = [10, 20, 30, 40, 50]
+
+print(numbers[1:4])       # [20, 30, 40]
+print(numbers[:3])        # [10, 20, 30]
+print(numbers[3:])        # [40, 50]
+print(numbers[:])         # [10, 20, 30, 40, 50]  → a copy
+print(numbers[::2])       # [10, 30, 50]
+print(numbers[::-1])      # [50, 40, 30, 20, 10]  → reversed
+```
+
+> **`numbers[:]` is the idiomatic way to copy a list.** See the aliasing section below for why that matters.
+
+### Changing items — lists are mutable
+
+Unlike strings, you can assign to a position:
+
+```python
+fruits = ["apple", "banana", "mango"]
+
+fruits[0] = "orange"
+
+print(fruits)
+```
+
+Output:
+
+```text
+['orange', 'banana', 'mango']
+```
+
+This is the key difference from strings, which raise `TypeError` on item assignment.
+
+### Replacing a slice
+
+```python
+numbers = [1, 2, 3, 4, 5]
+
+numbers[1:3] = [20, 30]
+
+print(numbers)
+```
+
+Output:
+
+```text
+[1, 20, 30, 4, 5]
+```
+
+### Membership
+
+```python
+fruits = ["apple", "banana", "mango"]
+
+print("apple" in fruits)         # True
+print("orange" not in fruits)    # True
+```
+
+### Useful built-ins
+
+```python
+numbers = [4, 2, 9, 1]
+
+print(len(numbers))      # 4
+print(sum(numbers))      # 16
+print(min(numbers))      # 1
+print(max(numbers))      # 9
+print(sorted(numbers))   # [1, 2, 4, 9]  → new sorted list
+```
+
+---
+
+## Aliasing and Copying — Read This Carefully
+
+This is the single most consequential thing to understand about lists.
+
+### Assignment does not copy
+
+```python
+a = [1, 2, 3]
+b = a            # b is another name for the SAME list
+
+b.append(4)
+
+print(a)         # [1, 2, 3, 4]   ← a changed too!
+print(b)         # [1, 2, 3, 4]
+print(a is b)    # True — same object
+```
+
+```text
+a ──→ [1, 2, 3] ←── b      both names point at one list
+```
+
+### How to actually copy
+
+```python
+a = [1, 2, 3]
+
+b = a[:]                 # slice copy
+c = a.copy()             # method
+d = list(a)              # constructor
+
+b.append(4)
+print(a)                 # [1, 2, 3]  ← untouched
+print(b)                 # [1, 2, 3, 4]
+```
+
+### Shallow copies and nested lists
+
+`copy()` is **shallow** — nested lists are still shared:
+
+```python
+a = [[1, 2], [3, 4]]
+b = a.copy()
+
+b[0].append(99)
+
+print(a)        # [[1, 2, 99], [3, 4]]   ← the inner list changed!
+```
+
+For nested structures, use `copy.deepcopy()`:
+
+```python
+import copy
+
+a = [[1, 2], [3, 4]]
+b = copy.deepcopy(a)
+
+b[0].append(99)
+print(a)        # [[1, 2], [3, 4]]  ← safe
+```
+
+> **Rule** — `b = a` never copies. Use `a.copy()` for flat lists and `copy.deepcopy(a)` for nested ones.
+
+---
+
+## 3. Adding and Removing Items
+
+Lists are mutable, so items can be added and removed after creation.
+
+| Method | Purpose |
+| ------ | ------- |
+| `.append(x)` | Add `x` to the end |
+| `.insert(i, x)` | Insert `x` at index `i` |
+| `.remove(x)` | Remove the first `x` by value |
+| `.pop(i)` | Remove and return item at index `i` |
+| `del list[i]` | Delete by index (a statement, not a method) |
+| `.clear()` | Remove all items |
+| `.sort()` | Sort in place |
+| `.reverse()` | Reverse in place |
+| `.extend(other)` | Append all items from another list |
+
+Each is covered in detail below.
+
+---
+
+## 4. `.append()`
+
+Adds **one** item to the end.
+
+```python
+fruits = ["apple", "banana"]
+
+fruits.append("mango")
+
+print(fruits)
+```
+
+Output:
+
+```text
+['apple', 'banana', 'mango']
+```
+
+### `.append()` modifies in place
+
+Unlike string methods, list methods change the list and return `None`:
+
+```python
+fruits = ["apple"]
+result = fruits.append("banana")
+
+print(fruits)      # ['apple', 'banana']
+print(result)      # None
+```
+
+> **Common bug** — `fruits = fruits.append("x")` sets `fruits` to `None`, destroying your list. Call `.append()` as a statement; do not assign its result.
+
+### Appending in a loop
+
+The standard way to build a list:
+
+```python
+squares = []
+
+for n in range(1, 6):
+    squares.append(n ** 2)
+
+print(squares)
+```
+
+Output:
+
+```text
+[1, 4, 9, 16, 25]
+```
+
+### `.append()` vs `.extend()`
+
+```python
+a = [1, 2]
+a.append([3, 4])
+print(a)          # [1, 2, [3, 4]]   ← nested list
+
+b = [1, 2]
+b.extend([3, 4])
+print(b)          # [1, 2, 3, 4]     ← flattened
+```
+
+`.append()` adds **one** item (even if that item is a list). `.extend()` adds **each** item from the argument.
+
+### `+` for concatenation
+
+```python
+a = [1, 2] + [3, 4]      # [1, 2, 3, 4]  → new list
+```
+
+---
+
+## 5. `.insert()`
+
+Inserts an item at a specific index, shifting the rest right.
 
 ```python
 fruits = ["apple", "mango"]
@@ -320,60 +364,30 @@ Output:
 ['apple', 'banana', 'mango']
 ```
 
-Here:
-
-```text
-index = 1
-item  = "banana"
-```
-
-Another example:
+### Inserting at the ends
 
 ```python
-numbers = [10, 30, 40]
+items = [2, 3]
 
-numbers.insert(1, 20)
+items.insert(0, 1)        # at the front
+items.insert(len(items), 4)   # at the end
 
-print(numbers)
+print(items)
 ```
 
 Output:
 
 ```text
-[10, 20, 30, 40]
+[1, 2, 3, 4]
 ```
 
-### `append()` vs `insert()`
-
-`append()`:
-
-```python
-fruits.append("orange")
-```
-
-Adds to the end.
-
-`insert()`:
-
-```python
-fruits.insert(1, "orange")
-```
-
-Adds at a specific index.
+> **Performance note** — `.append()` is O(1), but `.insert(0, x)` is O(n) because every following item must shift. If you frequently add to the front, use `collections.deque`.
 
 ---
 
-# 6. `.remove()`
+## 6. `.remove()`
 
-`.remove()` removes an item by its **value**.
-
-### Syntax
-
-```python
-list.remove(value)
-```
-
-Example:
+Removes the **first** item matching a value.
 
 ```python
 fruits = ["apple", "banana", "mango"]
@@ -389,14 +403,12 @@ Output:
 ['apple', 'mango']
 ```
 
-It removes the first matching value.
-
-Example:
+### Only the first match
 
 ```python
-numbers = [10, 20, 30, 20]
+numbers = [1, 2, 3, 2, 1]
 
-numbers.remove(20)
+numbers.remove(2)
 
 print(numbers)
 ```
@@ -404,57 +416,41 @@ print(numbers)
 Output:
 
 ```text
-[10, 30, 20]
+[1, 3, 2, 1]
 ```
 
-Only the first `20` is removed.
-
-If the value doesn't exist, `.remove()` causes an error.
+### Removing a value that is absent
 
 ```python
-fruits = ["apple", "banana"]
-
-fruits.remove("mango")
+fruits = ["apple"]
+fruits.remove("orange")      # ValueError: list.remove(x): x not in list
 ```
 
-This gives:
+Guard it:
 
-```text
-ValueError
+```python
+if "orange" in fruits:
+    fruits.remove("orange")
+```
+
+Or use `discard`-like behaviour with a list comprehension:
+
+```python
+fruits = [f for f in fruits if f != "orange"]
 ```
 
 ---
 
-# 7. `.pop()`
+## 7. `.pop()`
 
-`.pop()` removes an item using its **index** and returns the removed item.
-
-### Remove the last item
+Removes and **returns** an item by index.
 
 ```python
 fruits = ["apple", "banana", "mango"]
 
-item = fruits.pop()
+removed = fruits.pop(1)
 
-print(item)
-print(fruits)
-```
-
-Output:
-
-```text
-mango
-['apple', 'banana']
-```
-
-### Remove a specific index
-
-```python
-fruits = ["apple", "banana", "mango"]
-
-item = fruits.pop(1)
-
-print(item)
+print(removed)
 print(fruits)
 ```
 
@@ -465,39 +461,62 @@ banana
 ['apple', 'mango']
 ```
 
-Here, index `1` is removed.
-
-### `.remove()` vs `.pop()`
+### With no index, it removes the last item
 
 ```python
-fruits.remove("banana")
+numbers = [1, 2, 3]
+
+last = numbers.pop()
+
+print(last)        # 3
+print(numbers)     # [1, 2]
 ```
 
-Removes using the **value**.
+### `.pop()` vs `.remove()`
+
+| | `.pop(i)` | `.remove(x)` |
+| - | --------- | ------------ |
+| Selects by | Index | Value |
+| Returns | The removed item | `None` |
+| Missing item | `IndexError` | `ValueError` |
 
 ```python
-fruits.pop(1)
+numbers = [10, 20, 30]
+
+numbers.pop(0)        # removes 10, returns it
+numbers.remove(30)    # removes 30, returns nothing
 ```
 
-Removes using the **index**.
+### Using `del`
 
-A useful way to remember:
+`del` removes by index or slice, and returns nothing:
 
-```text
-remove → "Remove this value"
-pop    → "Remove this position"
+```python
+numbers = [1, 2, 3, 4, 5]
+
+del numbers[0]
+print(numbers)          # [2, 3, 4, 5]
+
+del numbers[1:3]
+print(numbers)          # [2, 5]
+```
+
+### `clear()`
+
+```python
+numbers = [1, 2, 3]
+numbers.clear()
+print(numbers)          # []
 ```
 
 ---
 
-# 8. `.sort()`
+## 8. `.sort()`
 
-`.sort()` sorts the list.
-
-### Numbers
+Sorts the list **in place** and returns `None`.
 
 ```python
-numbers = [50, 10, 40, 20, 30]
+numbers = [3, 1, 4, 2]
 
 numbers.sort()
 
@@ -507,122 +526,120 @@ print(numbers)
 Output:
 
 ```text
-[10, 20, 30, 40, 50]
+[1, 2, 3, 4]
 ```
 
-By default, it sorts in ascending order.
-
-### Strings
-
-```python
-names = ["Rahul", "Amit", "Mahesh", "Akash"]
-
-names.sort()
-
-print(names)
-```
-
-Output:
-
-```text
-['Akash', 'Amit', 'Mahesh', 'Rahul']
-```
+> **Common bug** — `numbers = numbers.sort()` sets `numbers` to `None`. Call `.sort()` as a statement.
 
 ### Descending order
 
-Use:
-
 ```python
-numbers = [10, 50, 20, 40, 30]
-
+numbers = [3, 1, 4, 2]
 numbers.sort(reverse=True)
-
 print(numbers)
 ```
 
 Output:
 
 ```text
-[50, 40, 30, 20, 10]
+[4, 3, 2, 1]
 ```
 
-Important: `.sort()` changes the original list.
-
----
-
-# 9. `.reverse()`
-
-`.reverse()` reverses the current order of the list.
+### Sorting strings
 
 ```python
-numbers = [1, 2, 3, 4, 5]
+fruits = ["mango", "apple", "banana"]
 
-numbers.reverse()
-
-print(numbers)
+fruits.sort()
+print(fruits)
 ```
 
 Output:
 
 ```text
-[5, 4, 3, 2, 1]
+['apple', 'banana', 'mango']
 ```
 
-It does **not sort** the list.
-
-For example:
+Uppercase sorts before lowercase, so use `key=str.lower` for case-insensitive sorting:
 
 ```python
-numbers = [3, 1, 5, 2, 4]
+words = ["Banana", "apple", "Cherry"]
+words.sort(key=str.lower)
+print(words)          # ['apple', 'Banana', 'Cherry']
+```
 
-numbers.reverse()
+### `sort()` vs `sorted()`
 
-print(numbers)
+| | `list.sort()` | `sorted(list)` |
+| - | ------------- | -------------- |
+| Changes the original? | Yes | No |
+| Returns | `None` | A new sorted list |
+| Use when | You do not need the original order | You need to keep it |
+
+```python
+numbers = [3, 1, 2]
+
+sorted_numbers = sorted(numbers)
+print(sorted_numbers)     # [1, 2, 3]
+print(numbers)            # [3, 1, 2]  ← unchanged
+```
+
+### Custom sort keys
+
+```python
+students = [("Mahesh", 88), ("Nina", 95), ("Rahul", 79)]
+
+students.sort(key=lambda s: s[1])      # sort by score
+print(students)
 ```
 
 Output:
 
 ```text
-[4, 2, 5, 1, 3]
-```
-
-It simply reverses the existing order.
-
-### `.sort(reverse=True)` vs `.reverse()`
-
-```python
-numbers = [3, 1, 5, 2, 4]
-
-numbers.sort(reverse=True)
-```
-
-Result:
-
-```text
-[5, 4, 3, 2, 1]
-```
-
-But:
-
-```python
-numbers = [3, 1, 5, 2, 4]
-
-numbers.reverse()
-```
-
-Result:
-
-```text
-[4, 2, 5, 1, 3]
+[('Rahul', 79), ('Mahesh', 88), ('Nina', 95)]
 ```
 
 ---
 
-# 10. List Looping
+## 9. `.reverse()`
 
-A `for` loop can be used to access every item in a list.
+Reverses the list **in place**, returning `None`.
 
-### Basic example
+```python
+numbers = [1, 2, 3]
+
+numbers.reverse()
+
+print(numbers)
+```
+
+Output:
+
+```text
+[3, 2, 1]
+```
+
+### Alternatives
+
+```python
+numbers = [1, 2, 3]
+
+print(numbers[::-1])          # [3, 2, 1]  → new list, original kept
+print(list(reversed(numbers)))# [3, 2, 1]  → new list
+print(numbers)                # [1, 2, 3]
+```
+
+| Approach | Changes original? | Returns |
+| -------- | ----------------- | ------- |
+| `numbers.reverse()` | Yes | `None` |
+| `numbers[::-1]` | No | New reversed list |
+| `reversed(numbers)` | No | Iterator |
+
+---
+
+## 10. List Looping
+
+### Basic iteration
 
 ```python
 fruits = ["apple", "banana", "mango"]
@@ -639,104 +656,11 @@ banana
 mango
 ```
 
-The loop takes one item at a time.
-
-```text
-apple
-  ↓
-print
-
-banana
-  ↓
-print
-
-mango
-  ↓
-print
-```
-
----
-
-## Loop through numbers
+### With an index — `enumerate()`
 
 ```python
-numbers = [10, 20, 30, 40]
-
-for number in numbers:
-    print(number)
-```
-
-Output:
-
-```text
-10
-20
-30
-40
-```
-
----
-
-## Loop with an index
-
-You can use `range()` and `len()` to access indexes.
-
-```python
-fruits = ["apple", "banana", "mango"]
-
-for i in range(len(fruits)):
-    print(fruits[i])
-```
-
-Output:
-
-```text
-apple
-banana
-mango
-```
-
-Here:
-
-```python
-len(fruits)
-```
-
-gives the number of items.
-
-For this list:
-
-```python
-["apple", "banana", "mango"]
-```
-
-the length is `3`.
-
-So:
-
-```python
-range(3)
-```
-
-produces:
-
-```text
-0
-1
-2
-```
-
----
-
-## Loop with index and value
-
-A simple way to get both the index and value is:
-
-```python
-fruits = ["apple", "banana", "mango"]
-
-for index, fruit in enumerate(fruits):
-    print(index, fruit)
+for i, fruit in enumerate(fruits):
+    print(i, fruit)
 ```
 
 Output:
@@ -747,124 +671,234 @@ Output:
 2 mango
 ```
 
----
-
-# Changing List Items
-
-Because lists are mutable, you can change an item using its index.
+Start counting from 1:
 
 ```python
-fruits = ["apple", "banana", "mango"]
-
-fruits[1] = "orange"
-
-print(fruits)
+for i, fruit in enumerate(fruits, start=1):
+    print(i, fruit)
 ```
 
 Output:
 
 ```text
-['apple', 'orange', 'mango']
+1 apple
+2 banana
+3 mango
 ```
 
-The item at index `1` changed from `"banana"` to `"orange"`.
+> **Prefer `enumerate()` over `range(len(list))`.** It is shorter and clearer.
 
----
-
-# Common List Operations Together
+### Building a new list
 
 ```python
-fruits = ["apple", "banana", "mango"]
+numbers = [1, 2, 3, 4, 5]
 
-# Add
-fruits.append("orange")
+squares = []
 
-# Insert
-fruits.insert(1, "grapes")
+for n in numbers:
+    squares.append(n ** 2)
 
-# Remove by value
-fruits.remove("banana")
-
-# Remove by index
-fruits.pop(0)
-
-print(fruits)
+print(squares)
 ```
 
-The list can be changed step by step using these methods.
+Output:
+
+```text
+[1, 4, 9, 16, 25]
+```
+
+The same thing as a comprehension:
+
+```python
+squares = [n ** 2 for n in numbers]
+```
+
+### Filtering
+
+```python
+numbers = [1, 2, 3, 4, 5, 6]
+
+evens = []
+
+for n in numbers:
+    if n % 2 == 0:
+        evens.append(n)
+
+print(evens)
+```
+
+Output:
+
+```text
+[2, 4, 6]
+```
+
+As a comprehension:
+
+```python
+evens = [n for n in numbers if n % 2 == 0]
+```
+
+### Two lists together — `zip()`
+
+```python
+names = ["Mahesh", "Nina"]
+scores = [88, 95]
+
+for name, score in zip(names, scores):
+    print(name, "→", score)
+```
+
+Output:
+
+```text
+Mahesh → 88
+Nina → 95
+```
+
+### Do not modify a list while iterating
+
+```python
+numbers = [1, 2, 3, 4, 5]
+
+for n in numbers:
+    if n % 2 == 0:
+        numbers.remove(n)      # ← mutating during iteration
+
+print(numbers)
+```
+
+Output:
+
+```text
+[1, 3, 5]
+```
+
+That happens to work here, but it is fragile — removing items shifts the indices and causes elements to be skipped. Iterate over a copy instead:
+
+```python
+for n in numbers[:]:
+    if n % 2 == 0:
+        numbers.remove(n)
+```
+
+Or build a new list:
+
+```python
+numbers = [n for n in numbers if n % 2 != 0]
+```
 
 ---
 
-# Quick Revision
+## Common List Operations Together
 
-| Operation       | Method       | What it does                     |
-| --------------- | ------------ | -------------------------------- |
-| Add at end      | `.append()`  | Adds one item to the end         |
-| Add at position | `.insert()`  | Adds an item at an index         |
-| Remove by value | `.remove()`  | Removes the first matching value |
-| Remove by index | `.pop()`     | Removes and returns an item      |
-| Sort            | `.sort()`    | Sorts the list                   |
-| Reverse         | `.reverse()` | Reverses the current order       |
+```python
+items = []
+
+items.append(10)          # add to the end      → [10]
+items.append(20)          #                     → [10, 20]
+items.insert(0, 5)        # insert at index 0   → [5, 10, 20]
+items.remove(10)          # remove by value     → [5, 20]
+popped = items.pop()      # remove last         → returns 20, list is [5]
+items.extend([1, 2])      # add several         → [5, 1, 2]
+items.sort()              # sort in place       → [1, 2, 5]
+items.reverse()           # reverse in place    → [5, 2, 1]
+count = len(items)        # length              → 3
+items.clear()             # empty the list      → []
+```
+
+---
+
+## List Methods Reference
+
+| Method | Purpose | Returns |
+| ------ | ------- | ------- |
+| `.append(x)` | Add to the end | `None` |
+| `.extend(iter)` | Add several | `None` |
+| `.insert(i, x)` | Insert at index | `None` |
+| `.remove(x)` | Remove first match by value | `None` |
+| `.pop(i)` | Remove and return by index | The item |
+| `.clear()` | Empty the list | `None` |
+| `.index(x)` | Index of first match | `int` |
+| `.count(x)` | Count occurrences | `int` |
+| `.sort()` | Sort in place | `None` |
+| `.reverse()` | Reverse in place | `None` |
+| `.copy()` | Shallow copy | New list |
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | What happens | Fix |
+| ------- | ------------ | --- |
+| `b = a` expecting a copy | Both names share one list | `b = a.copy()` |
+| `items = items.append(x)` | `items` becomes `None` | Call `.append()` as a statement |
+| `items = items.sort()` | `items` becomes `None` | Call `.sort()` or use `sorted()` |
+| Index beyond the end | `IndexError` | Check `len()` |
+| `.remove(x)` when `x` is absent | `ValueError` | Check `if x in list` first |
+| Modifying while iterating | Items skipped | Iterate a copy or build a new list |
+| `.append([1,2])` expecting flattening | Creates a nested list | Use `.extend([1,2])` |
+
+---
+
+## Quick Revision
+
+| Topic | Key point | Example |
+| ----- | --------- | ------- |
+| Create | Square brackets | `[1, 2, 3]` |
+| Empty | `[]` | `items = []` |
+| Index | Zero-based | `items[0]`, `items[-1]` |
+| Slice | `[start:stop]`, stop excluded | `items[1:3]` |
+| Copy | `[:]` or `.copy()` | `b = a.copy()` |
+| Mutable | Items can be reassigned | `items[0] = "x"` |
+| Add | `.append(x)` | End of the list |
+| Add several | `.extend([...])` | Flattens |
+| Insert | `.insert(i, x)` | At a position |
+| Remove by value | `.remove(x)` | First match |
+| Remove by index | `.pop(i)` | Returns the item |
+| Sort | `.sort()` or `sorted()` | In place vs new list |
+| Reverse | `.reverse()` or `[::-1]` | In place vs new list |
+| Loop | `for x in items:` | Direct iteration |
+| With index | `enumerate(items)` | Index and value |
 
 ### Core patterns
 
-Creating:
-
 ```python
-fruits = ["apple", "banana", "mango"]
+items = []                        # start empty
+items.append(x)                   # add
+items.insert(0, x)                # add at front
+items.remove(x)                   # remove by value
+item = items.pop()                # remove last, keep the value
+items.sort()                       # sort in place
+new = sorted(items)                # sorted copy
+new = items.copy()                 # real copy
+for i, x in enumerate(items):      # index + value
+    print(i, x)
+squares = [n ** 2 for n in nums]   # build a new list
 ```
 
-Indexing:
+### The main idea
 
-```python
-fruits[0]
+```text
+Lists
+ ├── Ordered, mutable, duplicates allowed
+ ├── Indexing and slicing (same syntax as strings)
+ ├── Mutable → methods change the list and return None
+ ├── b = a does NOT copy → use .copy() or [:]
+ ├── Add:    append / insert / extend
+ ├── Remove: remove (by value) / pop (by index) / del / clear
+ ├── Order:  sort() vs sorted(), reverse() vs [::-1]
+ └── Loop:   for x in items, enumerate(), zip()
 ```
 
-Slicing:
+---
 
-```python
-fruits[1:3]
-```
+## Self-Check
 
-Adding:
-
-```python
-fruits.append("orange")
-```
-
-Inserting:
-
-```python
-fruits.insert(1, "orange")
-```
-
-Removing:
-
-```python
-fruits.remove("apple")
-```
-
-Popping:
-
-```python
-fruits.pop()
-```
-
-Sorting:
-
-```python
-fruits.sort()
-```
-
-Reversing:
-
-```python
-fruits.reverse()
-```
-
-Looping:
-
-```python
-for fruit in fruits:
-    print(fruit)
-```
+- [ ] Why does `b = a; b.append(1)` also change `a`?
+- [ ] What does `list.append(x)` return, and why does that matter?
+- [ ] What is the difference between `.append([3, 4])` and `.extend([3, 4])`?
+- [ ] What is the difference between `.sort()` and `sorted()`?
+- [ ] Why is `insert(0, x)` slower than `append(x)`?
+- [ ] What is the risk of removing items while iterating, and how do you avoid it?
+- [ ] How do you get both the index and the value while looping?

@@ -56,7 +56,7 @@ function initProfilePage() {
       if (solvedEl) solvedEl.textContent = o.done;
       if (overallEl) overallEl.textContent = pctStr;
       if (streakEl) streakEl.textContent = streak();
-      if (previewEl) previewEl.textContent = `${started}/18 topics · ${pctStr} complete`;
+      if (previewEl) previewEl.textContent = `${started}/${topics.length} topics · ${pctStr} complete`;
       if (topicsDoneEl) topicsDoneEl.textContent = `${started} topics started`;
     }
   }

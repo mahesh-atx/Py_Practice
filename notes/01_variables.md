@@ -1,24 +1,48 @@
 # Python Variables — Notes
 
+A **variable** is a name that refers to a value stored in your program.
+
+> **Why this matters** — Variables are how a program remembers anything. Without them, every value would have to be written twice: once to compute it and once to use it. Almost every line of real Python involves at least one variable.
+
+### The mental model
+
+A variable is a **label attached to a value**, not a box containing it.
+
+```text
+name  ──→  "Mahesh"
+age   ──→  24
+```
+
+That distinction sounds academic, but it explains behaviour that confuses beginners — for example why two variables can end up pointing at the same list.
+
+---
+
 ## 1. Variables
 
-A variable is a **name used to store a value** in a program.
+### Creating a variable
 
-Think of a variable as a label attached to some data.
+You create a variable by assigning a value with `=`:
 
 ```python
 name = "Mahesh"
 age = 24
 ```
 
-Here:
+The pattern is always:
 
 ```text
-name → "Mahesh"
-age  → 24
+variable = value
 ```
 
-The value stored in a variable can be used later.
+More examples:
+
+```python
+city = "Akola"
+price = 99.50
+is_active = True
+```
+
+### Using a variable
 
 ```python
 name = "Mahesh"
@@ -34,7 +58,7 @@ Mahesh
 
 ### Changing a variable
 
-A variable's value can be changed.
+The value a label points to can be replaced:
 
 ```python
 age = 24
@@ -51,76 +75,9 @@ Output:
 25
 ```
 
-The variable `age` first stores `24`, then stores `25`.
+The `=` sign is **assignment**, not equality. Read it as "age now refers to 25", not "age equals 25". That reading will save you confusion later.
 
-### Variables can store different types of values
-
-```python
-name = "Mahesh"
-age = 24
-height = 5.8
-is_student = True
-```
-
-A variable can hold different kinds of values.
-
----
-
-# 2. Creating Variables
-
-In Python, you create a variable by assigning a value using `=`.
-
-```python
-name = "Mahesh"
-```
-
-The basic pattern is:
-
-```text
-variable = value
-```
-
-Examples:
-
-```python
-age = 24
-city = "Akola"
-price = 99.50
-is_active = True
-```
-
-You do not need to declare the variable type separately.
-
-For example, you don't write:
-
-```python
-int age = 24
-```
-
-Instead, simply write:
-
-```python
-age = 24
-```
-
-### Using variables
-
-```python
-name = "Mahesh"
-age = 24
-
-print(name)
-print(age)
-```
-
-Output:
-
-```text
-Mahesh
-24
-```
-
-### Using variables in calculations
+### Variables with calculations
 
 ```python
 a = 10
@@ -135,7 +92,7 @@ Output:
 30
 ```
 
-You can also use variables to build expressions:
+A fuller example:
 
 ```python
 price = 100
@@ -152,13 +109,24 @@ Output:
 300
 ```
 
+### Variables can hold different types
+
+```python
+name = "Mahesh"
+age = 24
+height = 5.8
+is_student = True
+```
+
+One variable can hold text, another a number, another a true/false value. Python does not require you to declare which.
+
 ---
 
-# 3. Naming Rules
+## 2. Naming Rules
 
-Variable names must follow Python's naming rules.
+Variable names must follow Python's rules. These are enforced by the language — breaking them is a `SyntaxError`.
 
-### Rule 1: Start with a letter or `_`
+### Rule 1: Start with a letter or underscore
 
 Valid:
 
@@ -173,21 +141,11 @@ Invalid:
 1name = "Mahesh"
 ```
 
-A variable name cannot start with a number.
-
-### Rule 2: Numbers can be used after the first character
-
-Valid:
+### Rule 2: Numbers are allowed after the first character
 
 ```python
 age1 = 24
 student2 = "Rahul"
-```
-
-Invalid:
-
-```python
-2student = "Rahul"
 ```
 
 ### Rule 3: No spaces
@@ -198,328 +156,271 @@ Invalid:
 student name = "Mahesh"
 ```
 
-Use `_` instead:
+Use an underscore instead:
 
 ```python
 student_name = "Mahesh"
 ```
 
-### Rule 4: Only letters, numbers, and `_`
-
-Valid:
+### Rule 4: Only letters, numbers, and underscores
 
 ```python
-student_name = "Mahesh"
-age2 = 24
+student_name = "Mahesh"    # valid
+student-name = "Mahesh"    # invalid — the dash is read as subtraction
 ```
 
-Invalid:
+### Rule 5: Cannot use reserved keywords
+
+Python reserves words like `if`, `for`, `while`, `class`, `def`, `return`, `import`, `True`, `False`, `None`. You cannot use them as names:
 
 ```python
-student-name = "Mahesh"
+class = "Python"    # SyntaxError
 ```
 
-`-` is treated as an operator, not as part of a variable name.
+### Style conventions (not enforced, but expected)
 
-### Rule 5: Python is case-sensitive
+These will not cause errors, but professional Python follows them:
 
-These are different variables:
+| Convention | Good | Avoid |
+| ---------- | ---- | ----- |
+| `snake_case` for variables | `student_name` | `studentName` |
+| Descriptive names | `total_price` | `tp` |
+| `UPPER_CASE` for constants | `MAX_ATTEMPTS` | `maxAttempts` |
+| Leading underscore for "internal" | `_count` | `count_` |
 
 ```python
-name = "Mahesh"
-Name = "Rahul"
-NAME = "Amit"
+# Weak — the reader has to guess
+d = 45
+
+# Strong — the meaning is obvious
+elapsed_days = 45
 ```
 
-Python treats them as three separate names.
-
-### Rule 6: Don't use Python keywords
-
-Python has reserved words that have special meanings.
-
-For example:
-
-```python
-if
-else
-for
-while
-class
-def
-return
-True
-False
-None
-```
-
-You should not use them as variable names.
-
-Invalid:
-
-```python
-if = 10
-```
-
-### Good naming style
-
-Use clear names:
-
-```python
-student_name = "Mahesh"
-student_age = 24
-total_price = 500
-```
-
-Avoid unclear names:
-
-```python
-x = "Mahesh"
-a = 24
-p = 500
-```
-
-unless the short name makes sense in that situation.
+> **Why this matters** — You write code once but read it many times. Names are the cheapest documentation you have.
 
 ---
 
-# 4. Multiple Assignment
+## 3. Multiple Assignment
 
-Python allows you to assign values to multiple variables in one line.
-
-### Assign the same value
-
-```python
-a = b = c = 10
-```
-
-Now:
-
-```text
-a → 10
-b → 10
-c → 10
-```
-
-Example:
-
-```python
-x = y = z = 0
-
-print(x)
-print(y)
-print(z)
-```
-
-Output:
-
-```text
-0
-0
-0
-```
-
-### Assign different values
-
-You can assign different values to different variables in one line:
-
-```python
-name, age, city = "Mahesh", 24, "Akola"
-```
-
-This is equivalent to:
-
-```python
-name = "Mahesh"
-age = 24
-city = "Akola"
-```
-
-Example:
-
-```python
-name, age, country = "Mahesh", 24, "India"
-
-print(name)
-print(age)
-print(country)
-```
-
-Output:
-
-```text
-Mahesh
-24
-India
-```
-
-The number of variables and values should match.
+### Assigning several variables at once
 
 ```python
 a, b, c = 10, 20, 30
-```
 
-Correct.
-
-But:
-
-```python
-a, b = 10, 20, 30
-```
-
-causes an error because there are two variables but three values.
-
----
-
-# 5. Constants
-
-A constant is a value that **should not be changed** during a program.
-
-Python does not have a special `constant` keyword.
-
-Instead, Python programmers use **uppercase variable names** to show that a value is meant to stay constant.
-
-```python
-PI = 3.14159
-MAX_USERS = 100
-COUNTRY = "India"
-```
-
-The uppercase name tells other programmers:
-
-> "Do not change this value."
-
-Example:
-
-```python
-PI = 3.14159
-
-radius = 5
-area = PI * radius * radius
-
-print(area)
-```
-
-Python technically still allows you to change it:
-
-```python
-PI = 3.14159
-
-PI = 4
-```
-
-Python will not stop you.
-
-So constants in Python are mainly a **programming convention**, not a protected value.
-
-### Common style
-
-```python
-MAX_SIZE = 100
-DEFAULT_TIMEOUT = 30
-APP_NAME = "My App"
-```
-
-Use uppercase names for values that are intended to remain unchanged.
-
----
-
-# 6. Dynamic Typing
-
-Python is a **dynamically typed language**.
-
-This means you don't have to specify the type of a variable when creating it.
-
-You can simply write:
-
-```python
-age = 24
-```
-
-Python understands that `age` contains an integer.
-
-You can later assign a different type of value to the same variable:
-
-```python
-age = 24
-age = "twenty four"
-```
-
-Now `age` contains a string instead of an integer.
-
-### Example
-
-```python
-x = 10
-print(x)
-
-x = "Hello"
-print(x)
-
-x = 5.5
-print(x)
+print(a)
+print(b)
+print(c)
 ```
 
 Output:
 
 ```text
 10
-Hello
-5.5
+20
+30
 ```
 
-The variable `x` can refer to values of different types at different times.
+The counts must match, or Python raises a `ValueError`:
 
-### Important idea
+```python
+a, b = 10, 20, 30    # ValueError: too many values to unpack
+```
 
-In Python, the **value has a type**, not a fixed type attached to the variable name.
+### Assigning the same value to several variables
 
-Think of it like:
+```python
+x = y = z = 0
+```
+
+All three now refer to `0`.
+
+> **Careful** — This is fine for immutable values like numbers. With mutable values like lists, `a = b = []` makes both names point at the *same* list, so appending to one affects the other.
+
+### Swapping values
+
+Python lets you swap in one line, with no temporary variable:
+
+```python
+a = 10
+b = 20
+
+a, b = b, a
+
+print(a)
+print(b)
+```
+
+Output:
 
 ```text
-x → 10
+20
+10
 ```
 
-Later:
+**How it works:** Python evaluates the whole right-hand side `(b, a)` *first*, producing `(20, 10)`, and only then assigns to the left. That is why nothing is lost. In most other languages this needs a third variable.
+
+---
+
+## 4. Constants
+
+A **constant** is a value meant never to change.
+
+Python has no true constants — you cannot force a variable to be read-only. The convention is to name it in `UPPER_CASE` as a signal to other programmers:
+
+```python
+PI = 3.14159
+MAX_USERS = 100
+COMPANY_NAME = "PyPractice"
+```
+
+```python
+PI = 3.14159
+radius = 5
+
+area = PI * radius ** 2
+
+print(area)
+```
+
+Output:
 
 ```text
-x → "Hello"
+78.53975
 ```
 
-Later:
+> **The convention is a promise, not a lock.** Python will happily let you reassign `PI`. The capital letters tell other programmers "do not do this" — they do not stop you.
+
+### Why use constants?
+
+```python
+# Unclear — what is 0.18?
+total = price * 0.18
+
+# Clear
+TAX_RATE = 0.18
+total = price * TAX_RATE
+```
+
+The second version also means that when the rate changes, you change it in one place.
+
+---
+
+## 5. Dynamic Typing
+
+Python is **dynamically typed**: a variable's type is determined by the value it currently holds, and it can change.
+
+```python
+x = 10
+print(type(x))
+
+x = "Hello"
+print(type(x))
+
+x = True
+print(type(x))
+```
+
+Output:
 
 ```text
-x → 5.5
+<class 'int'>
+<class 'str'>
+<class 'bool'>
 ```
 
-The name `x` can point to different values.
+The same name `x` held an integer, then a string, then a boolean.
 
-### Python vs statically typed languages
+### Contrast with static typing
 
-In some languages, you may write:
+In languages like Java or C++, you declare the type and it cannot change:
 
-```text
-int age = 24
+```java
+int age = 24;      // Java: age is an int, permanently
 ```
 
-The type is declared explicitly.
-
-In Python:
+In Python you simply write:
 
 ```python
 age = 24
 ```
 
-Python determines the type from the value.
+### Advantages and trade-offs
 
-This is one of the reasons Python code is shorter and easier to write.
+| | Dynamic typing (Python) |
+| --- | --- |
+| Advantage | Less code, faster to write, flexible |
+| Advantage | Easy to experiment in the REPL |
+| Trade-off | Type mistakes surface at runtime, not before |
+| Trade-off | Larger codebases need tests or type hints |
+
+```python
+age = "24"        # perfectly legal — age is now a string
+print(age + 1)    # TypeError at runtime
+```
+
+Python only discovers the problem when that line actually runs.
+
+> **Practical advice** — Dynamic typing is a strength while learning and a responsibility in production. Just because a variable *can* change type does not mean it *should*. Keep a variable's type stable and your code stays predictable.
+
+---
+
+## Common Mistakes to Avoid
+
+| Mistake | What happens | Fix |
+| ------- | ------------ | --- |
+| Using a variable before assigning it | `NameError` | Assign first: `x = 0` |
+| Spaces or dashes in a name | `SyntaxError` | Use `student_name` |
+| Starting a name with a digit | `SyntaxError` | Use `age1`, not `1age` |
+| Using a keyword like `class` | `SyntaxError` | Choose another name |
+| Mismatched counts in multiple assignment | `ValueError` | `a, b = 1, 2` not `a, b = 1, 2, 3` |
+| Reassigning a constant | Works, but breaks the contract | Treat `UPPER_CASE` as fixed |
+
+---
 
 ## Quick Revision
 
-| Topic               | Key idea                                               |
-| ------------------- | ------------------------------------------------------ |
-| Variable            | Name used to refer to a value                          |
-| Creating variables  | `name = value`                                         |
-| Naming rules        | Start with letter/`_`, no spaces, case-sensitive       |
-| Multiple assignment | Assign multiple variables in one statement             |
-| Constants           | Use uppercase names for values meant to stay unchanged |
-| Dynamic typing      | Variable names don't have a fixed type                 |
+| Topic | Key point | Example |
+| ----- | --------- | ------- |
+| Creating | Assign with `=` | `name = "Mahesh"` |
+| Reading | Use the name | `print(name)` |
+| Reassigning | Same name, new value | `age = 25` |
+| Naming | Letters, digits, `_`; cannot start with a digit | `student_name` |
+| Style | `snake_case` | `total_price` |
+| Multiple assignment | Match counts | `a, b, c = 1, 2, 3` |
+| Same value | Chain the assignment | `x = y = z = 0` |
+| Swapping | Tuple unpacking | `a, b = b, a` |
+| Constants | `UPPER_CASE` by convention | `PI = 3.14159` |
+| Dynamic typing | Type follows the value | `x = 10` then `x = "hi"` |
+
+### Core patterns
+
+```python
+name = "Mahesh"                  # create
+age = 24                         # create
+age = age + 1                    # update
+a, b = 10, 20                    # multiple assignment
+a, b = b, a                      # swap
+MAX_USERS = 100                  # constant (by convention)
+x = 10; x = "ten"                # dynamic typing
+```
+
+### The main idea
+
+```text
+Variable
+ ├── A name pointing at a value
+ ├── Created by assignment (=)
+ ├── Can be reassigned at any time
+ ├── Name it clearly — snake_case
+ └── Type comes from the value, not the name
+```
+
+---
+
+## Self-Check
+
+- [ ] What is the difference between `=` in Python and `=` in mathematics?
+- [ ] Is `student_name` valid? Is `student-name`? Is `2students`?
+- [ ] How do you swap two variables without a temporary one, and why does it work?
+- [ ] Does `UPPER_CASE` actually prevent reassignment in Python?
+- [ ] What does `type(x)` tell you, and how can it change during a program?

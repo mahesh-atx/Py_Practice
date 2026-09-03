@@ -7,7 +7,7 @@
     <!-- Primary SEO Meta Tags -->
     <title>Log in to PyPractice — Python Practice Platform</title>
     <meta name="title" content="Log in to PyPractice — Python Practice Platform" />
-    <meta name="description" content="Log in to your PyPractice account to save your solved questions, track your daily streak, and unlock all 18 Python topics." />
+    <meta name="description" content="Log in to your PyPractice account to save your solved questions, track your daily streak, and unlock all 21 Python topics." />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://pypractice.dev/login.html" />
 
@@ -79,9 +79,11 @@
       .btn-primary-custom:hover { background-color: var(--btn-primary-hover) !important; }
       .btn-google-custom { background-color: var(--btn-google-bg) !important; color: var(--btn-google-text) !important; border: 1px solid var(--btn-google-border) !important; transition: all 0.2s ease; }
       .btn-google-custom:hover { background-color: var(--btn-google-hover) !important; }
-      .character-eyes { transition: transform 0.08s ease-out; }
-      .character-float { animation: gentleFloat 4s ease-in-out infinite alternate; }
-      @keyframes gentleFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
+      .character-eyes { will-change: transform; transform: translate3d(0,0,0); backface-visibility: hidden; }
+      .character-face { will-change: transform; transform: translate3d(0,0,0); backface-visibility: hidden; }
+      .character-float { animation: gentleFloat 6s ease-in-out infinite alternate; will-change: transform; }
+      @keyframes gentleFloat { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+      @media (prefers-reduced-motion: reduce) { .character-eyes, .character-face { will-change: auto; } .character-float { animation: none; } }
     </style>
   </head>
   <body class="w-full h-full min-h-screen flex items-center justify-center p-3 sm:p-5 md:p-8 selection:bg-black selection:text-white">
@@ -89,10 +91,10 @@
       <div id="leftIllustrationPane" class="w-full md:w-1/2 h-[340px] md:h-full flex items-end justify-center px-6 pt-6 pb-0 relative overflow-hidden select-none shrink-0" style="background-color: var(--bg-left);">
         <div class="w-full max-w-[430px] lg:max-w-[460px] h-[92%] relative flex items-end justify-center pb-0">
           <svg id="monsterSvg" class="w-full h-full character-float" viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYBottom meet">
-            <g id="purpleMonster"><rect x="68" y="35" width="80" height="245" rx="2" fill="#6B11F4" /><line x1="108" y1="68" x2="108" y2="88" stroke="#18181B" stroke-width="3" stroke-linecap="round" /><g id="purpleEyes" class="character-eyes"><circle cx="100" cy="68" r="2.8" fill="#18181B" /><circle cx="101" cy="67" r="0.9" fill="#FFFFFF" /><circle cx="116" cy="68" r="2.8" fill="#18181B" /><circle cx="117" cy="67" r="0.9" fill="#FFFFFF" /></g></g>
+            <g id="purpleMonster"><rect x="68" y="35" width="80" height="245" rx="2" fill="#6B11F4" /><line id="purpleNose" class="character-face" x1="108" y1="68" x2="108" y2="88" stroke="#18181B" stroke-width="3" stroke-linecap="round" /><g id="purpleEyes" class="character-eyes"><circle cx="100" cy="68" r="2.8" fill="#18181B" /><circle cx="101" cy="67" r="0.9" fill="#FFFFFF" /><circle cx="116" cy="68" r="2.8" fill="#18181B" /><circle cx="117" cy="67" r="0.9" fill="#FFFFFF" /></g></g>
             <g id="charcoalMonster"><rect x="148" y="115" width="56" height="165" rx="2" fill="#1E2024" stroke="#2D3039" stroke-width="0.8" /><circle cx="170" cy="140" r="8" fill="#FFFFFF" /><circle cx="186" cy="140" r="8" fill="#FFFFFF" /><g id="charcoalPupils" class="character-eyes"><circle id="charcoalPupilL" cx="173.5" cy="139.5" r="4.2" fill="#18181B" /><circle cx="174.8" cy="138.0" r="1.0" fill="#FFFFFF" opacity="0.95" /><circle id="charcoalPupilR" cx="189.5" cy="139.5" r="4.2" fill="#18181B" /><circle cx="190.8" cy="138.0" r="1.0" fill="#FFFFFF" opacity="0.95" /></g></g>
-            <g id="yellowMonster"><path d="M 184 280 L 184 210 A 34 34 0 0 1 252 210 L 252 280 Z" fill="#E8C822" /><line x1="218" y1="220" x2="265" y2="220" stroke="#18181B" stroke-width="3.2" stroke-linecap="round" /><g id="yellowEyes" class="character-eyes"><circle cx="205" cy="202" r="3" fill="#18181B" /><circle cx="206" cy="201" r="0.9" fill="#FFFFFF" /></g></g>
-            <g id="orangeMonster"><path d="M 15 280 A 85 85 0 0 1 185 280 Z" fill="#F26A37" /><path d="M 100 246 Q 106 253 112 246" stroke="#18181B" stroke-width="3" stroke-linecap="round" fill="none" /><g id="orangeEyes" class="character-eyes"><circle cx="88" cy="236" r="3.8" fill="#18181B" /><circle cx="89.5" cy="234.5" r="1.1" fill="#FFFFFF" /><circle cx="124" cy="236" r="3.8" fill="#18181B" /><circle cx="125.5" cy="234.5" r="1.1" fill="#FFFFFF" /></g></g>
+            <g id="yellowMonster"><path d="M 184 280 L 184 210 A 34 34 0 0 1 252 210 L 252 280 Z" fill="#E8C822" /><line id="yellowNose" class="character-face" x1="218" y1="220" x2="265" y2="220" stroke="#18181B" stroke-width="3.2" stroke-linecap="round" /><g id="yellowEyes" class="character-eyes"><circle cx="205" cy="202" r="3" fill="#18181B" /><circle cx="206" cy="201" r="0.9" fill="#FFFFFF" /></g></g>
+            <g id="orangeMonster"><path d="M 15 280 A 85 85 0 0 1 185 280 Z" fill="#F26A37" /><path id="orangeMouth" class="character-face" d="M 100 246 Q 106 253 112 246" stroke="#18181B" stroke-width="3" stroke-linecap="round" fill="none" /><g id="orangeEyes" class="character-eyes"><circle cx="88" cy="236" r="3.8" fill="#18181B" /><circle cx="89.5" cy="234.5" r="1.1" fill="#FFFFFF" /><circle cx="124" cy="236" r="3.8" fill="#18181B" /><circle cx="125.5" cy="234.5" r="1.1" fill="#FFFFFF" /></g></g>
           </svg>
         </div>
       </div>
@@ -142,6 +144,116 @@
     <script src="js/topics-data.js"></script>
     <script src="js/core.js"></script>
     <script src="js/app.js"></script>
+    <script>
+      (function() {
+        const monsterSvg = document.getElementById('monsterSvg');
+        const eyes = [
+          { el: document.getElementById('purpleEyes'), cx: 108, cy: 68, max: 2.6 },
+          { el: document.getElementById('charcoalPupils'), cx: 178, cy: 140, max: 3.0 },
+          { el: document.getElementById('yellowEyes'), cx: 205, cy: 202, max: 2.2 },
+          { el: document.getElementById('orangeEyes'), cx: 106, cy: 236, max: 2.8 }
+        ].filter(o => o.el);
+        const faces = [
+          { el: document.getElementById('purpleNose'), cx: 108, cy: 78, max: 1.0 },
+          { el: document.getElementById('yellowNose'), cx: 241.5, cy: 220, max: 1.1 },
+          { el: document.getElementById('orangeMouth'), cx: 106, cy: 249, max: 1.3 }
+        ].filter(o => o.el);
+        if (!monsterSvg || (!eyes.length && !faces.length)) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        let mouseX = window.innerWidth * 0.5;
+        let mouseY = window.innerHeight * 0.5;
+        let isActive = true;
+        const curEyes = eyes.map(() => ({ x: 0, y: 0 }));
+        const tgtEyes = eyes.map(() => ({ x: 0, y: 0 }));
+        const curFaces = faces.map(() => ({ x: 0, y: 0 }));
+        const tgtFaces = faces.map(() => ({ x: 0, y: 0 }));
+        let rafId = null;
+        let t = 0;
+
+        function setMouse(e) {
+          mouseX = e.clientX;
+          mouseY = e.clientY;
+          isActive = true;
+          if (!rafId) rafId = requestAnimationFrame(tick);
+        }
+        function onLeave() {
+          isActive = false;
+          eyes.forEach((_, i) => { tgtEyes[i].x = 0; tgtEyes[i].y = 0; });
+          faces.forEach((_, i) => { tgtFaces[i].x = 0; tgtFaces[i].y = 0; });
+          if (!rafId) rafId = requestAnimationFrame(tick);
+        }
+        function updateTargets() {
+          const rect = monsterSvg.getBoundingClientRect();
+          if (!rect.width || !rect.height) return;
+          const scale = Math.min(rect.width / 280, rect.height / 280);
+          const offsetX = rect.left + (rect.width - 280 * scale) / 2;
+          const offsetY = rect.top + (rect.height - 280 * scale);
+          eyes.forEach(({ cx, cy, max }, i) => {
+            if (!isActive) { tgtEyes[i].x = 0; tgtEyes[i].y = 0; return; }
+            const eyeX = offsetX + cx * scale;
+            const eyeY = offsetY + cy * scale;
+            const dx = mouseX - eyeX;
+            const dy = mouseY - eyeY;
+            const angle = Math.atan2(dy, dx);
+            const distRaw = Math.hypot(dx, dy);
+            const norm = Math.min(1, distRaw / 700);
+            const dist = Math.min(max, norm * max * 1.6);
+            tgtEyes[i].x = Math.cos(angle) * dist;
+            tgtEyes[i].y = Math.sin(angle) * dist;
+          });
+          faces.forEach(({ cx, cy, max }, i) => {
+            if (!isActive) { tgtFaces[i].x = 0; tgtFaces[i].y = 0; return; }
+            const fx = offsetX + cx * scale;
+            const fy = offsetY + cy * scale;
+            const dx = mouseX - fx;
+            const dy = mouseY - fy;
+            const angle = Math.atan2(dy, dx);
+            const distRaw = Math.hypot(dx, dy);
+            const norm = Math.min(1, distRaw / 700);
+            const dist = Math.min(max, norm * max * 1.45);
+            tgtFaces[i].x = Math.cos(angle) * dist;
+            tgtFaces[i].y = Math.sin(angle) * dist * 0.6; // less vertical for mouth/nose
+          });
+        }
+        function tick() {
+          rafId = null;
+          updateTargets();
+          t += 0.016;
+          let needsNext = false;
+          eyes.forEach(({ el }, i) => {
+            const ease = 0.07;
+            curEyes[i].x += (tgtEyes[i].x - curEyes[i].x) * ease;
+            curEyes[i].y += (tgtEyes[i].y - curEyes[i].y) * ease;
+            const drift = isActive ? 0 : Math.sin(t * 0.55 + i * 1.3) * 0.12;
+            const x = curEyes[i].x + drift;
+            const y = curEyes[i].y;
+            const snapX = Math.abs(x) < 0.015 ? 0 : x;
+            const snapY = Math.abs(y) < 0.015 ? 0 : y;
+            el.style.transform = `translate3d(${snapX.toFixed(2)}px, ${snapY.toFixed(2)}px, 0)`;
+            if (Math.abs(tgtEyes[i].x - curEyes[i].x) > 0.012 || Math.abs(tgtEyes[i].y - curEyes[i].y) > 0.012) needsNext = true;
+          });
+          faces.forEach(({ el }, i) => {
+            const ease = 0.055; // slightly slower than eyes for natural follow
+            curFaces[i].x += (tgtFaces[i].x - curFaces[i].x) * ease;
+            curFaces[i].y += (tgtFaces[i].y - curFaces[i].y) * ease;
+            const drift = isActive ? 0 : Math.sin(t * 0.45 + i * 1.7) * 0.07;
+            const x = curFaces[i].x + drift;
+            const y = curFaces[i].y + drift * 0.3;
+            const snapX = Math.abs(x) < 0.015 ? 0 : x;
+            const snapY = Math.abs(y) < 0.015 ? 0 : y;
+            el.style.transform = `translate3d(${snapX.toFixed(2)}px, ${snapY.toFixed(2)}px, 0)`;
+            if (Math.abs(tgtFaces[i].x - curFaces[i].x) > 0.012 || Math.abs(tgtFaces[i].y - curFaces[i].y) > 0.012) needsNext = true;
+          });
+          if (needsNext || isActive) rafId = requestAnimationFrame(tick);
+        }
+        window.addEventListener('pointermove', setMouse, { passive: true });
+        window.addEventListener('pointerleave', onLeave);
+        window.addEventListener('blur', onLeave);
+        window.addEventListener('touchmove', (e) => { if (e.touches[0]) setMouse(e.touches[0]); }, { passive: true });
+        rafId = requestAnimationFrame(tick);
+      })();
+    </script>
     <script type="module">
       import { auth } from "./js/firebase.js";
       import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-auth.js";
@@ -156,31 +268,6 @@
       const passEl = document.getElementById('loginPassword');
       const rememberEl = document.getElementById('rememberMe');
       const googleBtn = document.getElementById('googleBtn');
-      const purpleEyes = document.getElementById('purpleEyes');
-      const charcoalPupils = document.getElementById('charcoalPupils');
-      const yellowEyes = document.getElementById('yellowEyes');
-      const orangeEyes = document.getElementById('orangeEyes');
-      const monsterSvg = document.getElementById('monsterSvg');
-      window.addEventListener('mousemove', (e) => {
-        if (!monsterSvg) return;
-        const rect = monsterSvg.getBoundingClientRect();
-        function track(el, rx, ry, maxDist) {
-          if (!el) return;
-          const originX = rect.left + rect.width * rx;
-          const originY = rect.top + rect.height * ry;
-          const dx = e.clientX - originX;
-          const dy = e.clientY - originY;
-          const angle = Math.atan2(dy, dx);
-          const dist = Math.min(maxDist, Math.hypot(dx, dy) / 45);
-          const ox = Math.cos(angle) * dist;
-          const oy = Math.sin(angle) * dist;
-          el.setAttribute('transform', `translate(${ox.toFixed(2)}, ${oy.toFixed(2)})`);
-        }
-        track(purpleEyes, 0.386, 0.243, 2.0);
-        track(charcoalPupils, 0.643, 0.500, 3.2);
-        track(yellowEyes, 0.732, 0.721, 2.0);
-        track(orangeEyes, 0.379, 0.843, 2.5);
-      });
       document.querySelectorAll('[data-toggle]').forEach(btn => {
         btn.addEventListener('click', () => {
           const id = btn.getAttribute('data-toggle');

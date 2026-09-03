@@ -5,18 +5,21 @@ const topics = [
   { name:'Input and Output', desc:'Read user input and format clear output with confidence.', icon:'03' },
   { name:'Operators', desc:'Work with arithmetic, comparison, logical, and assignment operators.', icon:'04' },
   { name:'Conditional Statements', desc:'Use if, elif, else, and combined conditions to control a program.', icon:'05' },
-  { name:'Loops', desc:'Repeat work with for loops, while loops, range(), nested loops, and loop controls.', icon:'06' },
-  { name:'Strings', desc:'Index, slice, compare, format, and manipulate text with built-in string methods.', icon:'07' },
-  { name:'Functions', desc:'Create reusable blocks with parameters, returns, and scope.', icon:'08' },
-  { name:'Lists', desc:'Store and change ordered groups of values.', icon:'09' },
-  { name:'Tuples', desc:'Work with fixed ordered data and tuple unpacking.', icon:'10' },
-  { name:'Sets', desc:'Use unique values, membership checks, and set operations.', icon:'11' },
-  { name:'Dictionaries', desc:'Store data as key-value pairs and work with nested data.', icon:'12' },
-  { name:'Comprehension', desc:'Build lists, sets, and dictionaries in a compact, readable Python style.', icon:'13' },
-  { name:'Exception Handling', desc:'Handle errors with try, except, else, and finally.', icon:'14' },
-  { name:'File Handling', desc:'Read from and write to text files using Python.', icon:'15' },
-  { name:'Modules and Packages', desc:'Structure code with import, built-in modules, custom modules, packages, and pip.', icon:'16' },
-  { name:'Object-Oriented Programming', desc:'Use classes, objects, methods, inheritance, and composition.', icon:'17' }
+  { name:'For Loops', desc:'Repeat actions with for loops, range(), sequence iteration, and loop controls.', icon:'06' },
+  { name:'While Loops', desc:'Control loops with conditions, state updates, break, continue, and input validation.', icon:'07' },
+  { name:'Nested Loops', desc:'Combine outer and inner loops for patterns, coordinates, matrices, and grids.', icon:'08' },
+  { name:'Strings', desc:'Index, slice, compare, format, and manipulate text with slicing and indexing.', icon:'09' },
+  { name:'String Methods', desc:'Master built-in string methods: upper, lower, strip, split, join, replace, and find.', icon:'10' },
+  { name:'Functions', desc:'Create reusable blocks with parameters, returns, and scope.', icon:'11' },
+  { name:'Lists', desc:'Store and change ordered groups of values.', icon:'12' },
+  { name:'Tuples', desc:'Work with fixed ordered data and tuple unpacking.', icon:'13' },
+  { name:'Sets', desc:'Use unique values, membership checks, and set operations.', icon:'14' },
+  { name:'Dictionaries', desc:'Store data as key-value pairs and work with nested data.', icon:'15' },
+  { name:'Comprehension', desc:'Build lists, sets, and dictionaries in a compact, readable Python style.', icon:'16' },
+  { name:'Exception Handling', desc:'Handle errors with try, except, else, and finally.', icon:'17' },
+  { name:'File Handling', desc:'Read from and write to text files using Python.', icon:'18' },
+  { name:'Modules and Packages', desc:'Structure code with import, built-in modules, custom modules, packages, and pip.', icon:'19' },
+  { name:'Object-Oriented Programming', desc:'Use classes, objects, methods, inheritance, and composition.', icon:'20' }
 ];
 
 const questionSeeds = {
@@ -37,7 +40,7 @@ const questionSeeds = {
       ['Multi-expression print','Print the results of 15 + 5 and 15 * 5 on two separate lines.','','20\n75',[{input:'',output:'20\n75'}]]
     ]
   },
-  /*
+
   'Variables': {
     basic:[
       ['Store a greeting','Create a variable named name and print a greeting using its value.','Nina','Hello, Nina!',[{input:'Sam',output:'Hello, Sam!'}]],
@@ -57,7 +60,9 @@ const questionSeeds = {
     advanced:[
       ['Scale a value','Read a value and a scale factor and print the result as an int and then as a float.','10 2.5','25\n25.0',[{input:'4 1.5',output:'6\n6.0'}]],
       ['Swap a float and int','Read two values and print them after swapping their variables.','7 2.5','2.5 7',[{input:'9 4.5',output:'4.5 9'}]],
-      ['Band check as int','Read a number and print 1 if it is between 10 and 20 inclusive, else 0.','15','1',[{input:'3',output:'0'}]]
+      ['Band check as int','Read a number and print 1 if it is between 10 and 20 inclusive, else 0.','15','1',[{input:'3',output:'0'}]],
+      ['Sum spaced numbers','Read several whole numbers separated by spaces, convert each to int, and print their sum.','3 5 7','15',[{input:'1 2 3',output:'6'}]],
+      ['Nearest rupee','Read a rupee amount and print the nearest whole rupee using rounding.','99.5','100',[{input:'12.4',output:'12'}]]
     ]
   },
   'Data Types': {
@@ -65,22 +70,24 @@ const questionSeeds = {
       ['Convert a value','Read a numeric string and convert it to an integer before adding 5.','12','17',[{input:'50',output:'55'}]],
       ['Check a type','Store a value and print its type using type().','42',"<class 'int'>",[{input:'hello',output:"<class 'str'>"}]],
       ['Float to integer','Read a decimal value, convert it to an integer, and print it.','7.9','7',[{input:'3.2',output:'3'}]],
-      ['Type after conversion','Read a whole number as text, convert it to a float, and print its type.','5',"<class 'float'>",[{input:'3',output:"<class 'float'>"}]]
+      ['Type after conversion','Read a whole number as text, convert it to a float, and print its type.','5',"<class 'float'>",[{input:'3',output:"<class 'float'>"}]],
     ],
     intermediate:[
       ['Type of a string','Convert an integer into a string and print the type of that string.','5',"<class 'str'>",[{input:'42',output:"<class 'str'>"}]],
       ['Round a decimal','Read a float, print its rounded value and the type of that value.','3.6',"4\n<class 'int'>",[{input:'2.2',output:"2\n<class 'int'>"}]],
       ['Flip a boolean','Read a boolean as text, convert it to a bool, and print its opposite.','True','False',[{input:'False',output:'True'}]],
-      ['Odd and big check','Read a number and print whether it is odd and whether it is greater than 10.','13','True\nTrue',[{input:'4',output:'False\nFalse'}]]
+      ['Odd and big check','Read a number and print whether it is odd and whether it is greater than 10.','13','True\nTrue',[{input:'4',output:'False\nFalse'}]],
+      ['Rupees and paise','Read a rupee amount as a decimal and print whole rupees and paise.','45.75','45 rupees 75 paise',[{input:'12.5',output:'12 rupees 50 paise'}]]
     ],
     advanced:[
       ['Normalize a value','Read a value, convert it to int when possible, otherwise print Invalid.','25','25',[{input:'abc',output:'Invalid'}]],
       ['Compare mixed values','Read two values and report whether they represent the same number.','5\n5.0','Same',[{input:'3\n4',output:'Different'}]],
       ['Typed record','Store name, age and active status and print each value with its type.','Nina\n21\nTrue','Nina: str\n21: int\nTrue: bool',[{input:'Leo\n30\nFalse',output:'Leo: str\n30: int\nFalse: bool'}]],
-      ['Show a value three ways','Read an integer and print it as int, as float, and as text.','6','6\n6.0\n6',[{input:'2',output:'2\n2.0\n2'}]]
+      ['Show a value three ways','Read an integer and print it as int, as float, and as text.','6','6\n6.0\n6',[{input:'2',output:'2\n2.0\n2'}]],
+      ['Print three types','Read an int, a float and a boolean and print the type of each.','5\n3.2\nTrue',"<class 'int'>\n<class 'float'>\n<class 'bool'>",[{input:'1\n2.0\nFalse',output:"<class 'int'>\n<class 'float'>\n<class 'bool'>"}]],
     ]
   },
-  */
+
   'Variables and Data Types': {
     basic:[
       ['Store a greeting','Create a variable named name and print a greeting using its value.','Nina','Hello, Nina!',[{input:'Sam',output:'Hello, Sam!'}]],
@@ -233,46 +240,7 @@ const questionSeeds = {
       ['Absolute threshold','Read a number and print its absolute value only when it is negative.','-9','9',[{input:'4',output:'4'}]]
     ]
   },
-  /*
-  'Loops': {
-    basic:[
-      ['Count 1 to 10','Use a loop to print numbers from 1 to 10 on separate lines.','','1\n2\n3\n4\n5\n6\n7\n8\n9\n10',[{input:'',output:'1\n2\n3\n4\n5\n6\n7\n8\n9\n10'}]],
-      ['Print 1 to N','Read an integer N and print numbers from 1 to N on separate lines.','5','1\n2\n3\n4\n5',[{input:'3',output:'1\n2\n3'}]],
-      ['Sum of first N','Read an integer N and print the sum of numbers from 1 to N.','5','15',[{input:'10',output:'55'}]],
-      ['Multiples of 3','Read a number N and print all multiples of 3 up to N.','12','3\n6\n9\n12',[{input:'10',output:'3\n6\n9'}]],
-      ['Countdown','Read an integer N and count down from N to 1.','4','4\n3\n2\n1',[{input:'3',output:'3\n2\n1'}]],
-      ['Print characters','Read a word and print each character on a new line using a loop.','code','c\no\nd\ne',[{input:'py',output:'p\ny'}]],
-      ['Repeat a symbol','Read an integer N and print * repeated N times in a single line.','4','****',[{input:'2',output:'**'}]],
-      ['Even numbers to 20','Print all even numbers from 2 to 20 on separate lines.','','2\n4\n6\n8\n10\n12\n14\n16\n18\n20',[{input:'',output:'2\n4\n6\n8\n10\n12\n14\n16\n18\n20'}]],
-      ['Sum of numbers in list','Read integers separated by spaces and calculate their sum with a loop.','1 2 3 4','10',[{input:'5 10 15',output:'30'}]],
-      ['Factorial basic','Read an integer N and calculate its factorial using a loop.','4','24',[{input:'5',output:'120'}]]
-    ],
-    intermediate:[
-      ['Sum of range','Read start and end numbers and find the sum of all numbers between them inclusive.','5 10','45',[{input:'1 4',output:'10'}]],
-      ['Count even and odd','Read a number N and print the count of even and odd numbers from 1 to N.','10','Even: 5\nOdd: 5',[{input:'7',output:'Even: 3\nOdd: 4'}]],
-      ['Find largest without max','Read 5 numbers and find the largest value using a loop.','3 9 2 8 5','9',[{input:'12 45 3 22 19',output:'45'}]],
-      ['Find smallest without min','Read 5 numbers and find the smallest value using a loop.','7 3 9 1 5','1',[{input:'22 14 8 33 11',output:'8'}]],
-      ['Factorial of N','Take a number N and compute N! using a loop.','5','120',[{input:'6',output:'720'}]],
-      ['Check prime','Read an integer and print whether it is prime or not prime.','17','Prime',[{input:'15',output:'Not Prime'}]],
-      ['Multiplication table','Read a number N and print its multiplication table from 1 to 10.','7','7 x 1 = 7\n7 x 2 = 14\n7 x 3 = 21\n7 x 4 = 28\n7 x 5 = 35\n7 x 6 = 42\n7 x 7 = 49\n7 x 8 = 56\n7 x 9 = 63\n7 x 10 = 70',[{input:'3',output:'3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30'}]],
-      ['Password retry limit','Simulate entering password up to 3 times or locking.','1234\n5678\npython','Login successful',[{input:'w1\nw2\nw3',output:'Account locked'}]],
-      ['Fibonacci sequence','Read N and print first N Fibonacci numbers on a single line.','6','0 1 1 2 3 5',[{input:'4',output:'0 1 1 2'}]],
-      ['Sum of digits','Read a positive integer and find the sum of its digits using a while loop.','1234','10',[{input:'505',output:'10'}]]
-    ],
-    advanced:[
-      ['Collatz sequence','Read N and print the 3N+1 Collatz sequence until 1.','6','6 3 10 5 16 8 4 2 1',[{input:'4',output:'4 2 1'}]],
-      ['Prime factorization','Read N and print its prime factors in ascending order.','24','2 2 2 3',[{input:'18',output:'2 3 3'}]],
-      ['Right angle triangle pattern','Read N and print a right triangle of asterisks of height N.','4','*\n**\n***\n****',[{input:'3',output:'*\n**\n***'}]],
-      ['Multiplication grid','Read N and print an N x N multiplication table grid.','3','1 2 3\n2 4 6\n3 6 9',[{input:'2',output:'1 2\n2 4'}]],
-      ['2D matrix sum','Read 3 rows of 3 integers and print the sum of each row.','1 2 3\n4 5 6\n7 8 9','6\n15\n24',[{input:'1 1 1\n2 2 2\n3 3 3',output:'3\n6\n9'}]],
-      ['Find first duplicate with break','Read numbers and print the first number that appears twice.','4 7 2 7 9','7',[{input:'1 2 3 2 5',output:'2'}]],
-      ['Inverted triangle','Read N and print an inverted asterisk triangle of height N.','3','***\n**\n*',[{input:'4',output:'****\n***\n**\n*'}]],
-      ['Number pyramid','Read N and print a number pyramid up to N.','3','1\n1 2\n1 2 3',[{input:'2',output:'1\n1 2'}]],
-      ['Digital root','Repeatedly sum digits of N until only a single digit remains.','9875','2',[{input:'38',output:'2'}]],
-      ['GCD using while loop','Read two integers and find their greatest common divisor using Euclidean algorithm.','48 18','6',[{input:'54 24',output:'6'}]]
-    ]
-  },
-  */
+  
   'For Loops': {
     basic:[
       ['Print numbers from 1 to 10','Write a program that uses a for loop to print numbers from 1 to 10 on separate lines.','','1\n2\n3\n4\n5\n6\n7\n8\n9\n10',[{input:'',output:'1\n2\n3\n4\n5\n6\n7\n8\n9\n10'}]],
@@ -1537,14 +1505,28 @@ const questionSeeds = {
   }
 };
 
-questionSeeds['Variables'] = questionSeeds['Variables and Data Types'];
-questionSeeds['Data Types'] = questionSeeds['Variables and Data Types'];
+/* ==========================================================================
+   Topic content sourcing
+   ==========================================================================
+   A topic can be served from a shared bucket rather than owning its own
+   array. Two topics drawing on one bucket then hold identical questions,
+   so question ids are filed under the SOURCE name (see TOPIC_SOURCE) —
+   otherwise a learner solves "Swap two variables" under Variables and
+   meets it again, still unsolved, under Data Types.
+   ========================================================================== */
+
+const TOPIC_SOURCE = {
+  'Loops': 'For Loops',
+  'List Comprehension': 'Comprehension',
+  'Comprehensions': 'Comprehension'
+};
+
 questionSeeds['Loops'] = questionSeeds['For Loops'];
+
 questionSeeds['List Comprehension'] = questionSeeds['Comprehension'];
 questionSeeds['Comprehensions'] = questionSeeds['Comprehension'];
 
-
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { topics, questionSeeds };
+  module.exports = { topics, questionSeeds, TOPIC_SOURCE };
 }
 

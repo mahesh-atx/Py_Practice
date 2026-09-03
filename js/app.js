@@ -7,6 +7,8 @@ if (typeof initTheme === 'function') initTheme();
 if (typeof setupHeader === 'function') setupHeader();
 if (typeof syncAuthUI === 'function') syncAuthUI();
 if (typeof renderHeaderProgress === 'function') renderHeaderProgress();
+// Fill every <span data-total-topics|data-total-questions> from the data.
+if (typeof syncDerivedCounts === 'function') syncDerivedCounts();
 
 /* --------------------------------------------------------------
    Motion & Micro-interactions Orchestrator v2
@@ -279,6 +281,37 @@ function initFooterReveal() {
   io.observe(footer);
 }
 
+function initFooterMicro() {
+  const footer = document.querySelector('footer');
+  if (!footer) return;
+  if (!prefersReducedMotion) {
+    // magnetic brand icon
+    const brandIcon = footer.querySelector('a[href="index.html"] span.h-8');
+    const brandLink = footer.querySelector('a[href="index.html"]');
+    if (brandIcon && brandLink && window.innerWidth >= 768) {
+      brandLink.addEventListener('mousemove', (e) => {
+        const r = brandLink.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5;
+        const y = (e.clientY - r.top) / r.height - 0.5;
+        brandIcon.style.transform = `rotate(${-x * 10}deg) scale(${1.05 + Math.abs(x) * 0.04}) translate(${x * 4}px, ${y * -3}px)`;
+      }, { passive: true });
+      brandLink.addEventListener('mouseleave', () => { brandIcon.style.transform = ''; });
+    }
+  }
+  // stats numbers: click to copy + pop
+  footer.querySelectorAll('[data-total-topics], [data-total-questions]').forEach(el => {
+    el.style.cursor = 'pointer';
+    el.title = 'Click to copy';
+    el.addEventListener('click', () => {
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(el.textContent);
+        if (typeof toast === 'function') toast(el.textContent + ' copied');
+        el.animate([{ transform: 'scale(1.12)' }, { transform: 'scale(1)' }], { duration: 240, easing: 'cubic-bezier(0.34,1.56,0.64,1)' });
+      } catch {}
+    });
+  });
+}
+
 function initCardTiltHint() {
   if (prefersReducedMotion || window.innerWidth < 768) return;
   document.querySelectorAll('#practiceTopics > article, #progressGrid > a').forEach(card => {
@@ -331,6 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initProblemPage === 'function') initProblemPage();
   if (typeof initLearnPage === 'function') initLearnPage();
   if (typeof initProfilePage === 'function') initProfilePage();
+  if (typeof syncDerivedCounts === 'function') syncDerivedCounts();
 
   // Motion boot
   ensureScrollProgress();
@@ -342,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCountUp();
   initInputMicro();
   initFooterReveal();
+  initFooterMicro();
   initCardTiltHint();
 
   // Re-observe after a short delay for dynamically injected content

@@ -36,8 +36,12 @@ const TOPIC_DOMAINS = {
   'Input and Output': { domain: 'I/O & Formatting', level: 'Beginner', readTime: '5 min' },
   'Operators': { domain: 'Expressions', level: 'Beginner', readTime: '6 min' },
   'Conditional Statements': { domain: 'Flow Control', level: 'Beginner', readTime: '6 min' },
+  'For Loops': { domain: 'Iteration', level: 'Intermediate', readTime: '6 min' },
+  'While Loops': { domain: 'Iteration', level: 'Intermediate', readTime: '6 min' },
+  'Nested Loops': { domain: 'Iteration', level: 'Intermediate', readTime: '6 min' },
   'Loops': { domain: 'Iteration', level: 'Intermediate', readTime: '8 min' },
   'Strings': { domain: 'Text Processing', level: 'Intermediate', readTime: '7 min' },
+  'String Methods': { domain: 'Text Processing', level: 'Intermediate', readTime: '7 min' },
   'Functions': { domain: 'Modular Code', level: 'Intermediate', readTime: '8 min' },
   'Lists': { domain: 'Sequences', level: 'Intermediate', readTime: '8 min' },
   'Tuples': { domain: 'Immutable Data', level: 'Intermediate', readTime: '6 min' },
@@ -52,6 +56,27 @@ const TOPIC_DOMAINS = {
 
 function getLearnIcon(name) { return LEARN_FA_ICONS[name] || 'fa-solid fa-code'; }
 function getTopicMeta(name) { return TOPIC_DOMAINS[name] || { domain: 'General Python', level: 'Core', readTime: '6 min' }; }
+
+/* Alias topics (For Loops, String Methods, ...) have no notes file of their
+   own — resolve them to the topic that covers the same material. */
+function notesForTopic(name) {
+  if (typeof topicNotes === 'undefined') return null;
+  if (topicNotes[name]) return topicNotes[name];
+  if (typeof TOPIC_NOTES_ALIASES !== 'undefined' && TOPIC_NOTES_ALIASES[name]) {
+    return topicNotes[TOPIC_NOTES_ALIASES[name]] || null;
+  }
+  return null;
+}
+
+/* Section anchors are harvested from the raw markdown before it is parsed, so
+   any line that merely LOOKS like a heading would be collected too. Python
+   comments such as `# 1. Read the input` inside a code fence match the heading
+   pattern and collide with real sections (both slugify to `sec-1-input`).
+   Blank out fenced code blocks first so only genuine headings are found. */
+function stripFencedCodeBlocks(md) {
+  return String(md || '')
+    .replace(/^[ \t]*```[^`\n]*\n[\s\S]*?^[ \t]*```[ \t]*$/gm, '');
+}
 
 function initLearnPage() {
   const root = document.getElementById('learnPage');
@@ -78,7 +103,7 @@ function initLearnPage() {
 
     if (progressBadgeEl) {
       const totalStarted = topics.filter(t => topicProgress(t.name).done > 0).length;
-      progressBadgeEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${totalStarted}/18 started`;
+      progressBadgeEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${totalStarted}/${topics.length} started`;
     }
 
     if (clearSearchBtn) {
@@ -185,7 +210,7 @@ function initLearnPage() {
         const isLocked = btn.getAttribute('data-is-locked') === 'true';
         if (isLocked) {
           if (typeof promptLoginModal === 'function') {
-            promptLoginModal('Sign in or create a free account to unlock ' + selected + ' curriculum notes and all 18 topics!');
+            promptLoginModal('Sign in or create a free account to unlock ' + selected + ' curriculum notes and all ' + topics.length + ' topics!');
           }
           return;
         }
@@ -194,7 +219,10 @@ function initLearnPage() {
     });
 
     const activeBtn = topicListEl.querySelector(`[data-topic-btn="${CSS.escape(activeTopicName)}"]`);
-    if (activeBtn) {
+    // Only on desktop: scrollIntoView also scrolls ancestor scroll
+    // containers, which on a phone would yank the whole page down to the
+    // sidebar the moment the page renders.
+    if (activeBtn && window.matchMedia('(min-width: 1024px)').matches) {
       activeBtn.scrollIntoView({ block: 'nearest' });
     }
   }
@@ -283,7 +311,8 @@ function initLearnPage() {
     const sections = [];
     const headingRegex = /^##?\s+([0-9]+[\.\)]?\s*[^#\n]+)/gm;
     let match;
-    while ((match = headingRegex.exec(mdText)) !== null) {
+    const tocSource = stripFencedCodeBlocks(mdText);
+    while ((match = headingRegex.exec(tocSource)) !== null) {
       const rawTitle = match[1].trim();
       const slug = rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
       sections.push({ title: rawTitle, id: 'sec-' + slug });
@@ -352,13 +381,13 @@ function initLearnPage() {
           </div>
           <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row flex-wrap gap-2.5 shrink-0">
             <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=basic" class="inline-flex items-center justify-center gap-2 btn-primary px-5 py-2.5 text-xs rounded-[10px]">
-              <i class="fa-solid fa-play text-[10px]"></i> Basic (3) <span class="opacity-60">→</span>
+              <i class="fa-solid fa-play text-[10px]"></i> Basic (${questionsFor(t.name, 'basic').length}) <span class="opacity-60">→</span>
             </a>
             <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=intermediate" class="inline-flex items-center justify-center gap-2 btn-ghost px-5 py-2.5 text-xs rounded-[10px] border border-line">
-              <i class="fa-solid fa-layer-group text-[10px]"></i> Intermediate (3)
+              <i class="fa-solid fa-layer-group text-[10px]"></i> Intermediate (${questionsFor(t.name, 'intermediate').length})
             </a>
             <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=advanced" class="inline-flex items-center justify-center gap-2 btn-ghost px-5 py-2.5 text-xs rounded-[10px] border border-line">
-              <i class="fa-solid fa-rocket text-[10px]"></i> Advanced (3)
+              <i class="fa-solid fa-rocket text-[10px]"></i> Advanced (${questionsFor(t.name, 'advanced').length})
             </a>
           </div>
         </div>
@@ -413,7 +442,7 @@ function initLearnPage() {
               ${escapeHtml(t.name)} is Locked
             </h2>
             <p class="text-sm text-muted mt-3 leading-relaxed max-w-md mx-auto">
-              The first 2 topics (<b>${escapeHtml(topics[0].name)}</b> and <b>${escapeHtml(topics[1].name)}</b>) are completely free to read. Please log in or create a free account to unlock <b>${escapeHtml(t.name)}</b> and all 18 topics!
+              The first 2 topics (<b>${escapeHtml(topics[0].name)}</b> and <b>${escapeHtml(topics[1].name)}</b>) are completely free to read. Please log in or create a free account to unlock <b>${escapeHtml(t.name)}</b> and all ${topics.length} topics!
             </p>
             <div class="mt-7 flex flex-col sm:flex-row gap-3 justify-center">
               <a href="login.html" class="btn-primary py-3 px-6 text-xs font-semibold rounded-[10px] text-center shadow-sm">
@@ -437,7 +466,7 @@ function initLearnPage() {
       return;
     }
 
-    const notes = (typeof topicNotes !== 'undefined' && topicNotes[t.name]) || null;
+    const notes = notesForTopic(t.name);
     const progress = topicProgress(t.name);
 
     if (!notes) {
@@ -468,7 +497,7 @@ function initLearnPage() {
           const targetIndex = topics.findIndex(x => x.name === selected);
           if (!loggedIn && targetIndex >= 2) {
             if (typeof promptLoginModal === 'function') {
-              promptLoginModal('Sign in or create a free account to unlock ' + selected + ' curriculum notes and all 18 topics!');
+              promptLoginModal('Sign in or create a free account to unlock ' + selected + ' curriculum notes and all ' + topics.length + ' topics!');
             }
             return;
           }
@@ -494,6 +523,15 @@ function initLearnPage() {
     history.pushState({}, '', url);
     renderSidebar();
     renderNotes(topicName);
+
+    // On phones the topic list sits above the notes, so selecting one
+    // would otherwise appear to do nothing until the user scrolls down.
+    try {
+      if (window.matchMedia('(max-width: 1023px)').matches) {
+        const notesEl = document.getElementById('learnContent');
+        if (notesEl) notesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch (e) {}
   }
 
   if (searchInput) {
