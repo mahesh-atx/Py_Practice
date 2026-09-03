@@ -95,7 +95,6 @@ function initBottomTabs() {
     } else {
       contentTerminal?.classList.add('hidden');
       if (clearTerminalBtn) clearTerminalBtn.classList.add('hidden');
-
       if (customInputToggle && customInputToggle.checked) {
         contentCustomInput?.classList.remove('hidden');
         contentTestCases?.classList.add('hidden');
@@ -107,12 +106,14 @@ function initBottomTabs() {
   }
 
   function setTab(tab) {
+    const activeCls = 'bottom-tab active h-full px-2.5 text-[11px] font-medium tracking-wide inline-flex items-center gap-1.5 border-b-2 border-white text-white font-mono transition';
+    const idleCls = 'bottom-tab h-full px-2.5 text-[11px] font-medium tracking-wide inline-flex items-center gap-1.5 border-b-2 border-transparent text-white/35 hover:text-white/60 font-mono transition';
     if (tab === 'terminal') {
-      tabTerminalBtn.className = 'bottom-tab active flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white bg-white/10 transition cursor-pointer font-mono';
-      tabTestCasesBtn.className = 'bottom-tab flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white/40 hover:text-white/80 hover:bg-white/[.04] transition cursor-pointer font-mono';
+      tabTerminalBtn.className = activeCls;
+      tabTestCasesBtn.className = idleCls;
     } else {
-      tabTestCasesBtn.className = 'bottom-tab active flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white bg-white/10 transition cursor-pointer font-mono';
-      tabTerminalBtn.className = 'bottom-tab flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-medium rounded text-white/40 hover:text-white/80 hover:bg-white/[.04] transition cursor-pointer font-mono';
+      tabTestCasesBtn.className = activeCls;
+      tabTerminalBtn.className = idleCls;
     }
     updateViews();
   }
@@ -421,32 +422,29 @@ function initProblemPage() {
     tabsContainer.innerHTML = q.testCases.map((tc, idx) => {
       const isSelected = idx === activeCaseIdx;
       const res = testCaseResults[idx];
-      let badgeHtml = '';
-
+      let dot = '';
       if (res) {
-        badgeHtml = res.passed
-          ? `<svg class="w-3 h-3 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`
-          : `<svg class="w-3 h-3 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+        dot = res.passed
+          ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>'
+          : '<span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>';
       } else {
-        badgeHtml = `<span class="w-1.5 h-1.5 rounded-full ${idx === 0 ? 'bg-amber-400/60' : 'bg-white/20'}"></span>`;
+        dot = '<span class="w-1 h-1 rounded-full bg-white/20 shrink-0"></span>';
       }
-
       return `
         <button
           data-case-tab="${idx}"
-          class="case-tab-btn shrink-0 flex items-center gap-1.5 px-2.5 py-1 text-[11px] font-mono rounded transition-all cursor-pointer ${
+          class="case-pill sm:w-full w-auto shrink-0 text-left flex items-center justify-between gap-2 px-2.5 py-2 rounded-md text-[11px] font-mono leading-none border transition cursor-pointer select-none ${
             isSelected
-              ? 'bg-white/[.08] text-white font-medium border border-white/15'
-              : 'bg-white/[.02] text-white/40 hover:text-white/80 hover:bg-white/[.04] border border-transparent'
+              ? 'bg-white text-[#1a1918] border-white font-medium shadow-sm'
+              : 'bg-white/[.02] text-white/45 border-white/[.07] hover:bg-white/[.06] hover:text-white/80 hover:border-white/12'
           }"
         >
-          <span>${escapeHtml(tc.label || `Case ${idx + 1}`)}</span>
-          ${badgeHtml}
-        </button>
-      `;
+          <span class="inline-flex items-center gap-2 min-w-0"><span class="shrink-0">${dot}</span><span class="truncate">${escapeHtml(tc.label || `Case ${idx + 1}`)}</span></span>
+          ${isSelected ? '<span class="w-1 h-1 rounded-full bg-[#1a1918]/30 shrink-0 hidden sm:block"></span>' : ''}
+        </button>`;
     }).join('');
 
-    tabsContainer.querySelectorAll('.case-tab-btn').forEach(btn => {
+    tabsContainer.querySelectorAll('[data-case-tab]').forEach(btn => {
       btn.addEventListener('click', () => {
         activeCaseIdx = parseInt(btn.dataset.caseTab, 10);
         renderTestCasePills();
@@ -458,53 +456,50 @@ function initProblemPage() {
   function renderActiveCaseDetail() {
     const detailContainer = document.getElementById('selectedTestCaseDetail');
     if (!detailContainer) return;
-
     const tc = q.testCases[activeCaseIdx];
     if (!tc) return;
-
     const res = testCaseResults[activeCaseIdx];
-
-    const inputVal = tc.input ? tc.input.replace(/\\n/g, '\n') : '(none)';
-    const expectedVal = tc.output ? tc.output.replace(/\\n/g, '\n') : '(empty)';
+    const rawInput = tc.input ?? '';
+    const decodedInput = rawInput.replace(/\\n/g, '\n');
+    const hasInput = decodedInput.trim() !== '';
+    const inputVal = decodedInput;
+    const expectedVal = tc.output ? tc.output.replace(/\\n/g, '\n') : '—';
     const actualVal = res ? (res.actual ?? res.stdout ?? '(no output)') : null;
-    const stderrVal = res && res.stderr ? res.stderr : null;
+    const hasStderr = res && res.stderr && String(res.stderr).trim();
 
     detailContainer.innerHTML = `
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-        <div>
-          <div class="text-[10px] uppercase text-white/40 mb-1 flex items-center justify-between">
-            <span>Input</span>
-            <span class="text-white/20">${tc.label || `Case ${activeCaseIdx + 1}`}</span>
-          </div>
-          <div class="p-2.5 rounded bg-white/[.02] border border-white/10 text-white/80 whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(inputVal)}</div>
+      ${hasInput ? `
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <div class="space-y-1.5">
+          <div class="text-[10px] tracking-[.12em] uppercase text-white/30 font-mono">Input</div>
+          <pre class="m-0 p-2.5 rounded-md bg-[#1e1c1b] border border-white/[.07] text-[12px] leading-5 text-white/75 whitespace-pre-wrap break-words font-mono min-h-[44px] select-text">${escapeHtml(inputVal)}</pre>
         </div>
-        <div>
-          <div class="text-[10px] uppercase text-white/40 mb-1">Expected Output</div>
-          <div class="p-2.5 rounded bg-white/[.02] border border-white/10 text-emerald-400/90 whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(expectedVal)}</div>
+        <div class="space-y-1.5">
+          <div class="text-[10px] tracking-[.12em] uppercase text-white/30 font-mono">Expected output</div>
+          <pre class="m-0 p-2.5 rounded-md bg-[#1e1c1b] border border-white/[.07] text-[12px] leading-5 text-white/75 whitespace-pre-wrap break-words font-mono min-h-[44px] select-text">${escapeHtml(expectedVal)}</pre>
         </div>
       </div>
-
+      ` : `
+      <div class="space-y-1.5">
+        <div class="text-[10px] tracking-[.12em] uppercase text-white/30 font-mono">Expected output</div>
+        <pre class="m-0 p-2.5 rounded-md bg-[#1e1c1b] border border-white/[.07] text-[12px] leading-5 text-white/75 whitespace-pre-wrap break-words font-mono min-h-[44px] select-text">${escapeHtml(expectedVal)}</pre>
+      </div>
+      `}
       ${res ? `
-        <div class="mt-3 pt-3 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs font-mono">
-          <div>
-            <div class="text-[10px] uppercase ${res.passed ? 'text-emerald-400' : 'text-red-400'} mb-1 flex items-center justify-between">
-              <span>Your Output</span>
-              <span class="text-[10px] ${res.passed ? 'text-emerald-400/70' : 'text-red-400/70'}">${res.passed ? 'Passed ✓' : 'Failed ✗'} (${res.elapsed ?? 0}ms)</span>
-            </div>
-            <div class="p-2.5 rounded ${res.passed ? 'bg-emerald-950/20 border-emerald-500/20 text-emerald-300' : 'bg-red-950/20 border-red-500/30 text-red-300'} border whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(actualVal)}</div>
+        <div class="mt-3 pt-3 border-t border-white/[.06] space-y-1.5">
+          <div class="flex items-center justify-between gap-2">
+            <span class="text-[10px] tracking-[.12em] uppercase font-mono ${res.passed ? 'text-emerald-300/90' : 'text-red-300/90'}">Your output</span>
+            <span class="text-[10px] font-mono ${res.passed ? 'text-emerald-300/60' : 'text-red-300/60'}">${res.passed ? 'Passed' : 'Failed'} · ${res.elapsed ?? 0}ms</span>
           </div>
-          ${stderrVal ? `
-            <div>
-              <div class="text-[10px] uppercase text-amber-400 mb-1">Standard Error / Warnings</div>
-              <div class="p-2.5 rounded bg-amber-950/20 border border-amber-500/20 text-amber-300 whitespace-pre-wrap min-h-[50px] font-mono text-[11px] leading-relaxed select-text">${escapeHtml(stderrVal)}</div>
-            </div>
-          ` : `
-            <div class="flex items-center justify-center p-3 rounded bg-white/[.01] border border-dashed border-white/10 text-white/30 text-[11px]">
-              ${res.passed ? 'Output matched expected response.' : 'Output did not match expected response.'}
-            </div>
-          `}
+          <pre class="m-0 p-2.5 rounded-md border-l-2 bg-[#1e1c1b] whitespace-pre-wrap break-words font-mono text-[12px] leading-5 min-h-[44px] select-text ${res.passed ? 'border-emerald-500/50 text-emerald-200/90 border-y border-r border-white/[.07]' : 'border-red-400/60 text-red-200/90 border-y border-r border-white/[.07]'}">${escapeHtml(actualVal)}</pre>
+          ${hasStderr ? `<pre class="m-0 mt-2 p-2.5 rounded-md bg-amber-950/15 border border-amber-500/15 text-amber-200/80 whitespace-pre-wrap break-words font-mono text-[11px] leading-5 select-text">${escapeHtml(res.stderr)}</pre>` : ''}
         </div>
-      ` : ''}
+      ` : `
+        <div class="mt-3 flex items-center gap-1.5 text-[11px] font-mono text-white/25">
+          <span class="w-1 h-1 rounded-full bg-white/20 shrink-0"></span>
+          Run to see output
+        </div>
+      `}
     `;
   }
 
@@ -603,13 +598,13 @@ function initProblemPage() {
         renderTestCasePills();
         renderActiveCaseDetail();
 
-        // Show custom output panel
+        // Show custom output panel — minimal
         if (customOutputPanel) {
           customOutputPanel.classList.remove('hidden');
           if (hasError) {
-            customOutputPanel.innerHTML = `<div class="p-2.5 rounded bg-red-950/20 border border-red-500/30 text-red-300 font-mono text-[11px] whitespace-pre-wrap">${escapeHtml(stderr)}</div>`;
+            customOutputPanel.innerHTML = `<pre class="m-0 p-2.5 rounded-md bg-red-950/15 border border-red-500/20 text-red-300/90 font-mono text-[11px] leading-5 whitespace-pre-wrap break-words">${escapeHtml(stderr)}</pre>`;
           } else {
-            customOutputPanel.innerHTML = `<div class="text-[11px] uppercase text-white/40 mb-1">Output</div><div class="p-2.5 rounded bg-white/[.02] border border-white/10 text-white/90 font-mono text-[12px] whitespace-pre-wrap min-h-[50px]">${escapeHtml(stdout || '(no output)')}</div><div class="text-[10px] text-white/30 mt-1">${r.elapsed ?? totalElapsed}ms</div>`;
+            customOutputPanel.innerHTML = `<div class="space-y-1.5"><div class="text-[10px] tracking-[.12em] uppercase text-white/30 font-mono">Output</div><pre class="m-0 p-2.5 rounded-md bg-[#1e1c1b] border border-white/[.07] text-white/75 font-mono text-[12px] leading-5 whitespace-pre-wrap break-words min-h-[44px]">${escapeHtml(stdout || '—')}</pre><div class="text-[10px] font-mono text-white/25">${r.elapsed ?? totalElapsed}ms</div></div>`;
           }
         }
 
@@ -646,14 +641,50 @@ function initProblemPage() {
         return;
       }
 
-      // Normal sample/submit flow
+      // Run (sample) — no grading, terminal only
+      if (!isSubmit) {
+        const r = res.results && res.results[0];
+        if (!r) throw new Error('No result returned');
+        const stdout = r.stdout ?? r.actual ?? '';
+        const stderr = r.stderr ?? '';
+        const hasError = !!(stderr && String(stderr).trim());
+
+        if (stdout) appendTerminal(stdout, 'stdout');
+        if (stderr) appendTerminal(stderr, 'stderr');
+        appendTerminal(`[Exit code ${hasError ? '1' : '0'}, ${r.elapsed ?? totalElapsed}ms]`, 'system');
+
+        if (testSummary) testSummary.textContent = hasError ? 'Error' : 'Executed';
+        if (editorState) editorState.textContent = hasError ? 'Error' : 'Done';
+
+        // Show output in Console — switch to terminal tab
+        document.getElementById('tabTerminalBtn')?.click();
+
+        if (resultPanel) {
+          resultPanel.classList.remove('hidden');
+          if (hasError) {
+            resultPanel.innerHTML = `
+              <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center gap-2 font-mono">
+                <svg class="w-3.5 h-3.5 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span class="text-red-400 text-[11px] font-medium">Run failed — see Console.</span>
+              </div>`;
+          } else {
+            resultPanel.innerHTML = `
+              <div class="pop-in bg-[#171615] border-y border-white/[.06] px-3 py-2 flex items-center gap-2 font-mono">
+                <span class="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0"></span>
+                <span class="text-white/50 text-[11px]">Run completed — output in Console.</span>
+                <span class="ml-auto text-white/20 text-[10px]">${r.elapsed ?? totalElapsed}ms</span>
+              </div>`;
+          }
+        }
+        return;
+      }
+
+      // Submit — grade against all test cases
       let allPassed = true;
       const results = res.results || [];
       results.forEach((r, idx) => {
-        // Robust mapping: support both old and new field names
         const actual = r.actual ?? r.stdout ?? '';
         const expected = r.expected ?? r.output ?? (casesToRun[idx] ? casesToRun[idx].output : '');
-        // Use r.passed if provided, else compute via normalize
         let passed = r.passed;
         if (typeof passed === 'undefined') {
           const normActual = typeof normalizeOutput === 'function' ? normalizeOutput(actual) : String(actual).trim();
@@ -662,8 +693,7 @@ function initProblemPage() {
         }
         if (!passed) allPassed = false;
 
-        const originalCaseIdx = idx;
-        testCaseResults[originalCaseIdx] = {
+        testCaseResults[idx] = {
           passed,
           actual,
           expected,
@@ -671,12 +701,8 @@ function initProblemPage() {
           stderr: r.stderr ?? ''
         };
 
-        if (r.stdout ?? actual) {
-          appendTerminal(r.stdout ?? actual, 'stdout');
-        }
-        if (r.stderr) {
-          appendTerminal(r.stderr, 'stderr');
-        }
+        if (r.stdout ?? actual) appendTerminal(r.stdout ?? actual, 'stdout');
+        if (r.stderr) appendTerminal(r.stderr, 'stderr');
       });
 
       activeCaseIdx = 0;
@@ -684,57 +710,18 @@ function initProblemPage() {
       renderActiveCaseDetail();
 
       if (testTabBadge) {
-        const passedCount = results.filter(r => {
-          const p = r.passed ?? testCaseResults[results.indexOf(r)]?.passed;
-          return p;
-        }).length;
-        // Correct count: use enriched results
         const correctPassed = Object.values(testCaseResults).filter(v => v.passed).length;
-        const total = isSubmit ? q.testCases.length : 1;
-        // For submit, show correctPassed/total, for sample show 1/1
+        const total = q.testCases.length;
         testTabBadge.classList.remove('hidden');
-        if (isSubmit) {
-          testTabBadge.textContent = `${correctPassed}/${total} passed`;
-        } else {
-          testTabBadge.textContent = allPassed ? `1/1 passed` : `0/1 passed`;
-        }
-        testTabBadge.className = `text-[10px] px-1.5 py-0.2 rounded font-mono font-semibold ${allPassed ? 'bg-green-500/20 text-green-300' : 'bg-red-500/20 text-red-300'}`;
+        testTabBadge.textContent = `· ${correctPassed}/${total}`;
+        testTabBadge.className = `text-[10px] font-mono font-normal ${allPassed ? 'text-white/45' : 'text-red-300/70'}`;
       }
 
       appendTerminal(`[Exit code ${allPassed ? '0' : '1'}, ${totalElapsed}ms]`, 'system');
 
       if (resultPanel) resultPanel.classList.remove('hidden');
 
-      if (!isSubmit) {
-        if (allPassed) {
-          if (testSummary) testSummary.textContent = 'Sample passed';
-          if (editorState) editorState.textContent = 'Sample passed';
-          if (resultPanel) resultPanel.innerHTML = `
-            <div class="pop-in bg-[#050f06] border-y border-[#1a381c] px-4 py-2 flex items-center justify-between font-mono shadow-sm">
-              <div class="flex items-center gap-2.5">
-                <svg class="text-[#7CB342] w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                <span class="text-[#7CB342] font-medium text-xs tracking-wide">Sample test cases passed. Ready to submit?</span>
-              </div>
-              <button id="bannerSubmitBtn" class="bg-[#E67E22] hover:bg-[#D35400] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors cursor-pointer shrink-0 shadow-sm">
-                Submit
-              </button>
-            </div>
-          `;
-          document.getElementById('bannerSubmitBtn')?.addEventListener('click', () => runCode('submit'));
-        } else {
-          if (testSummary) testSummary.textContent = 'Sample failed';
-          if (editorState) editorState.textContent = 'Needs work';
-          if (resultPanel) resultPanel.innerHTML = `
-            <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center justify-between font-mono">
-              <div class="flex items-center gap-2 text-red-400 text-xs font-semibold">
-                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                <span>Sample Test Case Failed — Check terminal or test cases for output mismatch.</span>
-              </div>
-            </div>
-          `;
-        }
-      } else {
-        if (allPassed) {
+      if (allPassed) {
           if (testSummary) testSummary.textContent = `${results.length}/${results.length} passed`;
           if (editorState) editorState.textContent = 'Accepted';
           appendTerminal(`[All ${results.length} test cases passed in ${totalElapsed}ms]`, 'stdout');
@@ -787,7 +774,6 @@ function initProblemPage() {
             </div>
           `;
         }
-      }
 
       showExplanation();
 
@@ -798,11 +784,10 @@ function initProblemPage() {
       if (testSummary) testSummary.textContent = 'Error';
       if (editorState) editorState.textContent = 'Error';
       appendTerminal(err.message || 'Execution error occurred.', 'stderr');
-      // Show in custom panel if custom was active
       const customOutputPanel = document.getElementById('customOutputPanel');
       if (customOutputPanel && document.getElementById('customInputToggle')?.checked) {
         customOutputPanel.classList.remove('hidden');
-        customOutputPanel.innerHTML = `<div class="p-2.5 rounded bg-red-950/20 border border-red-500/30 text-red-300 font-mono text-[11px] whitespace-pre-wrap">${escapeHtml(err.message || String(err))}</div>`;
+        customOutputPanel.innerHTML = `<pre class="m-0 p-2.5 rounded-md bg-red-950/15 border border-red-500/20 text-red-300/90 font-mono text-[11px] leading-5 whitespace-pre-wrap break-words">${escapeHtml(err.message || String(err))}</pre>`;
       }
       toast('Execution error.');
     } finally {

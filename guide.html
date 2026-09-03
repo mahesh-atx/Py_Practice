@@ -324,45 +324,23 @@
       <footer class="border-t border-line mt-auto">
         <div class="app-max">
           <div class="content-max py-12 lg:py-14">
-            <div class="grid lg:grid-cols-[1.4fr_0.9fr_0.9fr_0.9fr] gap-10 lg:gap-8">
+            <div class="grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-8 items-start">
               <div>
-                <a href="index.html" class="text-[22px] tracking-[-.05em] font-medium inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
-                <p class="text-sm text-muted leading-6 mt-3 max-w-sm">
+                <a href="index.html" class="text-[22px] sm:text-[23px] tracking-[-.04em] font-semibold inline-flex items-center gap-2.5"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
+                <p class="text-[14.5px] sm:text-[15px] text-muted leading-7 mt-3 max-w-[36ch] font-normal tracking-[-.01em]">
                   A focused place to learn Python by solving problems. One topic at a time, run Python in your browser.
                 </p>
-                <div class="flex flex-wrap gap-2 mt-5">
-                  <a href="topics.html" class="btn-primary px-4 py-2 text-xs rounded-[3px]">Start practicing</a>
-                  <a href="learn.html" class="btn-ghost px-4 py-2 text-xs rounded-[3px]">Read notes</a>
+                <div class="text-xs text-muted mt-3 font-mono">
+                  <span><span data-total-topics>21</span> topics</span> · <span>3 levels</span> · <span><span data-total-questions>579</span> questions</span>
+                </div>
+                <div class="flex flex-wrap gap-2.5 mt-5">
+                  <a href="topics.html" class="btn-primary px-4 py-2.5 text-[13px] font-medium tracking-[-.01em] rounded-[3px]">Start practicing</a>
+                  <a href="learn.html" class="btn-ghost px-4 py-2.5 text-[13px] font-medium tracking-[-.01em] rounded-[3px]">Read notes</a>
                 </div>
               </div>
-              <div>
-                <div class="text-[11px] uppercase tracking-[.14em] text-muted">Explore</div>
-                <ul class="mt-4 space-y-2.5 text-sm">
-                  <li><a href="learn.html" class="text-muted hover:text-ink transition">Learn</a></li>
-                  <li><a href="topics.html" class="text-muted hover:text-ink transition">Practice</a></li>
-                  <li><a href="progress.html" class="text-muted hover:text-ink transition">Progress</a></li>
-                  <li><a href="guide.html" class="text-muted hover:text-ink transition">Python Guide</a></li>
-                  <li><a href="profile.html" class="text-muted hover:text-ink transition">Profile</a></li>
-                </ul>
-              </div>
-              <div>
-                <div class="text-[11px] uppercase tracking-[.14em] text-muted">Topics</div>
-                <ul class="mt-4 space-y-2.5 text-sm">
-                  <li><a href="topics.html" class="text-muted hover:text-ink transition">Variables &amp; Data Types</a></li>
-                  <li><a href="practice.html?topic=Loops&amp;level=basic" class="text-muted hover:text-ink transition">Loops</a></li>
-                  <li><a href="practice.html?topic=Functions&amp;level=basic" class="text-muted hover:text-ink transition">Functions</a></li>
-                  <li><a href="practice.html?topic=File%20Handling&amp;level=basic" class="text-muted hover:text-ink transition">File Handling</a></li>
-                </ul>
-              </div>
-              <div>
-                <div class="text-[11px] uppercase tracking-[.14em] text-muted">About</div>
-                <p class="text-sm text-muted leading-6 mt-4">
-                  Local-first, no backend. Progress saved in this browser. Zero setup, instant feedback.
-                </p>
-                <div class="text-xs text-muted mt-4 leading-5">
-                  <div><span data-total-topics>21</span> topics · 3 levels · <span data-total-questions>579</span> questions</div>
-                  <div class="mt-1">Run with Pyodide &amp; Monaco</div>
-                </div>
+              <div class="relative overflow-hidden rounded-[18px] border border-line bg-[var(--paper-2)] shadow-soft self-start">
+                <img src="assets/30_asset.gif" alt="Robot coding at night — Kirokaze pixel art" class="w-full h-auto max-h-[260px] sm:max-h-[280px] object-cover block" loading="lazy" />
+                <div class="absolute inset-0 rounded-[18px] ring-1 ring-black/5 pointer-events-none"></div>
               </div>
             </div>
             <div class="mt-10 pt-6 border-t border-line flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted">

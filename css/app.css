@@ -23,7 +23,7 @@ html.theme-dark,body.theme-dark{background-color:var(--dark);color:#f4efe6}
 .theme-dark .shadow-soft{box-shadow:0 18px 50px rgba(0,0,0,.28)}
 .app-max{max-width:1440px;margin:0 auto;padding:0 28px}.content-max{max-width:1180px;margin:0 auto}
 @media(max-width:640px){.app-max{padding:0 18px}}
-.header-blur{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(247,243,233,0.88);border-bottom:1px solid var(--line)}
+.header-blur{backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);background:rgba(247,243,233,0.88);border-bottom:1px solid var(--line);overflow:visible}
 .theme-dark .header-blur{background:rgba(23,23,22,0.88);border-color:var(--dark-line)}
 @supports (background: color-mix(in srgb, white, transparent)) {
   .header-blur{background:color-mix(in srgb, var(--paper) 88%, transparent)}
@@ -57,7 +57,20 @@ html.theme-dark,body.theme-dark{background-color:var(--dark);color:#f4efe6}
 .theme-dark .side-scroll::-webkit-scrollbar-thumb,.code-window .side-scroll::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12)}
 .theme-dark .side-scroll::-webkit-scrollbar-thumb:hover,.code-window .side-scroll::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.25)}
 .editor{tab-size:4;line-height:1.65;white-space:pre;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade-up{animation:none}.lift{transition:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.fade-up{animation:none !important; opacity:1 !important; transform:none !important}.lift{transition:none}}
+/* Hero text reveal — staggered fade-up used in .hero-grid */
+.fade-up{
+  opacity:0;
+  transform:translateY(16px);
+  animation:fadeUp 0.68s cubic-bezier(0.22,1,0.36,1) forwards;
+  will-change:opacity,transform;
+}
+.fade-up.delay-1{animation-delay:0.08s}
+.fade-up.delay-2{animation-delay:0.20s}
+.fade-up.delay-3{animation-delay:0.34s}
+@keyframes fadeUp{
+  to{opacity:1; transform:none}
+}
 .learning-shell{display:flex;min-height:calc(100vh - 76px)}
 .sidebar-collapsed .side-topic.active{background:var(--soft);color:var(--ink);border-color:var(--line)}
 .theme-dark .side-topic:hover,.theme-dark .side-topic.active{background:#242220;color:#f4efe6}
@@ -108,13 +121,31 @@ html.theme-dark,body.theme-dark{background-color:var(--dark);color:#f4efe6}
   overflow: hidden;
 }
 
-/* Bottom Terminal & Test Cases Tabs */
+/* Bottom panel — minimal */
 .bottom-tab {
   user-select: none;
+  letter-spacing: .01em;
 }
-.bottom-tab.active {
-  background: rgba(255, 255, 255, 0.1) !important;
-  color: #ffffff !important;
+.bottom-tab:focus-visible {
+  outline: none;
+  box-shadow: inset 0 -2px 0 rgba(255,255,255,.5);
+}
+.case-pill {
+  user-select: none;
+  line-height: 1;
+}
+.case-pill:focus-visible {
+  outline: 1px solid rgba(255,255,255,.25);
+  outline-offset: 1px;
+}
+#problemBottomPanel {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,.12) transparent;
+}
+#problemBottomPanel::-webkit-scrollbar { width: 6px; height: 6px; }
+#problemBottomPanel::-webkit-scrollbar-thumb { background: rgba(255,255,255,.12); border-radius: 999px; }
+#customInputToggle {
+  accent-color: #fff;
 }
 
 /* Markdown Notes Rendering Styles */
@@ -459,15 +490,15 @@ input:focus, textarea:focus, select:focus {
   transform: translateX(3px);
 }
 
-/* Test Case Tabs & Pills */
-.case-tab-btn {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+/* Test Case Tabs & Pills — minimal */
+.case-tab-btn, .case-pill {
+  transition: border-color .18s ease, background .18s ease, color .18s ease, transform .15s ease;
 }
-.case-tab-btn:hover {
-  transform: translateY(-1px);
+.case-tab-btn:hover, .case-pill:hover {
+  transform: none;
 }
-.case-tab-btn:active {
-  transform: translateY(0) scale(0.96);
+.case-tab-btn:active, .case-pill:active {
+  transform: scale(.98);
 }
 
 /* Progress Bar Shimmer Effect */
@@ -845,33 +876,71 @@ body.is-authenticated [data-guest-only] {
   display: none !important;
 }
 
-/* --- Mobile Menu: slide + fade + clean background --- */
+/* --- Mobile Menu: slide + fade + overlay (does not push page) — fixed to viewport */
 .mobile-menu {
+  position: fixed !important;
+  top: 76px !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
   max-height: 0;
   opacity: 0;
   overflow: hidden;
-  transform: translateY(-6px);
+  overflow-y: hidden;
+  transform: translateY(-8px);
   transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.28s ease, transform 0.28s ease;
   pointer-events: none;
   background: var(--paper);
+  background: color-mix(in srgb, var(--paper) 96%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.05);
+  backdrop-filter: blur(14px) saturate(1.05);
+  border: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 18px 18px;
+  z-index: 60;
+  box-shadow: 0 16px 40px rgba(43,39,34,.12), 0 4px 12px rgba(43,39,34,.06);
 }
 .theme-dark .mobile-menu {
   background: var(--dark);
+  background: color-mix(in srgb, var(--dark) 96%, transparent);
+  border-color: var(--dark-line);
+  border-top-color: var(--dark-line);
 }
 .mobile-menu.open {
-  max-height: 560px;
+  max-height: min(560px, calc(100vh - 76px));
+  max-height: min(560px, calc(100dvh - 76px));
+  max-height: min(560px, calc(100svh - 76px));
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  box-shadow: 0 16px 40px rgba(43, 39, 34, 0.13), 0 6px 18px rgba(43, 39, 34, 0.07);
 }
 .theme-dark .mobile-menu.open {
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.42), 0 8px 20px rgba(0,0,0,.28);
 }
+/* Page dim behind open overlay — modern over-page feel */
+body:has(#mobileMenu.open)::after {
+  content: "";
+  position: fixed;
+  inset: 76px 0 0 0;
+  background: rgba(23, 23, 22, 0.07);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+  z-index: 45;
+  pointer-events: none;
+  animation: menuBackdropIn 0.22s ease both;
+}
+.theme-dark body:has(#mobileMenu.open)::after {
+  background: rgba(0, 0, 0, 0.24);
+}
+@keyframes menuBackdropIn { from { opacity: 0; } to { opacity: 1; } }
 .mobile-menu a {
   transform: translateX(-6px);
   opacity: 0;
-  transition: transform 0.3s ease, opacity 0.3s ease, color 0.2s ease;
+  transition: transform 0.3s ease, opacity 0.3s ease, color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 .mobile-menu.open a {
   transform: none;
@@ -882,6 +951,131 @@ body.is-authenticated [data-guest-only] {
 .mobile-menu.open a:nth-child(3) { transition-delay: 0.13s; }
 .mobile-menu.open a:nth-child(4) { transition-delay: 0.17s; }
 .mobile-menu.open a:nth-child(5) { transition-delay: 0.21s; }
+
+/* — Minimal mobile sheet — bold text left, arrow right, no icons */
+#mobileMenu .app-max {
+  padding: 10px 18px 18px !important;
+  gap: 0 !important;
+}
+#mobileMenu .app-max::before {
+  display: none !important;
+  content: none !important;
+}
+#mobileMenu .app-max > a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 4px;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent !important;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.02em;
+}
+.theme-dark #mobileMenu .app-max > a {
+  border-bottom-color: rgba(255,255,255,.08);
+  color: #f4efe6;
+}
+#mobileMenu .app-max > a:last-of-type {
+  border-bottom: none;
+}
+#mobileMenu .app-max > a:hover {
+  background: transparent !important;
+  border-bottom-color: var(--line);
+  color: var(--green);
+}
+.theme-dark #mobileMenu .app-max > a:hover {
+  color: #9eb69f;
+  border-bottom-color: rgba(255,255,255,.12);
+}
+#mobileMenu .app-max > a.text-ink,
+#mobileMenu .app-max > a.font-medium.text-ink {
+  color: var(--green);
+  font-weight: 800;
+}
+.theme-dark #mobileMenu .app-max > a.text-ink,
+.theme-dark #mobileMenu .app-max > a.font-medium.text-ink {
+  color: #9eb69f;
+}
+/* Hide icon box entirely */
+#mobileMenu .app-max > a::before {
+  display: none !important;
+  content: none !important;
+}
+/* Arrow — always visible on right, bold */
+#mobileMenu .app-max > a::after {
+  content: "→";
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 700;
+  opacity: .45;
+  transform: none;
+  transition: opacity .2s ease, transform .2s ease, color .2s ease;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+#mobileMenu .app-max > a:hover::after,
+#mobileMenu .app-max > a.text-ink::after {
+  opacity: 1;
+  transform: translateX(2px);
+  color: var(--green);
+}
+.theme-dark #mobileMenu .app-max > a::after { color: var(--dark-muted); }
+.theme-dark #mobileMenu .app-max > a:hover::after,
+.theme-dark #mobileMenu .app-max > a.text-ink::after { color: #9eb69f; }
+
+/* Guest CTA block */
+#mobileMenu [data-guest-only] {
+  margin-top: 6px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid var(--line) !important;
+  gap: 10px !important;
+}
+.theme-dark #mobileMenu [data-guest-only] { border-top-color: var(--dark-line) !important; }
+#mobileMenu [data-guest-only] a {
+  transform: none !important;
+  opacity: 1 !important;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s ease, background .2s ease, border-color .2s ease !important;
+  padding-top: 11px !important;
+  padding-bottom: 11px !important;
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+}
+#mobileMenu [data-guest-only] a:hover { transform: translateY(-1px) !important; }
+
+/* Auth card */
+#mobileMenu [data-auth-only] {
+  margin-top: 6px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid var(--line) !important;
+}
+.theme-dark #mobileMenu [data-auth-only] { border-top-color: var(--dark-line) !important; }
+#mobileMenu [data-auth-only] > div {
+  background: var(--soft) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 14px !important;
+  padding: 12px 12px !important;
+  gap: 10px;
+}
+.theme-dark #mobileMenu [data-auth-only] > div {
+  background: #242220 !important;
+  border-color: var(--dark-line) !important;
+}
+#mobileMenu [data-auth-only] [data-user-initial] {
+  width: 38px !important;
+  height: 38px !important;
+  font-size: 13px !important;
+  box-shadow: 0 4px 12px rgba(46,90,51,.18);
+}
+#mobileMenu [data-auth-only] [data-logout-btn] {
+  border-radius: 10px !important;
+}
 
 /* Mobile toggle morph */
 [data-mobile-toggle] {
@@ -1009,7 +1203,11 @@ input:hover:not(:focus), textarea:hover:not(:focus), select:hover:not(:focus) {
 
 /* Remove blinking cursor in learn notes — keep only for hero */
 #learnContent .code-window pre::after,
-.prose-notes .code-window pre::after {
+.prose-notes .code-window pre::after,
+#problemBottomPanel pre::after,
+#selectedTestCaseDetail pre::after,
+#testCaseTabsContainer pre::after,
+.code-window #problemBottomPanel pre::after {
   display: none !important;
   content: none !important;
   animation: none !important;
@@ -2013,6 +2211,255 @@ footer [data-total-topics]:hover, footer [data-total-questions]:hover {
 #learnContent .reveal {
   opacity: 1 !important;
   transform: none !important;
+}
+
+/* ================================================================
+   HERO — Mobile-enhanced composition (≤640px)
+   Small screens no longer stretch the pixel-art gif as a full-bleed
+   cover (crops / pixelates / buries text). Instead the hero keeps a
+   clean mesh-gradient canvas and renders the illustration as a
+   premium contained card with ambient glow + frosted stats pill.
+   The image stays sharp (no cover-distortion) while the veil/
+   shimmer are removed for a modern, airy, editorial feel.
+   Extra-tight tuning is applied again at ≤450px.
+   ================================================================ */
+@media (max-width: 640px) {
+  .hero-grid {
+    position: relative;
+    isolation: isolate;
+    overflow: clip;
+    background-color: var(--paper);
+    /* mesh = radial aurora + paper + faint grid */
+    background-image:
+      radial-gradient(ellipse 760px 520px at 88% -6%, rgba(91,115,93,.14), transparent 62%),
+      radial-gradient(ellipse 600px 380px at -4% 26%, rgba(91,115,93,.075), transparent 64%),
+      linear-gradient(to right, rgba(41,40,39,.035) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(41,40,39,.035) 1px, transparent 1px);
+    background-size: auto, auto, 64px 64px, 64px 64px;
+  }
+  .theme-dark .hero-grid,
+  html.theme-dark .hero-grid {
+    background-color: var(--dark);
+    background-image:
+      radial-gradient(ellipse 760px 520px at 88% -6%, rgba(121,145,122,.14), transparent 62%),
+      radial-gradient(ellipse 600px 380px at -4% 26%, rgba(121,145,122,.06), transparent 64%),
+      linear-gradient(to right, rgba(255,255,255,.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,.045) 1px, transparent 1px);
+  }
+
+  /* Kill the desktop shimmer line — on phones it flickers behind text */
+  .hero-grid::after {
+    display: none !important;
+    animation: none !important;
+  }
+  /* Remove the old heavy veil (was 0.92 opaque over a gif cover).
+     Keep a very light base so ::before is neutral; actual bottom
+     fade is handled by the media glow. */
+  .hero-grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: transparent;
+  }
+
+  .hero-grid > .app-max,
+  .hero-grid .hero-content-grid {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-grid .hero-content-grid {
+    min-height: calc(100dvh - 76px);
+    min-height: calc(100vh - 76px);
+    padding-top: 30px !important;
+    padding-bottom: 34px !important;
+    gap: 26px !important;
+    align-content: start;
+  }
+
+  /* Copy stays on a clean canvas — no halo / text-shadow needed */
+  .hero-grid .hero-copy h1 {
+    font-size: 40px !important;
+    line-height: .92 !important;
+    text-wrap: balance;
+    letter-spacing: -.065em;
+    text-shadow: none !important;
+  }
+  .hero-grid .hero-copy > p {
+    text-shadow: none !important;
+  }
+  .hero-grid .hero-copy p.text-muted {
+    color: #5e5953 !important;
+  }
+  .theme-dark .hero-grid .hero-copy p.text-muted {
+    color: #c9c2b8 !important;
+  }
+  .hero-grid .hero-copy .btn-ghost {
+    background: rgba(255,255,255,.84) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(216,209,197,.95) !important;
+  }
+  .theme-dark .hero-grid .hero-copy .btn-ghost {
+    background: rgba(36,34,32,.78) !important;
+    border-color: rgba(58,56,53,.95) !important;
+  }
+
+  /* ---- Media column: ambient glow + contained premium card ---- */
+  .hero-grid .hero-media {
+    position: relative !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    isolation: isolate;
+    padding-top: 6px;
+    padding-bottom: 22px; /* room for overlapping pill */
+  }
+
+  /* blurred duplicate of the gif as a soft aura behind the crisp card */
+  .hero-grid .hero-media::before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    left: 50%;
+    top: 44%;
+    width: min(118%, 520px);
+    height: 92%;
+    transform: translate(-50%, -48%);
+    background-image: url("../assets/Loading - Kirokaze Pixel.gif");
+    background-size: cover;
+    background-position: center 38%;
+    background-repeat: no-repeat;
+    filter: blur(34px) saturate(1.16) brightness(1.02);
+    opacity: .20;
+    border-radius: 30px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse 70% 62% at 50% 46%, black 58%, transparent 82%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 62% at 50% 46%, black 58%, transparent 82%);
+  }
+  .theme-dark .hero-grid .hero-media::before {
+    opacity: .14;
+    filter: blur(38px) saturate(1.06) brightness(.96);
+  }
+
+  .hero-grid .hero-media-image {
+    display: block !important;
+    position: relative !important;
+    z-index: 1;
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(216,209,197,.88) !important;
+    background: var(--paper-2) !important;
+    box-shadow:
+      0 26px 56px rgba(43,39,34,.14),
+      0 10px 22px rgba(43,39,34,.08),
+      0 0 0 1px rgba(255,255,255,.55) inset !important;
+  }
+  .theme-dark .hero-grid .hero-media-image {
+    border-color: rgba(58,56,53,.95) !important;
+    background: #211f1e !important;
+    box-shadow:
+      0 28px 60px rgba(0,0,0,.46),
+      0 12px 26px rgba(0,0,0,.30),
+      0 0 0 1px rgba(255,255,255,.07) inset !important;
+  }
+  .hero-grid .hero-media-image img {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 440px !important;
+    aspect-ratio: 4 / 4.95;
+    object-fit: cover !important;
+    object-position: center 35% !important;
+    image-rendering: auto;
+  }
+  /* inner vignette + top highlight for depth inside the card */
+  .hero-grid .hero-media-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    background:
+      radial-gradient(ellipse 680px 260px at 50% 0%, rgba(255,255,255,.42), transparent 66%),
+      linear-gradient(180deg, transparent 62%, rgba(23,23,22,.08) 84%, rgba(23,23,22,.16) 100%);
+    opacity: .95;
+  }
+  .theme-dark .hero-grid .hero-media-image::after {
+    background:
+      radial-gradient(ellipse 680px 260px at 50% 0%, rgba(255,255,255,.07), transparent 66%),
+      linear-gradient(180deg, transparent 64%, rgba(0,0,0,.22) 100%);
+  }
+
+  /* Stats pill — frosted glass, slightly overlapping the card */
+  .hero-grid .hero-media-card {
+    position: relative !important;
+    z-index: 2;
+    inset: auto !important;
+    top: auto !important; right: auto !important; bottom: auto !important; left: auto !important;
+    width: min(88%, 320px) !important;
+    max-width: 320px !important;
+    margin: -28px auto 0 !important;
+    border-radius: 16px !important;
+    background: rgba(251,248,240,.88) !important;
+    backdrop-filter: blur(16px) saturate(1.08) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(1.08) !important;
+    border: 1px solid rgba(216,209,197,.92) !important;
+    box-shadow:
+      0 18px 40px rgba(43,39,34,.12),
+      0 6px 16px rgba(43,39,34,.07),
+      0 0 0 1px rgba(255,255,255,.55) inset !important;
+  }
+  .theme-dark .hero-grid .hero-media-card {
+    background: rgba(33,31,30,.90) !important;
+    border-color: rgba(58,56,53,.95) !important;
+    box-shadow:
+      0 20px 44px rgba(0,0,0,.42),
+      0 8px 18px rgba(0,0,0,.28),
+      0 0 0 1px rgba(255,255,255,.06) inset !important;
+  }
+
+  .hero-grid .orbit { display: none !important; }
+}
+
+/* Extra-tight refinement for very narrow phones */
+@media (max-width: 450px) {
+  .hero-grid .hero-content-grid {
+    padding-top: 22px !important;
+    padding-bottom: 28px !important;
+    gap: 22px !important;
+  }
+  .hero-grid .hero-copy h1 {
+    font-size: 34px !important;
+    line-height: .94 !important;
+  }
+  .hero-grid .hero-media {
+    padding-bottom: 18px;
+  }
+  .hero-grid .hero-media::before {
+    width: 122%;
+    filter: blur(28px) saturate(1.12);
+    opacity: .18;
+  }
+  .theme-dark .hero-grid .hero-media::before { opacity: .12; }
+  .hero-grid .hero-media-image {
+    max-width: 360px !important;
+    border-radius: 18px !important;
+  }
+  .hero-grid .hero-media-image img {
+    max-height: 380px !important;
+    aspect-ratio: 4 / 4.7;
+  }
+  .hero-grid .hero-media-card {
+    width: min(92%, 300px) !important;
+    margin-top: -22px !important;
+    border-radius: 14px !important;
+  }
 }
 
 

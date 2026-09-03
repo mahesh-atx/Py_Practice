@@ -307,6 +307,17 @@ function setupHeader() {
       document.body.animate([{ filter: 'brightness(0.98)' }, { filter: 'brightness(1)' }], { duration: 260, easing: 'ease-out' });
     });
   });
+  // Background stays in place — menu is fixed overlay, no scroll jump
+  const lockMenuScroll = () => {
+    if (window.innerWidth >= 768) return;
+    // keep scroll position intact; only contain overscroll, do not hide overflow (prevents jump to top on mobile)
+    document.body.style.overscrollBehavior = 'contain';
+    document.documentElement.style.overscrollBehavior = 'contain';
+  };
+  const unlockMenuScroll = () => {
+    document.body.style.overscrollBehavior = '';
+    document.documentElement.style.overscrollBehavior = '';
+  };
   document.querySelectorAll('[data-mobile-toggle]').forEach(b => {
     const originalText = b.textContent;
     b.addEventListener('click', () => {
@@ -318,12 +329,9 @@ function setupHeader() {
       b.textContent = willOpen ? '✕' : originalText;
       b.style.transform = 'scale(0.9)';
       setTimeout(() => b.style.transform = '', 160);
-      // prevent body scroll when menu open on mobile
-      if (willOpen && window.innerWidth < 768) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = '';
-      }
+      // lock background scroll without jumping to top
+      if (willOpen) lockMenuScroll();
+      else unlockMenuScroll();
     });
   });
   // close mobile menu when clicking a link or outside
@@ -331,9 +339,10 @@ function setupHeader() {
     a.addEventListener('click', () => {
       const menu = document.getElementById('mobileMenu');
       const toggle = document.querySelector('[data-mobile-toggle]');
+      const wasOpen = menu && menu.classList.contains('open');
       if (menu) menu.classList.remove('open');
       if (toggle) toggle.textContent = '☰';
-      document.body.style.overflow = '';
+      if (wasOpen) unlockMenuScroll();
     });
   });
   document.addEventListener('click', (e) => {
@@ -344,7 +353,7 @@ function setupHeader() {
     if (menu.contains(e.target) || toggle.contains(e.target)) return;
     menu.classList.remove('open');
     toggle.textContent = '☰';
-    document.body.style.overflow = '';
+    unlockMenuScroll();
   });
   document.querySelectorAll('[data-reset-progress]').forEach(b => {
     b.addEventListener('click', async () => {

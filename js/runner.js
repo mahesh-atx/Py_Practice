@@ -126,14 +126,14 @@ function updatePyodideStatus(status) {
   if (!statusEl) return;
 
   if (status === 'loading') {
-    statusEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span><span>Python loading…</span>';
-    statusEl.className = 'flex items-center gap-2 text-[11px] text-amber-300 font-mono';
+    statusEl.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-white/25 animate-pulse shrink-0"></span><span>Python loading…</span>';
+    statusEl.className = 'flex items-center gap-1.5 text-[11px] text-white/30 font-mono min-w-0';
   } else if (status === 'ready') {
-    statusEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-emerald-400"></span><span>Python ready</span>';
-    statusEl.className = 'flex items-center gap-2 text-[11px] text-emerald-300 font-mono';
+    statusEl.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400/70 shrink-0"></span><span>Python ready</span>';
+    statusEl.className = 'flex items-center gap-1.5 text-[11px] text-white/30 font-mono min-w-0';
   } else if (status === 'error') {
-    statusEl.innerHTML = '<span class="inline-block w-2 h-2 rounded-full bg-red-400"></span><span>Python error</span>';
-    statusEl.className = 'flex items-center gap-2 text-[11px] text-red-300 font-mono';
+    statusEl.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-red-400/70 shrink-0"></span><span>Python error</span>';
+    statusEl.className = 'flex items-center gap-1.5 text-[11px] text-white/30 font-mono min-w-0';
     appendTerminal('Failed to load Python environment. Check connection and reload.', 'stderr');
   }
 }
