@@ -826,7 +826,26 @@ img, svg, video, canvas { max-width: 100%; }
   transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- Mobile Menu: slide + fade --- */
+/* --- Mobile Header: strictly hide desktop guest and auth buttons (< 768px) --- */
+@media (max-width: 767.98px) {
+  header [data-guest-only]:not(#mobileMenu *),
+  header [data-auth-only]:not(#mobileMenu *),
+  .header-blur [data-guest-only]:not(#mobileMenu *),
+  .header-blur [data-auth-only]:not(#mobileMenu *) {
+    display: none !important;
+  }
+}
+
+/* --- Auth & Guest State Rules (CSS layer) --- */
+body.is-guest [data-auth-only],
+body:not(.is-authenticated) [data-auth-only] {
+  display: none !important;
+}
+body.is-authenticated [data-guest-only] {
+  display: none !important;
+}
+
+/* --- Mobile Menu: slide + fade + clean background --- */
 .mobile-menu {
   max-height: 0;
   opacity: 0;
@@ -834,12 +853,20 @@ img, svg, video, canvas { max-width: 100%; }
   transform: translateY(-6px);
   transition: max-height 0.38s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.28s ease, transform 0.28s ease;
   pointer-events: none;
+  background: var(--paper);
+}
+.theme-dark .mobile-menu {
+  background: var(--dark);
 }
 .mobile-menu.open {
   max-height: 560px;
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+.theme-dark .mobile-menu.open {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 .mobile-menu a {
   transform: translateX(-6px);

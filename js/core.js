@@ -578,11 +578,21 @@ function syncAuthUI() {
   const auth = getAuth();
   const loggedIn = !!auth;
 
+  // 0. Update body classes for CSS-level auth state rules
+  if (document.body) {
+    document.body.classList.toggle('is-authenticated', loggedIn);
+    document.body.classList.toggle('is-guest', !loggedIn);
+  }
+
   // 1. Elements visible ONLY when logged in
   document.querySelectorAll('[data-auth-only]').forEach(el => {
     if (loggedIn) {
-      el.classList.remove('hidden');
       el.style.removeProperty('display');
+      // Do not strip 'hidden' if element has responsive prefixes (sm:, md:, lg:)
+      // where 'hidden' is the mobile base style!
+      if (!/\b(sm|md|lg):/.test(el.className)) {
+        el.classList.remove('hidden');
+      }
     } else {
       el.classList.add('hidden');
       el.style.display = 'none';
@@ -595,8 +605,12 @@ function syncAuthUI() {
       el.classList.add('hidden');
       el.style.display = 'none';
     } else {
-      el.classList.remove('hidden');
       el.style.removeProperty('display');
+      // Do not strip 'hidden' if element has responsive prefixes (sm:, md:, lg:)
+      // where 'hidden' is the mobile base style!
+      if (!/\b(sm|md|lg):/.test(el.className)) {
+        el.classList.remove('hidden');
+      }
     }
   });
 
