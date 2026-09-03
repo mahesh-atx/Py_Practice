@@ -126,7 +126,7 @@ function renderPracticeTopics() {
     const btnIcon = isDone ? 'fa-solid fa-arrow-rotate-left' : 'fa-solid fa-play';
 
     return `
-      <article class="topic-card group card flex flex-col p-6 rounded-[18px] relative overflow-hidden ${isLocked ? 'opacity-90' : ''}" style="animation-delay: ${idx * 0.04}s">
+      <article class="topic-card group card flex flex-col p-5 sm:p-6 rounded-[18px] relative overflow-hidden ${isLocked ? 'opacity-90' : ''}" style="animation-delay: ${idx * 0.04}s">
         <div class="absolute top-0 left-0 right-0 h-[3px] ${topBarClass} opacity-80 z-20"></div>
         
         <!-- Framed Illustration Viewport matching Home Screen -->
@@ -278,7 +278,7 @@ function initPracticePage() {
   document.getElementById('practiceQuestionList').innerHTML = qs.map((q, idx) => {
     const isSolved = solved(q.id);
     return `
-    <article class="group card reveal topic-card flex flex-col sm:flex-row sm:items-center gap-5 p-6 rounded-[14px] relative overflow-hidden" style="animation-delay: ${idx * 0.04}s">
+    <article class="group card reveal topic-card flex flex-col sm:flex-row sm:items-center gap-5 p-5 sm:p-6 rounded-[14px] relative overflow-hidden" style="animation-delay: ${idx * 0.04}s">
       <div class="absolute top-0 left-0 right-0 h-[2.5px] ${isSolved ? 'bg-emerald-500' : 'bg-[var(--line)]'} opacity-80"></div>
       <div class="flex gap-4 flex-1 min-w-0">
         <div class="h-11 w-11 shrink-0 rounded-xl border ${isSolved ? 'bg-emerald-50 border-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-300' : 'bg-[var(--soft)] border-line text-ink dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6]'} grid place-items-center text-xs font-mono shrink-0 group-hover:scale-105 transition-transform duration-300">${String(q.number).padStart(2, '0')}</div>
@@ -356,7 +356,7 @@ function initProgressPage() {
 
     return `
       <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=basic"
-         class="card reveal group relative flex items-center justify-between gap-5 sm:gap-6 p-5 sm:p-6 rounded-[18px] border border-line hover:border-[var(--green)]/40 hover:shadow-[0_12px_32px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:-translate-y-[2px] transition-all duration-300 overflow-hidden block"
+         class="card reveal group relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 p-5 sm:p-6 rounded-[18px] border border-line hover:border-[var(--green)]/40 hover:shadow-[0_12px_32px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:-translate-y-[2px] transition-all duration-300 overflow-hidden block"
          style="animation-delay: ${idx * 0.02}s">
         <!-- Left accent indicator on hover -->
         <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[var(--green)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

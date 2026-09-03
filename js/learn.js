@@ -194,7 +194,10 @@ function initLearnPage() {
     });
 
     const activeBtn = topicListEl.querySelector(`[data-topic-btn="${CSS.escape(activeTopicName)}"]`);
-    if (activeBtn) {
+    // Only on desktop: scrollIntoView also scrolls ancestor scroll
+    // containers, which on a phone would yank the whole page down to the
+    // sidebar the moment the page renders.
+    if (activeBtn && window.matchMedia('(min-width: 1024px)').matches) {
       activeBtn.scrollIntoView({ block: 'nearest' });
     }
   }
@@ -494,6 +497,15 @@ function initLearnPage() {
     history.pushState({}, '', url);
     renderSidebar();
     renderNotes(topicName);
+
+    // On phones the topic list sits above the notes, so selecting one
+    // would otherwise appear to do nothing until the user scrolls down.
+    try {
+      if (window.matchMedia('(max-width: 1023px)').matches) {
+        const notesEl = document.getElementById('learnContent');
+        if (notesEl) notesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch (e) {}
   }
 
   if (searchInput) {
