@@ -7,6 +7,8 @@ if (typeof initTheme === 'function') initTheme();
 if (typeof setupHeader === 'function') setupHeader();
 if (typeof syncAuthUI === 'function') syncAuthUI();
 if (typeof renderHeaderProgress === 'function') renderHeaderProgress();
+// Fill every <span data-total-topics|data-total-questions> from the data.
+if (typeof syncDerivedCounts === 'function') syncDerivedCounts();
 
 /* --------------------------------------------------------------
    Motion & Micro-interactions Orchestrator v2
@@ -331,6 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initProblemPage === 'function') initProblemPage();
   if (typeof initLearnPage === 'function') initLearnPage();
   if (typeof initProfilePage === 'function') initProfilePage();
+  if (typeof syncDerivedCounts === 'function') syncDerivedCounts();
 
   // Motion boot
   ensureScrollProgress();

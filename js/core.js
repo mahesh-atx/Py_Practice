@@ -85,6 +85,32 @@ function solved(id) {
   return !!state.solved[id];
 }
 
+/* Every count the UI shows is derived from the data. These used to be
+   hardcoded as "162" and "18" in sixteen places across nine files, and
+   went stale the moment any question was added. Two topics can share a
+   question bucket, so questions are counted by distinct id. */
+function totalQuestions() {
+  const seen = new Set();
+  for (const q of allQuestions()) seen.add(q.id);
+  return seen.size;
+}
+
+function totalTopics() {
+  return topics.length;
+}
+
+/* Pages mark up the number itself (<span data-total-questions>162</span>)
+   so the surrounding copy stays readable in the source while the value
+   always comes from the data. */
+function syncDerivedCounts() {
+  document.querySelectorAll('[data-total-topics]').forEach(el => {
+    el.textContent = totalTopics();
+  });
+  document.querySelectorAll('[data-total-questions]').forEach(el => {
+    el.textContent = totalQuestions();
+  });
+}
+
 function overall() {
   // Aliased topics list the same question under two headings, so walking
   // every topic would count those twice. Count each distinct id once.
@@ -245,7 +271,7 @@ function syncAllStats() {
   setText('progressSolved', o.done);
   setText('profileSolved', o.done);
   setText('progressStarted', started);
-  setText('profileTopicsStarted', `${started}/18`);
+  setText('profileTopicsStarted', `${started}/${topics.length}`);
   setText('profileTopicsDone', `${started} topics started`);
   setText('progressOverall', pctStr);
   setText('profileOverall', pctStr);
@@ -258,7 +284,7 @@ function syncAllStats() {
   setWidth('profileOverallBar', o.pct + '%');
   renderHeaderProgress();
   const preview = document.getElementById('profileProgressPreview');
-  if (preview) preview.textContent = `${started}/18 topics · ${pctStr} complete`;
+  if (preview) preview.textContent = `${started}/${topics.length} topics · ${pctStr} complete`;
 }
 
 const defaultCodes = {

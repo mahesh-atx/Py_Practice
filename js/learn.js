@@ -99,7 +99,7 @@ function initLearnPage() {
 
     if (progressBadgeEl) {
       const totalStarted = topics.filter(t => topicProgress(t.name).done > 0).length;
-      progressBadgeEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${totalStarted}/18 started`;
+      progressBadgeEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${totalStarted}/${topics.length} started`;
     }
 
     if (clearSearchBtn) {
@@ -377,13 +377,13 @@ function initLearnPage() {
           </div>
           <div class="flex flex-col sm:flex-row lg:flex-col xl:flex-row flex-wrap gap-2.5 shrink-0">
             <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=basic" class="inline-flex items-center justify-center gap-2 btn-primary px-5 py-2.5 text-xs rounded-[10px]">
-              <i class="fa-solid fa-play text-[10px]"></i> Basic (3) <span class="opacity-60">→</span>
+              <i class="fa-solid fa-play text-[10px]"></i> Basic (${questionsFor(t.name, 'basic').length}) <span class="opacity-60">→</span>
             </a>
             <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=intermediate" class="inline-flex items-center justify-center gap-2 btn-ghost px-5 py-2.5 text-xs rounded-[10px] border border-line">
-              <i class="fa-solid fa-layer-group text-[10px]"></i> Intermediate (3)
+              <i class="fa-solid fa-layer-group text-[10px]"></i> Intermediate (${questionsFor(t.name, 'intermediate').length})
             </a>
             <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=advanced" class="inline-flex items-center justify-center gap-2 btn-ghost px-5 py-2.5 text-xs rounded-[10px] border border-line">
-              <i class="fa-solid fa-rocket text-[10px]"></i> Advanced (3)
+              <i class="fa-solid fa-rocket text-[10px]"></i> Advanced (${questionsFor(t.name, 'advanced').length})
             </a>
           </div>
         </div>
