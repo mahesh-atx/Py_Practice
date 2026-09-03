@@ -116,7 +116,47 @@ describe('topics-data.js - questionSeeds structure', () => {
   it('should have aliases correctly wired', () => {
     assert.equal(questionSeeds['Variables'], questionSeeds['Variables and Data Types']);
     assert.equal(questionSeeds['Data Types'], questionSeeds['Variables and Data Types']);
-    assert.equal(questionSeeds['Loops'], questionSeeds['For Loops']);
+  });
+
+  it('Loops should cover the for/while/nested buckets', () => {
+    // Loops used to alias For Loops alone, leaving the While Loops and
+    // Nested Loops buckets unreachable — 60 authored questions no learner
+    // could ever open.
+    const loops = questionSeeds['Loops'];
+    for (const bucket of ['For Loops', 'While Loops', 'Nested Loops']) {
+      for (const lvl of ['basic', 'intermediate', 'advanced']) {
+        for (const q of (questionSeeds[bucket][lvl] || [])) {
+          assert.ok(
+            loops[lvl].some(x => x[0] === q[0]),
+            `Loops ${lvl} is missing "${q[0]}" from ${bucket}`
+          );
+        }
+      }
+    }
+  });
+
+  it('Strings should cover the String Methods bucket', () => {
+    const strings = questionSeeds['Strings'];
+    for (const lvl of ['basic', 'intermediate', 'advanced']) {
+      for (const q of (questionSeeds['String Methods'][lvl] || [])) {
+        assert.ok(
+          strings[lvl].some(x => x[0] === q[0]),
+          `Strings ${lvl} is missing "${q[0]}"`
+        );
+      }
+    }
+  });
+
+  it('topics sharing a bucket should produce identical question ids', () => {
+    // Variables and Data Types serve the same 30 questions. Ids are filed
+    // under the source topic so solving one marks the other done.
+    const { TOPIC_SOURCE } = require('../js/topics-data.js');
+    const canonical = n => TOPIC_SOURCE[n] || n;
+    assert.equal(canonical('Variables'), 'Variables and Data Types');
+    assert.equal(canonical('Data Types'), 'Variables and Data Types');
+    assert.equal(canonical('Variables'), canonical('Data Types'));
+    // A topic with its own content keeps its own namespace.
+    assert.equal(canonical('Loops'), 'Loops');
   });
 });
 

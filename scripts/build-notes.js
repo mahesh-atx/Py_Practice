@@ -68,15 +68,20 @@ function build() {
     byTopic[topic.name] = fs.readFileSync(path.join(NOTES_DIR, file), 'utf8').trim();
   });
 
+  // Aliases are emitted as a lookup table, not duplicated markdown — copying
+  // seven sets of notes into the bundle roughly doubled its size for no gain.
   for (const [alias, target] of Object.entries(ALIASES)) {
     if (!byTopic[target]) {
       throw new Error(`Alias "${alias}" points at unknown topic "${target}".`);
     }
-    byTopic[alias] = byTopic[target];
   }
 
   const body = Object.keys(byTopic)
     .map(name => `  ${JSON.stringify(name)}: {\n    "markdown": ${JSON.stringify(byTopic[name])}\n  }`)
+    .join(',\n');
+
+  const aliasBody = Object.entries(ALIASES)
+    .map(([alias, target]) => `  ${JSON.stringify(alias)}: ${JSON.stringify(target)}`)
     .join(',\n');
 
   return `// PyPractice - Compiled Topic Notes from /notes/*.md
@@ -84,6 +89,12 @@ function build() {
 // Edit the markdown in notes/ instead, then run:  npm run build:notes
 const topicNotes = {
 ${body}
+};
+
+// Alias topics have no notes file of their own. learn.js resolves them to
+// the topic that covers the same material rather than shipping a copy.
+const TOPIC_NOTES_ALIASES = {
+${aliasBody}
 };
 `;
 }

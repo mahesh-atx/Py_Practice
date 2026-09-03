@@ -14,6 +14,37 @@ const state = {
   activity: JSON.parse(localStorage.getItem(activityKey) || '[]')
 };
 
+/* Topics that share a question bucket must share progress too. Variables
+   and Data Types both draw on the "Variables and Data Types" bucket, so a
+   question solved under one heading was still unsolved under the other.
+   Filing ids under the SOURCE topic makes them the same question. */
+function canonicalTopic(name) {
+  return (typeof TOPIC_SOURCE !== 'undefined' && TOPIC_SOURCE[name]) || name;
+}
+
+/* Saved progress predates canonical ids: anyone who solved something under
+   "Variables" has it stored as `Variables__basic__1`. Re-key those entries
+   once so history carries across instead of looking wiped. */
+function migrateCanonicalIds() {
+  const flag = 'pypractice-canonical-ids-v1';
+  if (localStorage.getItem(flag)) return;
+  let changed = false;
+  for (const id of Object.keys(state.solved)) {
+    const sep = id.indexOf('__');
+    if (sep === -1) continue;
+    const topic = id.slice(0, sep);
+    const canonical = canonicalTopic(topic);
+    if (canonical === topic) continue;
+    const newId = canonical + id.slice(sep);
+    if (!(newId in state.solved)) state.solved[newId] = state.solved[id];
+    delete state.solved[id];
+    changed = true;
+  }
+  localStorage.setItem(flag, '1');
+  if (changed) save();
+}
+migrateCanonicalIds();
+
 const levels = ['basic', 'intermediate', 'advanced'];
 const levelMeta = {
   basic: { label: 'Basic', note: 'Learn the core idea and write the first working solution.' },
@@ -37,7 +68,7 @@ function questionsFor(topicName, level) {
     const testCases = [primaryCase, ...extraCases];
 
     return {
-      id: `${topicName}__${level}__${i + 1}`,
+      id: `${canonicalTopic(topicName)}__${level}__${i + 1}`,
       number: i + 1,
       title: x[0],
       description: x[1],
@@ -55,9 +86,18 @@ function solved(id) {
 }
 
 function overall() {
-  const qs = allQuestions();
-  const done = qs.filter(q => solved(q.id)).length;
-  return { total: qs.length, done, pct: qs.length ? Math.round(done / qs.length * 100) : 0 };
+  // Aliased topics list the same question under two headings, so walking
+  // every topic would count those twice. Count each distinct id once.
+  const seen = new Set();
+  let total = 0;
+  let done = 0;
+  for (const q of allQuestions()) {
+    if (seen.has(q.id)) continue;
+    seen.add(q.id);
+    total++;
+    if (solved(q.id)) done++;
+  }
+  return { total, done, pct: total ? Math.round(done / total * 100) : 0 };
 }
 
 function topicProgress(name) {

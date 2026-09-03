@@ -53,6 +53,17 @@ const TOPIC_DOMAINS = {
 function getLearnIcon(name) { return LEARN_FA_ICONS[name] || 'fa-solid fa-code'; }
 function getTopicMeta(name) { return TOPIC_DOMAINS[name] || { domain: 'General Python', level: 'Core', readTime: '6 min' }; }
 
+/* Alias topics (For Loops, String Methods, ...) have no notes file of their
+   own — resolve them to the topic that covers the same material. */
+function notesForTopic(name) {
+  if (typeof topicNotes === 'undefined') return null;
+  if (topicNotes[name]) return topicNotes[name];
+  if (typeof TOPIC_NOTES_ALIASES !== 'undefined' && TOPIC_NOTES_ALIASES[name]) {
+    return topicNotes[TOPIC_NOTES_ALIASES[name]] || null;
+  }
+  return null;
+}
+
 /* Section anchors are harvested from the raw markdown before it is parsed, so
    any line that merely LOOKS like a heading would be collected too. Python
    comments such as `# 1. Read the input` inside a code fence match the heading
@@ -451,7 +462,7 @@ function initLearnPage() {
       return;
     }
 
-    const notes = (typeof topicNotes !== 'undefined' && topicNotes[t.name]) || null;
+    const notes = notesForTopic(t.name);
     const progress = topicProgress(t.name);
 
     if (!notes) {

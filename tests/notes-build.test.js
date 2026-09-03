@@ -11,8 +11,11 @@ function readCompiled() {
 }
 
 function parseCompiled(source) {
-  const body = source.slice(source.indexOf('{'), source.lastIndexOf('}') + 1);
-  return JSON.parse(body);
+  // Only the first object (topicNotes) — the file also declares the
+  // TOPIC_NOTES_ALIASES map, so slicing to the last brace grabs too much.
+  const start = source.indexOf('{');
+  const end = source.indexOf('\n};', start);
+  return JSON.parse(source.slice(start, end + 2));
 }
 
 /* Load the real helpers out of js/learn.js so these checks test what the

@@ -1537,14 +1537,57 @@ const questionSeeds = {
   }
 };
 
+/* ==========================================================================
+   Topic content sourcing
+   ==========================================================================
+   A topic can be served from a shared bucket rather than owning its own
+   array. Two topics drawing on one bucket then hold identical questions,
+   so question ids are filed under the SOURCE name (see TOPIC_SOURCE) —
+   otherwise a learner solves "Swap two variables" under Variables and
+   meets it again, still unsolved, under Data Types.
+   ========================================================================== */
+
+const TOPIC_SOURCE = {
+  'Variables': 'Variables and Data Types',
+  'Data Types': 'Variables and Data Types',
+  'List Comprehension': 'Comprehension',
+  'Comprehensions': 'Comprehension'
+};
+
+/* Buckets no topic was surfacing, merged into the topic that owns the
+   subject so the content becomes reachable. The base bucket is kept FIRST
+   so existing question numbers — and therefore saved progress — stay
+   valid; duplicates across buckets are dropped. */
+function mergeSeedBuckets(baseName, extraNames) {
+  const levels = ['basic', 'intermediate', 'advanced'];
+  const out = { basic: [], intermediate: [], advanced: [] };
+  const seen = new Set();
+  for (const name of [baseName, ...extraNames]) {
+    const bucket = questionSeeds[name];
+    if (!bucket) continue;
+    for (const level of levels) {
+      for (const q of (bucket[level] || [])) {
+        const key = level + '::' + String(q[0]).trim().toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out[level].push(q);
+      }
+    }
+  }
+  return out;
+}
+
+// 60 questions: the original 30 plus the 30 "String Methods" ones.
+questionSeeds['Strings'] = mergeSeedBuckets('Strings', ['String Methods']);
+// 86 questions: for-loops plus the previously unreachable while/nested sets.
+questionSeeds['Loops'] = mergeSeedBuckets('For Loops', ['While Loops', 'Nested Loops']);
+
 questionSeeds['Variables'] = questionSeeds['Variables and Data Types'];
 questionSeeds['Data Types'] = questionSeeds['Variables and Data Types'];
-questionSeeds['Loops'] = questionSeeds['For Loops'];
 questionSeeds['List Comprehension'] = questionSeeds['Comprehension'];
 questionSeeds['Comprehensions'] = questionSeeds['Comprehension'];
 
-
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { topics, questionSeeds };
+  module.exports = { topics, questionSeeds, TOPIC_SOURCE };
 }
 
