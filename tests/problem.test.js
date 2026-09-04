@@ -247,6 +247,23 @@ describe('problem.js - file handles (mock)', () => {
     }
   });
 
+  it('learn notes: minimal code blocks with colorful syntax highlighting', () => {
+    const learn = fs.readFileSync(path.join(__dirname, '../js/learn.js'), 'utf8');
+    assert.match(learn, /^function enhanceCodeBlocks\(container\)/m, 'enhanceCodeBlocks is top-level');
+    assert.match(learn, /className = 'code-snippet' \+ \(isOutput \? ' output-block' : ''\)/, 'single-box wrapper with output variant');
+    assert.match(learn, /hljs\.highlightElement\(code\)/, 'applies highlight.js to code');
+    assert.match(learn, /pre\.closest\('\.code-snippet'\)\) return/, 'idempotent — skips enhanced blocks');
+    assert.doesNotMatch(learn, /code-window-wrapped/, 'old window chrome is gone');
+    const html = fs.readFileSync(path.join(__dirname, '../learn.html'), 'utf8');
+    assert.match(html, /highlight\.js\/11\.9\.0\/highlight\.min\.js/, 'highlight.js 11.9 loaded in learn.html');
+    const css = fs.readFileSync(path.join(__dirname, '../css/app.css'), 'utf8');
+    assert.match(css, /\.prose-notes \.code-snippet \{\s*position: relative/, 'wrapper is a plain relative container (no box of its own)');
+    for (const cls of ['hljs-keyword', 'hljs-string', 'hljs-number', 'hljs-comment', 'hljs-title', 'hljs-built_in', 'hljs-meta', 'hljs-attr']) {
+      assert.match(css, new RegExp('\\.' + cls + '[,\\s{.]'), cls + ' token is coloured');
+    }
+    assert.doesNotMatch(css, /output-header/, 'output header bar CSS removed');
+  });
+
   it('progress page: compact mobile cards — index numbers hidden, arrow in the row', () => {
     const pages = fs.readFileSync(path.join(__dirname, '../js/pages.js'), 'utf8');
     const start = pages.indexOf('function initProgressPage');
