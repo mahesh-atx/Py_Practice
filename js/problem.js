@@ -343,8 +343,14 @@ function initProblemPage() {
   }
   const descEl = document.getElementById('problemDesc');
   if (descEl) descEl.innerHTML = `<span class="kw-prompt">>_</span> ` + highlightDesc(q.description);
+  // Only show the Input block when the question actually has input
   const exInEl = document.getElementById('exampleInput');
-  if (exInEl) exInEl.textContent = q.input ? q.input.replace(/\\n/g, '\n') : '(none)';
+  const exInCell = document.getElementById('exampleInputCell');
+  const exGrid = document.getElementById('sampleIogrid');
+  const hasSampleInput = !!q.input;
+  if (exInCell) exInCell.classList.toggle('hidden', !hasSampleInput);
+  if (exGrid) exGrid.classList.toggle('sm:grid-cols-2', hasSampleInput);
+  if (exInEl) exInEl.textContent = hasSampleInput ? q.input.replace(/\\n/g, '\n') : '';
   const exOutEl = document.getElementById('exampleOutput');
   if (exOutEl) exOutEl.textContent = q.output ? q.output.replace(/\\n/g, '\n') : '(empty)';
 

@@ -129,7 +129,7 @@
         <main
           id="problemWorkspace"
           data-pane="problem"
-          class="flex-1 min-w-0 h-full overflow-hidden grid lg:grid-cols-[.85fr_1.65fr] gap-3 sm:gap-4 p-3 sm:p-4"
+          class="flex-1 min-w-0 h-full overflow-hidden grid grid-rows-1 lg:grid-cols-[.85fr_1.65fr] gap-3 sm:gap-4 p-3 sm:p-4"
         >
           <!-- Left Pane: Problem Statement (Independently Scrollable) -->
           <section
@@ -171,8 +171,9 @@
                   <span>Sample Example</span>
                   <span class="text-[10px] text-muted lowercase">case 1</span>
                 </div>
-                <div class="grid sm:grid-cols-2 text-xs">
+                <div class="grid sm:grid-cols-2 text-xs" id="sampleIogrid">
                   <div
+                    id="exampleInputCell"
                     class="p-3.5 border-b sm:border-b-0 sm:border-r border-line bg-black/[.015]"
                   >
                     <div

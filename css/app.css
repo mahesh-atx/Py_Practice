@@ -708,6 +708,18 @@ img, svg, video, canvas { max-width: 100%; }
     margin-bottom: 18px;
   }
 
+  /* Problem pane fills the whole window on phones (same formula as the
+     editor pane below: 155px = header 68 + pane switcher 55 + workspace
+     padding 12 + bottom room 20). Content scrolls INSIDE the pane; the
+     topic image and Previous/Next buttons stay pinned to its bottom via
+     the flex column (justify-between + shrink-0 in the markup). */
+  #problemWorkspace[data-pane="problem"] #problemPane {
+    height: calc(100dvh - 155px) !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    margin-bottom: 0 !important;
+  }
+
   /* Editor pane keeps an explicit height: the Monaco host is
      absolutely positioned and contributes no intrinsic height.
      155px = header 68 + pane switcher 55 + workspace top padding 12
