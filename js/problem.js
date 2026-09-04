@@ -805,13 +805,22 @@ function initProblemPage() {
       const editorState = document.getElementById('editorState');
       if (testSummary) testSummary.textContent = 'Error';
       if (editorState) editorState.textContent = 'Error';
-      appendTerminal(err.message || 'Execution error occurred.', 'stderr');
+      const errMsg = err.message || 'Execution error occurred.';
+      appendTerminal(errMsg, 'stderr');
       const customOutputPanel = document.getElementById('customOutputPanel');
       if (customOutputPanel && document.getElementById('customInputToggle')?.checked) {
         customOutputPanel.classList.remove('hidden');
-        customOutputPanel.innerHTML = `<pre class="m-0 p-2.5 rounded-md bg-red-950/15 border border-red-500/20 text-red-300/90 font-mono text-[11px] leading-5 whitespace-pre-wrap break-words">${escapeHtml(err.message || String(err))}</pre>`;
+        customOutputPanel.innerHTML = `<pre class="m-0 p-2.5 rounded-md bg-red-950/15 border border-red-500/20 text-red-300/90 font-mono text-[11px] leading-5 whitespace-pre-wrap break-words">${escapeHtml(errMsg)}</pre>`;
       }
-      toast('Execution error.');
+      // Surface the ACTUAL reason — load failures (CDN/network) usually
+      // just need a reload, so say so explicitly.
+      const isLoadFailure = /failed to load|timed out|worker error|initializ/i.test(errMsg);
+      toast(
+        isLoadFailure
+          ? `Execution error: ${errMsg} — reload the page and try again.`
+          : `Execution error: ${errMsg}`,
+        6000
+      );
     } finally {
       if (runBtn) { runBtn.disabled = false; runBtn.style.opacity = ''; }
       if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; }
