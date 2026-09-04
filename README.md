@@ -38,4 +38,4 @@ npm run build:notes   # recompile js/topic-notes-data.js from notes/*.md
 
 Simply open `index.html` in any modern web browser. For the best development experience with Web Workers, serve the directory via any local HTTP server (e.g. `npx serve`, `python -m http.server`, or VS Code Live Server).
 
-**Note for `npx serve`:** the repo includes a `serve.json` with `"cleanUrls": false`. Keep it — `serve`'s clean-URL rewriting 301-redirects `/problem.html?topic=…&q=N` to `/problem` and **drops the query string**, which makes every question link open Question 1. (The app also has a click-time fallback for this, but the config makes URLs behave normally.)
+**Note for `npx serve`:** the repo includes a `serve.json` — keep it. It does two things `serve` breaks by itself: (1) `cleanUrls: false` stops the 301 rewrite of `/problem.html?topic=…&q=N` → `/problem` that **drops the query string** (which made every question link open Question 1), and (2) a `/` → `/index.html` rewrite, because with clean URLs off `serve` shows a directory listing at the root instead of the landing page.
