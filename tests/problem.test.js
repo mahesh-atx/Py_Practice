@@ -233,4 +233,17 @@ describe('problem.js - file handles (mock)', () => {
     assert.ok(resetIdx > toolbarIdx && resetIdx < submitIdx,
       'resetBtn should sit inside the toolbar, before the Run/Submit group');
   });
+
+  it('login/signup: mobile-only full-screen card with no page scroll', () => {
+    for (const page of ['login.html', 'signup.html']) {
+      const html = fs.readFileSync(path.join(__dirname, '..', page), 'utf8');
+      assert.match(html, /@media \(max-width: 767px\)/, page + ': mobile-only rule block');
+      assert.match(html, /overflow: hidden !important/, page + ': page scroll disabled on mobile');
+      assert.match(html, /height: 100dvh !important/, page + ': dynamic viewport height');
+      assert.match(html, /body > main[\s\S]{0,300}?max-width: none !important/, page + ': card is full-width on mobile');
+      assert.match(html, /border-radius: 0 !important/, page + ': card corners removed on mobile');
+      assert.match(html, /#leftIllustrationPane \{ height: 240px !important; \}/, page + ': illustration shrinks on mobile');
+      assert.match(html, /#rightFormPane[\s\S]{0,400}?overflow-y: auto !important/, page + ': form area absorbs remaining height');
+    }
+  });
 });

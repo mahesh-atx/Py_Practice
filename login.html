@@ -59,6 +59,42 @@
         height: 100% !important;
       }
       @media (min-width: 768px) { body { overflow: hidden !important; } }
+      /* Mobile only: the card becomes the full screen with no page scroll —
+         the illustration shrinks and the form area takes the rest (it scrolls
+         internally only on very short screens, so nothing ever gets cut off). */
+      @media (max-width: 767px) {
+        html, body {
+          overflow: hidden !important;
+          height: 100vh !important;
+          height: 100dvh !important;
+          min-height: 100vh !important;
+          min-height: 100dvh !important;
+          padding: 0 !important;
+        }
+        body > main {
+          width: 100vw !important;
+          max-width: none !important;
+          height: 100vh !important;
+          height: 100dvh !important;
+          margin: 0 !important;
+          border: 0 !important;
+          border-radius: 0 !important;
+          box-shadow: none !important;
+        }
+        #leftIllustrationPane { height: 240px !important; }
+        #rightFormPane {
+          flex: 1 1 auto !important;
+          height: auto !important;
+          min-height: 0 !important;
+          overflow-y: auto !important;
+          -webkit-overflow-scrolling: touch;
+          justify-content: flex-start !important;
+        }
+        #rightFormPane > div {
+          margin-top: auto !important;
+          margin-bottom: auto !important;
+        }
+      }
       .no-scrollbar::-webkit-scrollbar { display: none !important; width: 0 !important; height: 0 !important; }
       .no-scrollbar { -ms-overflow-style: none !important; scrollbar-width: none !important; }
       .underline-input {
