@@ -51,10 +51,18 @@ describe('problem.js - ID and DOM contract', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
     // Transient "Running…" messages are toasts now
     assert.match(p, /toast\(mode === 'submit' \? 'Running all test cases…' : 'Running sample…'\)/);
-    // The toolbar keeps the persistent Python state (loading/ready/error),
-    // which runner.js owns — problem.js must not touch those elements.
+    // The toolbar only shows the file label now — runner.js owns the
+    // Python status (as toasts) and problem.js must not touch it.
     assert.doesNotMatch(p, /runnerStatus/);
     assert.doesNotMatch(p, /pyodideStatus/);
+  });
+
+  it('pyodide lifecycle status is toasted, not written to the toolbar', () => {
+    const p = fs.readFileSync(path.join(__dirname, '../js/runner.js'), 'utf8');
+    assert.match(p, /toast\('Python loading…'\)/);
+    assert.match(p, /toast\('Python ready'\)/);
+    assert.match(p, /toast\('Python error'\)/);
+    assert.doesNotMatch(p, /getElementById\('pyodideStatus'\)/);
   });
 
   it('should have robust result mapping (actual/stdout, expected/output)', () => {
@@ -142,7 +150,8 @@ describe('problem.js - file handles (mock)', () => {
     assert.match(html, /id="customInputToggle"/);
     assert.match(html, /id="testCaseTabsContainer"/);
     assert.match(html, /id="selectedTestCaseDetail"/);
-    assert.match(html, /id="pyodideStatus"/);
+    // Lifecycle status moved to toasts — no status element in the toolbar
+    assert.doesNotMatch(html, /id="pyodideStatus"/);
     assert.match(html, /id="runBtn"/);
     assert.match(html, /id="submitBtn"/);
     assert.match(html, /id="resultPanel"/);
