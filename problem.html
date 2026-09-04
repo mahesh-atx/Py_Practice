@@ -138,8 +138,9 @@
           >
             <div>
               <div>
-                <!-- Breadcrumb — home icon only; level crumb shows the actual level -->
-                <nav id="problemBreadcrumb" class="flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3" aria-label="Breadcrumb">
+                <!-- Breadcrumb — hidden on mobile, shown from sm (640px) up;
+                     home icon only; level crumb shows the actual level -->
+                <nav id="problemBreadcrumb" class="hidden sm:flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3" aria-label="Breadcrumb">
                   <a href="index.html" aria-label="Home" class="shrink-0 grid place-items-center hover:text-ink transition"><i class="fa-solid fa-house text-[11px]"></i></a>
                   <span class="opacity-40 shrink-0">/</span>
                   <a href="topics.html" class="hidden sm:inline whitespace-nowrap hover:text-ink transition">Practice</a>
