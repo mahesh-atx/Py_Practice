@@ -37,3 +37,5 @@ npm run build:notes   # recompile js/topic-notes-data.js from notes/*.md
 ## How to Run
 
 Simply open `index.html` in any modern web browser. For the best development experience with Web Workers, serve the directory via any local HTTP server (e.g. `npx serve`, `python -m http.server`, or VS Code Live Server).
+
+**Note for `npx serve`:** the repo includes a `serve.json` with `"cleanUrls": false`. Keep it — `serve`'s clean-URL rewriting 301-redirects `/problem.html?topic=…&q=N` to `/problem` and **drops the query string**, which makes every question link open Question 1. (The app also has a click-time fallback for this, but the config makes URLs behave normally.)
