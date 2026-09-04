@@ -336,8 +336,9 @@ function initProblemPage() {
   if (titleEl) {
     // The actual question number is part of the heading now (the separate
     // "# Question N" line was removed) so it always matches this problem.
+    // Kept minimal: a small quiet mono label, no box.
     titleEl.innerHTML =
-      `<span class="font-mono text-[13px] sm:text-sm font-semibold tracking-[.08em] text-[var(--green)] bg-[var(--green-soft)] border border-[var(--green)]/25 rounded-md px-2 py-1 shrink-0">Q${q.number}</span>` +
+      `<span class="font-mono text-[11px] sm:text-xs font-medium tracking-[.14em] text-muted opacity-70 shrink-0">Q${q.number}</span>` +
       `<span>${escapeHtml(q.title)}</span>`;
   }
   const descEl = document.getElementById('problemDesc');
