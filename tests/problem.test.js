@@ -158,6 +158,21 @@ describe('problem.js - file handles (mock)', () => {
     assert.match(html, /id="explanationPanel"/);
   });
 
+  it('level selection is respected: cards link at filtered level, tabs switch in place', () => {
+    const pages = fs.readFileSync(path.join(__dirname, '../js/pages.js'), 'utf8');
+    // Directory cards must open at the selected level filter (basic for "All levels"),
+    // not a hardcoded basic — that was the "clicking intermediate stays on basic" bug.
+    assert.match(pages, /const linkLevel = level !== 'all' \? level : 'basic';/);
+    assert.match(pages, /practice\.html\?topic=\$\{encodeURIComponent\(t\.name\)\}&level=\$\{linkLevel\}/);
+    // Practice topic-view tabs switch in place (no full reload), URL stays shareable via pushState.
+    assert.match(pages, /history\.pushState\(\{ practiceLevel: lvl \}/);
+    assert.match(pages, /levels\.includes\(a\.dataset\.level\)/);
+    // Invalid level in URL falls back to basic instead of crashing.
+    assert.match(pages, /levels\.includes\(params\.get\('level'\)\) \? params\.get\('level'\) : 'basic'/);
+    // Back/forward re-syncs level from the URL.
+    assert.match(pages, /addEventListener\('popstate'/);
+  });
+
   it('question links hand off their target for query-string-dropping environments', () => {
     const core = fs.readFileSync(path.join(__dirname, '../js/core.js'), 'utf8');
     const app = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8');
