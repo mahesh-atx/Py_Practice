@@ -47,12 +47,14 @@ describe('problem.js - ID and DOM contract', () => {
     assert.match(p, /if \(isCustom\)[\s\S]*?return;/);
   });
 
-  it('should handle runnerStatus alias to pyodideStatus', () => {
+  it('run feedback goes to the toast, not the toolbar status', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
-    assert.match(p, /pyodideStatus/);
-    assert.match(p, /runnerStatus/);
-    // Should fallback: getElementById('runnerStatus') || getElementById('pyodideStatus')
-    assert.match(p, /runnerStatus.*\|\|.*pyodideStatus|pyodideStatus.*\|\|.*runnerStatus/);
+    // Transient "Running…" messages are toasts now
+    assert.match(p, /toast\(mode === 'submit' \? 'Running all test cases…' : 'Running sample…'\)/);
+    // The toolbar keeps the persistent Python state (loading/ready/error),
+    // which runner.js owns — problem.js must not touch those elements.
+    assert.doesNotMatch(p, /runnerStatus/);
+    assert.doesNotMatch(p, /pyodideStatus/);
   });
 
   it('should have robust result mapping (actual/stdout, expected/output)', () => {
@@ -145,5 +147,17 @@ describe('problem.js - file handles (mock)', () => {
     assert.match(html, /id="submitBtn"/);
     assert.match(html, /id="resultPanel"/);
     assert.match(html, /id="explanationPanel"/);
+  });
+
+  it('reset button lives in the editor toolbar next to Run/Submit', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../problem.html'), 'utf8');
+    const toolbarIdx = html.indexOf('id="editorToolbar"');
+    const resetIdx = html.indexOf('id="resetBtn"');
+    const submitIdx = html.indexOf('id="submitBtn"');
+    assert.notEqual(toolbarIdx, -1, 'editorToolbar exists');
+    assert.notEqual(resetIdx, -1, 'resetBtn exists');
+    assert.notEqual(submitIdx, -1, 'submitBtn exists');
+    assert.ok(resetIdx > toolbarIdx && resetIdx < submitIdx,
+      'resetBtn should sit inside the toolbar, before the Run/Submit group');
   });
 });

@@ -554,12 +554,11 @@ function initProblemPage() {
     const customInputToggle = document.getElementById('customInputToggle');
     const customInputEl = document.getElementById('customInputText');
     const customOutputPanel = document.getElementById('customOutputPanel');
-    const pyodideStatus = document.getElementById('pyodideStatus');
-    const runnerStatus = document.getElementById('runnerStatus') || pyodideStatus;
-
     if (runBtn) { runBtn.disabled = true; runBtn.style.opacity = '0.6'; }
     if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; }
-    if (runnerStatus) runnerStatus.textContent = mode === 'submit' ? 'Running all test cases…' : 'Running sample…';
+    // Transient run feedback goes to the toast — the toolbar keeps the
+    // persistent Python state (loading / ready / error) untouched.
+    toast(mode === 'submit' ? 'Running all test cases…' : 'Running sample…');
     if (testSummary) testSummary.textContent = 'Executing…';
     if (editorState) editorState.textContent = 'Running';
 
@@ -816,8 +815,6 @@ function initProblemPage() {
     } finally {
       if (runBtn) { runBtn.disabled = false; runBtn.style.opacity = ''; }
       if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; }
-      const runnerStatus2 = document.getElementById('runnerStatus') || document.getElementById('pyodideStatus');
-      if (runnerStatus2 && runnerStatus2.id === 'runnerStatus') runnerStatus2.textContent = '';
     }
   }
 
