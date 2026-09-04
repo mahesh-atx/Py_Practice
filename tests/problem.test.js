@@ -233,4 +233,24 @@ describe('problem.js - file handles (mock)', () => {
     assert.ok(resetIdx > toolbarIdx && resetIdx < submitIdx,
       'resetBtn should sit inside the toolbar, before the Run/Submit group');
   });
+
+  it('learn page: mobile topic drawer wiring (toggle, close, backdrop, drawer CSS)', () => {
+    const html = fs.readFileSync(path.join(__dirname, '../learn.html'), 'utf8');
+    assert.match(html, /id="learnTopicSidebar"/, 'sidebar has id for drawer CSS');
+    assert.match(html, /id="learnTopicsToggle"/, 'mobile toggle bar exists');
+    assert.match(html, /id="learnTopicsToggleLabel"/, 'toggle bar shows active topic');
+    assert.match(html, /id="learnTopicsClose"/, 'drawer has a close button');
+    assert.match(html, /id="learnDrawerBackdrop"/, 'backdrop exists');
+    assert.match(html, /class="lg:hidden sticky top-\[76px\] z-40 w-full/, 'toggle bar is mobile-only');
+    assert.match(html, /id="learnTopicsClose"[\s\S]{0,400}?class="[^"]*lg:hidden/, 'close button is mobile-only');
+    const js = fs.readFileSync(path.join(__dirname, '../js/learn.js'), 'utf8');
+    assert.match(js, /function setLearnDrawer\(open\)/, 'setLearnDrawer present');
+    assert.match(js, /max-width: 1023px/, 'mobile media query used in JS');
+    assert.match(js, /function syncToggleLabel\(\)/, 'bar label tracks active topic');
+    assert.match(js, /setTimeout\(\(\) => setLearnDrawer\(false\), 250\)/, 'drawer auto-closes after topic pick');
+    const css = fs.readFileSync(path.join(__dirname, '../css/app.css'), 'utf8');
+    assert.match(css, /@media \(max-width: 1023px\)/, 'drawer CSS scoped to mobile');
+    assert.match(css, /#learnTopicSidebar\.open/, 'open-state styles present');
+    assert.match(css, /#learnDrawerBackdrop/, 'backdrop styled');
+  });
 });
