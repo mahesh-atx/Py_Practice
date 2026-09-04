@@ -303,9 +303,27 @@ function initProblemPage() {
   initWorkspacePaneSwitcher();
 
   const params = new URLSearchParams(location.search);
-  const topic = params.get('topic') || topics[0].name;
-  const level = params.get('level') || 'basic';
-  const index = Math.max(0, Number(params.get('q') || 0));
+  let topic = params.get('topic') || topics[0].name;
+  let level = params.get('level') || 'basic';
+  let index = Math.max(0, Number(params.get('q')) || 0);
+
+  // Safety net: some environments drop the query string on navigation, so
+  // the page would otherwise always open Question 1. When the URL cannot
+  // identify the question, restore the one saved at link-click time.
+  const qsProbe = questionsFor(topic, level);
+  const urlIdentifiesQuestion = params.get('topic') !== null && params.get('q') !== null && !!qsProbe[index];
+  if (!urlIdentifiesQuestion && typeof takeNavTarget === 'function') {
+    const nav = takeNavTarget();
+    if (nav) {
+      const navQs = questionsFor(nav.topic, nav.level);
+      if (navQs[nav.index]) {
+        topic = nav.topic;
+        level = nav.level;
+        index = nav.index;
+        console.warn('[PyPractice] Query string missing — restored question from click handoff:', navQs[nav.index].title);
+      }
+    }
+  }
 
   const qs = questionsFor(topic, level);
   const q = qs[index] || qs[0];

@@ -512,6 +512,33 @@ function rememberQuestion(q) {
   localStorage.setItem(lastQuestionKey, JSON.stringify({ topic: q.topic, level: q.level, index: q.number - 1, id: q.id }));
 }
 
+/* Question deep-link handoff.
+   Some environments (WebView/PWA wrappers, certain mobile browsers) drop
+   the query string when navigating, so problem.html?topic=…&level=…&q=N
+   arrives as bare problem.html and silently opens Question 1. When a
+   question link is clicked, the intended question is stashed here; the
+   problem page consumes it when the URL fails to identify the question. */
+const navTargetKey = 'pypractice-nav-target-v1';
+function rememberNavTarget(q) {
+  try {
+    sessionStorage.setItem(navTargetKey, JSON.stringify({ topic: q.topic, level: q.level, index: q.number - 1, id: q.id, at: Date.now() }));
+  } catch {}
+}
+function takeNavTarget() {
+  try {
+    const raw = sessionStorage.getItem(navTargetKey);
+    if (!raw) return null;
+    sessionStorage.removeItem(navTargetKey);
+    const t = JSON.parse(raw);
+    // Ignore stale handoffs (user clicked 10 minutes ago, then opened a
+    // fresh tab) — only same-tab, same-moment clicks should apply.
+    if (!t || typeof t.at !== 'number' || Date.now() - t.at > 60000) return null;
+    return t;
+  } catch {
+    return null;
+  }
+}
+
 function getLastQuestion() {
   try { return JSON.parse(localStorage.getItem(lastQuestionKey) || 'null'); } catch { return null; }
 }

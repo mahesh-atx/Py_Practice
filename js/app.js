@@ -10,6 +10,26 @@ if (typeof renderHeaderProgress === 'function') renderHeaderProgress();
 // Fill every <span data-total-topics|data-total-questions> from the data.
 if (typeof syncDerivedCounts === 'function') syncDerivedCounts();
 
+/* Question deep-link handoff (see rememberNavTarget in core.js):
+   stash the intended question when ANY problem.html link is clicked
+   (practice list, banner Next/Back, bottom Previous/Next, continue card).
+   If the environment drops the query string on navigation, the problem
+   page restores the question from this handoff instead of opening Q1. */
+if (typeof rememberNavTarget === 'function' && typeof questionsFor === 'function') {
+  document.addEventListener('click', (e) => {
+    const a = e.target && e.target.closest ? e.target.closest('a[href*="problem.html"]') : null;
+    if (!a) return;
+    try {
+      const u = new URL(a.href, location.href);
+      const t = u.searchParams.get('topic');
+      const l = u.searchParams.get('level');
+      const i = Math.max(0, Number(u.searchParams.get('q')) || 0);
+      const target = questionsFor(t, l)[i];
+      if (target) rememberNavTarget(target);
+    } catch {}
+  }, true);
+}
+
 /* --------------------------------------------------------------
    Motion & Micro-interactions Orchestrator v2
    -------------------------------------------------------------- */

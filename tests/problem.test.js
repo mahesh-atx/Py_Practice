@@ -158,6 +158,17 @@ describe('problem.js - file handles (mock)', () => {
     assert.match(html, /id="explanationPanel"/);
   });
 
+  it('question links hand off their target for query-string-dropping environments', () => {
+    const core = fs.readFileSync(path.join(__dirname, '../js/core.js'), 'utf8');
+    const app = fs.readFileSync(path.join(__dirname, '../js/app.js'), 'utf8');
+    const prob = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
+    assert.match(core, /function rememberNavTarget/);
+    assert.match(core, /function takeNavTarget/);
+    assert.match(app, /a\[href\*="problem\.html"\]/);
+    assert.match(app, /rememberNavTarget\(target\)/);
+    assert.match(prob, /takeNavTarget\(\)/);
+  });
+
   it('reset button lives in the editor toolbar next to Run/Submit', () => {
     const html = fs.readFileSync(path.join(__dirname, '../problem.html'), 'utf8');
     const toolbarIdx = html.indexOf('id="editorToolbar"');
