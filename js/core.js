@@ -314,6 +314,13 @@ function toast(msg, durationMs) {
 }
 
 function setupHeader() {
+  // Mobile back chevron (replaces the logo on the problem page)
+  document.querySelectorAll('[data-mobile-back]').forEach(b => {
+    b.addEventListener('click', () => {
+      if (history.length > 1) history.back();
+      else location.replace('topics.html');
+    });
+  });
   document.querySelectorAll('[data-theme-toggle]').forEach(b => {
     b.addEventListener('click', () => {
       const isDark = document.body.classList.contains('theme-dark');

@@ -33,8 +33,17 @@
       <header class="paper sticky top-0 z-50 border-b border-line shrink-0">
         <div class="app-max h-[68px] flex items-center justify-between gap-2">
           <div class="flex items-center gap-3 min-w-0">
-            <a href="index.html" class="text-[19px] sm:text-[27px] tracking-[-.05em] font-medium mr-0 sm:mr-2 inline-flex items-center gap-2 sm:gap-2.5 shrink-0"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span><span class="hidden sm:inline"> PyPractice</span></a>
-
+            <!-- Mobile only: back chevron replaces the logo -->
+            <button
+              data-mobile-back
+              type="button"
+              class="sm:hidden h-8 w-8 rounded-[10px] border border-line btn-ghost grid place-items-center text-ink shrink-0"
+              aria-label="Go back"
+              title="Go back"
+            >
+              <span class="text-lg font-semibold leading-none">&lt;</span>
+            </button>
+            <a href="index.html" class="hidden sm:inline-flex text-[27px] tracking-[-.05em] font-medium mr-0 sm:mr-2 items-center gap-2.5 shrink-0"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
           </div>
           <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
             <div data-auth-only class="hidden md:inline-flex items-center gap-2">
@@ -200,8 +209,8 @@
               ></div>
             </div>
 
-            <!-- Animated Banner above navigation -->
-            <div class="mt-5 mb-2 rounded-[14px] overflow-hidden border border-line shadow-sm shrink-0">
+            <!-- Animated Banner — pushed as low as possible, flush above the nav buttons -->
+            <div class="mt-5 mb-1.5 rounded-[14px] overflow-hidden border border-line shadow-sm shrink-0">
               <img
                 src="assets/29_asset.gif"
                 alt="Python Practice"
@@ -210,7 +219,7 @@
               />
             </div>
 
-            <div class="pt-4 border-t border-line shrink-0 flex gap-3">
+            <div class="shrink-0 flex gap-3">
               <a
                 id="prevQuestionBtn"
                 class="flex-1 btn-ghost py-3 text-xs font-medium rounded-[12px] inline-flex items-center justify-center gap-2 text-center"
