@@ -757,22 +757,20 @@ function initProblemPage() {
           const nextQuestion = hasNextQuestion ? qs[index + 1] : null;
 
           if (resultPanel) resultPanel.innerHTML = `
-            <div class="pop-in bg-[#051108] border-y border-[#1a381c] px-4 py-2 flex items-center justify-between font-mono shadow-sm">
-              <div class="flex items-center gap-2.5">
+            <div class="pop-in bg-[#051108] border-y border-[#1a381c] px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 font-mono shadow-sm">
+              <div class="flex items-center gap-2 min-w-0">
                 <svg class="text-[#7CB342] w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                <div>
-                  <span class="text-[#7CB342] font-bold text-xs tracking-wide">Accepted · All ${results.length} Test Cases Passed!</span>
-                  ${wasAlreadySolved ? '<span class="text-white/40 text-[11px] ml-2">(Already completed)</span>' : '<span class="text-emerald-400 text-[11px] ml-2">(+1 Solved!)</span>'}
-                </div>
+                <span class="text-[#7CB342] font-bold text-xs tracking-wide whitespace-nowrap">Accepted</span>
+                <span class="text-emerald-300/70 text-[11px] truncate">${results.length}/${results.length} passed${wasAlreadySolved ? ' · already completed' : ' · +1 solved'}</span>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex shrink-0">
                 ${hasNextQuestion ? `
-                  <a href="${questionUrl(nextQuestion)}" class="bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors inline-flex items-center gap-1">
+                  <a href="${questionUrl(nextQuestion)}" class="w-full sm:w-auto bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-2 rounded-[3px] transition-colors inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <span>Next Question</span>
                     <span>→</span>
                   </a>
                 ` : `
-                  <a href="practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}" class="bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors inline-flex items-center gap-1">
+                  <a href="practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}" class="w-full sm:w-auto bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-2 rounded-[3px] transition-colors inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <span>Back to Topics</span>
                     <span>✓</span>
                   </a>
@@ -787,12 +785,10 @@ function initProblemPage() {
           if (editorState) editorState.textContent = 'Wrong Answer';
           
           if (resultPanel) resultPanel.innerHTML = `
-            <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center justify-between font-mono">
-              <div class="flex items-center gap-2 text-red-400 text-xs font-semibold">
-                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                <span>Wrong Answer · Failed ${failedCount} of ${results.length} test cases.</span>
-              </div>
-              <span class="text-white/40 text-[11px]">Inspect failed test cases below.</span>
+            <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-3 sm:px-4 py-2 flex items-center gap-2 font-mono">
+              <svg class="w-4 h-4 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              <span class="text-red-400 text-xs font-semibold whitespace-nowrap">Wrong Answer · Failed ${failedCount} of ${results.length} test cases.</span>
+              <span class="hidden sm:inline text-white/40 text-[11px] ml-auto whitespace-nowrap">Inspect failed test cases below.</span>
             </div>
           `;
         }
