@@ -139,14 +139,14 @@
             <div>
               <div>
                 <!-- Breadcrumb -->
-                <nav id="problemBreadcrumb" class="flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3">
-                  <a href="index.html" class="flex items-center gap-1 hover:text-ink transition"><i class="fa-solid fa-house text-[10px]"></i> Home</a>
-                  <span class="opacity-40">/</span>
-                  <a href="topics.html" class="hover:text-ink transition">Practice</a>
-                  <span class="opacity-40">/</span>
-                  <a id="problemBreadcrumbTopic" href="#" class="hover:text-ink transition">Topic</a>
-                  <span class="opacity-40">/</span>
-                  <span id="problemBreadcrumbTitle" class="text-[var(--green)] font-semibold truncate max-w-[140px]">Problem</span>
+                <nav id="problemBreadcrumb" class="flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3" aria-label="Breadcrumb">
+                  <a href="index.html" class="hidden sm:flex items-center gap-1 whitespace-nowrap hover:text-ink transition"><i class="fa-solid fa-house text-[10px]"></i> Home</a>
+                  <span class="hidden sm:inline opacity-40 shrink-0">/</span>
+                  <a href="topics.html" class="hidden sm:inline whitespace-nowrap hover:text-ink transition">Practice</a>
+                  <span class="hidden sm:inline opacity-40 shrink-0">/</span>
+                  <a id="problemBreadcrumbTopic" href="#" class="min-w-0 max-w-[34vw] sm:max-w-[180px] truncate hover:text-ink transition">Topic</a>
+                  <span class="opacity-40 shrink-0">/</span>
+                  <span id="problemBreadcrumbTitle" class="text-[var(--green)] font-semibold min-w-0 max-w-[46vw] sm:max-w-[240px] truncate">Problem</span>
                 </nav>
                 <div
                   id="problemNumber"
