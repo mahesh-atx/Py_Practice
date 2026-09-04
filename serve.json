@@ -1,6 +1,18 @@
 {
   "cleanUrls": false,
   "rewrites": [
-    { "source": "/", "destination": "/index.html" }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/index", "destination": "/index.html" },
+    { "source": "/guide", "destination": "/guide.html" },
+    { "source": "/learn", "destination": "/learn.html" },
+    { "source": "/login", "destination": "/login.html" },
+    { "source": "/practice", "destination": "/practice.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/problem", "destination": "/problem.html" },
+    { "source": "/profile", "destination": "/profile.html" },
+    { "source": "/progress", "destination": "/progress.html" },
+    { "source": "/signup", "destination": "/signup.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/topics", "destination": "/topics.html" }
   ]
 }
