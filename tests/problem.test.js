@@ -171,6 +171,31 @@ describe('problem.js - file handles (mock)', () => {
     }
   });
 
+  it('practice page: no "across this topic" wording; topics page has no reset-progress button', () => {
+    const pages = fs.readFileSync(path.join(__dirname, '../js/pages.js'), 'utf8');
+    assert.doesNotMatch(pages, /across this topic/);
+    const topics = fs.readFileSync(path.join(__dirname, '../topics.html'), 'utf8');
+    assert.doesNotMatch(topics, /data-reset-progress/);
+    // Reset stays available on the profile page
+    const profile = fs.readFileSync(path.join(__dirname, '../profile.html'), 'utf8');
+    assert.match(profile, /data-reset-progress/);
+  });
+
+  it('problem page switches questions in place with a transition (no full reload)', () => {
+    const prob = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
+    assert.match(prob, /function renderQuestion\(\)/);
+    assert.match(prob, /function switchQuestion\(targetIndex\)/);
+    assert.match(prob, /history\.pushState\(\{ problem:/);
+    assert.match(prob, /direction === 'next' \? 'q-out-next' : 'q-out-prev'/);
+    assert.match(prob, /addEventListener\('popstate'/);
+    // The Accepted banner's Next Question switches in place
+    assert.match(prob, /switchQuestion\(index \+ 1\)/);
+    const css = fs.readFileSync(path.join(__dirname, '../css/app.css'), 'utf8');
+    assert.match(css, /\.q-out-next \{ opacity: 0; transform: translateX\(-16px\); \}/);
+    const html = fs.readFileSync(path.join(__dirname, '../problem.html'), 'utf8');
+    assert.match(html, /id="problemStatement"/);
+  });
+
   it('level selection is respected: cards link at filtered level, tabs switch in place', () => {
     const pages = fs.readFileSync(path.join(__dirname, '../js/pages.js'), 'utf8');
     // Directory cards must open at the selected level filter (basic for "All levels"),

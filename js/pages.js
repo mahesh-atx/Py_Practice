@@ -255,7 +255,7 @@ function initPracticePage() {
       a.classList.toggle('font-medium', a.dataset.level === lvl);
     });
     const progEl = document.getElementById('practiceProgress');
-    if (progEl) progEl.innerHTML = `<i class="fa-solid fa-chart-pie text-[11px] opacity-60"></i> ${topicProgress(state.topic).pct}% complete across this topic`;
+    if (progEl) progEl.innerHTML = `<i class="fa-solid fa-chart-pie text-[11px] opacity-60"></i> ${topicProgress(state.topic).pct}% complete`;
 
     const listEl = document.getElementById('practiceQuestionList');
     if (!listEl) return;
