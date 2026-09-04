@@ -122,25 +122,8 @@
 
       <!-- Main Learning Shell -->
       <div id="learnPage" class="flex-1 flex flex-col lg:flex-row lg:items-start min-h-0 app-max w-full">
-        <!-- Mobile only: opens the topic list as a slide-in drawer (below lg
-             the aside IS the drawer, so this bar replaces its always-visible
-             stack and the notes start at the top of the page). -->
-        <button
-          id="learnTopicsToggle"
-          type="button"
-          class="lg:hidden sticky top-[76px] z-40 w-full paper border-b border-line flex items-center gap-3 px-5 py-3"
-          aria-label="Open topic list"
-        >
-          <span class="h-9 w-9 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[13px] shrink-0"><i class="fa-solid fa-book-bookmark"></i></span>
-          <span class="flex-1 min-w-0 text-left">
-            <span class="block text-[9px] uppercase tracking-[.18em] text-muted font-mono font-semibold">Knowledge Base</span>
-            <span id="learnTopicsToggleLabel" class="block text-sm font-semibold text-ink truncate">Topics</span>
-          </span>
-          <i class="fa-solid fa-chevron-down text-muted text-[11px] shrink-0"></i>
-        </button>
-
-        <!-- Left Sidebar: Topic Selector (Sticky on Desktop, slide-in drawer on Mobile) -->
-        <aside id="learnTopicSidebar" class="w-full lg:w-[clamp(320px,28vw,380px)] shrink-0 border-b lg:border-b-0 lg:border-r border-line py-6 lg:py-8 lg:pr-7 flex flex-col lg:sticky lg:top-[76px] lg:h-[calc(100vh-76px)] lg:overflow-hidden lg:self-start">
+        <!-- Left Sidebar: Topic Selector (Sticky on Desktop) -->
+        <aside class="w-full lg:w-[clamp(320px,28vw,380px)] shrink-0 border-b lg:border-b-0 lg:border-r border-line py-6 lg:py-8 lg:pr-7 flex flex-col lg:sticky lg:top-[76px] lg:h-[calc(100vh-76px)] lg:overflow-hidden lg:self-start">
           <div class="flex items-center justify-between gap-3 mb-4 shrink-0">
             <div>
               <div class="text-[10px] uppercase tracking-[.2em] text-muted font-mono font-semibold flex items-center gap-1.5">
@@ -150,19 +133,9 @@
                 Knowledge Base
               </h1>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
-              <span id="learnProgressBadge" class="inline-flex items-center gap-1.5 text-[11px] font-mono font-medium bg-[var(--soft)] border border-line px-2.5 py-1 rounded-full text-muted shrink-0">
-                <i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> 0/18 started
-              </span>
-              <button
-                id="learnTopicsClose"
-                type="button"
-                class="lg:hidden h-8 w-8 rounded-[10px] border border-line btn-ghost grid place-items-center text-muted shrink-0"
-                aria-label="Close topic list"
-              >
-                <i class="fa-solid fa-xmark text-[13px]"></i>
-              </button>
-            </div>
+            <span id="learnProgressBadge" class="inline-flex items-center gap-1.5 text-[11px] font-mono font-medium bg-[var(--soft)] border border-line px-2.5 py-1 rounded-full text-muted shrink-0">
+              <i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> 0/18 started
+            </span>
           </div>
 
           <!-- Search Filter -->
@@ -195,9 +168,6 @@
     </div>
 
     <div id="toast" class="toast"></div>
-
-    <!-- Learn page: backdrop for the mobile topic drawer -->
-    <div id="learnDrawerBackdrop" class="hidden"></div>
 
     <script src="js/topics-data.js"></script>
     <script src="js/topic-notes-data.js"></script>

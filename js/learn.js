@@ -88,54 +88,6 @@ function initLearnPage() {
   const clearSearchBtn = document.getElementById('learnSearchClear');
   const progressBadgeEl = document.getElementById('learnProgressBadge');
 
-  /* Mobile topic drawer: below lg the sidebar lives off-canvas and the
-     toggle bar opens it as a slide-in panel (see #learnTopicSidebar in CSS). */
-  const drawerEl = document.getElementById('learnTopicSidebar');
-  const backdropEl = document.getElementById('learnDrawerBackdrop');
-  const toggleBtn = document.getElementById('learnTopicsToggle');
-  const closeBtn = document.getElementById('learnTopicsClose');
-  const toggleLabel = document.getElementById('learnTopicsToggleLabel');
-  const learnMobile = () => window.matchMedia('(max-width: 1023px)').matches;
-
-  function setLearnDrawer(open) {
-    if (!drawerEl) return;
-    drawerEl.classList.toggle('open', open);
-    try {
-      // Keep the off-canvas topic buttons out of the tab order — but only
-      // while it actually is off-canvas (desktop keeps it in normal flow).
-      const mobile = learnMobile();
-      if (mobile && !open) drawerEl.setAttribute('inert', '');
-      else drawerEl.removeAttribute('inert');
-    } catch (e) {}
-    if (backdropEl) backdropEl.classList.toggle('hidden', !open);
-    try { document.body.style.overflow = open ? 'hidden' : ''; } catch (e) {}
-  }
-
-  function syncToggleLabel() {
-    if (toggleLabel) toggleLabel.textContent = activeTopicName;
-  }
-
-  // Start closed + inert on phones; on desktop the sidebar is in normal flow.
-  try { if (drawerEl && learnMobile()) drawerEl.setAttribute('inert', ''); } catch (e) {}
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      if (!learnMobile()) return;
-      setLearnDrawer(!drawerEl.classList.contains('open'));
-    });
-  }
-  if (closeBtn) closeBtn.addEventListener('click', () => setLearnDrawer(false));
-  if (backdropEl) backdropEl.addEventListener('click', () => setLearnDrawer(false));
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawerEl && drawerEl.classList.contains('open')) setLearnDrawer(false);
-  });
-  window.addEventListener('resize', () => {
-    if (!drawerEl) return;
-    // Desktop: the drawer must be closed (sidebar is in normal flow).
-    // Mobile: re-apply the closed-state invariants (inert, no backdrop).
-    if (!learnMobile()) { if (drawerEl.classList.contains('open')) setLearnDrawer(false); }
-    else if (!drawerEl.classList.contains('open')) setLearnDrawer(false);
-  });
-
   const params = new URLSearchParams(location.search);
   let activeTopicName = params.get('topic') || topics[0].name;
   if (!topics.some(t => t.name === activeTopicName)) {
@@ -571,20 +523,15 @@ function initLearnPage() {
     history.pushState({}, '', url);
     renderSidebar();
     renderNotes(topicName);
-    syncToggleLabel();
 
-    // On phones the topic list is the off-canvas drawer — closing it reveals
-    // the notes immediately (a short delay lets the active highlight land).
-    if (learnMobile() && drawerEl && drawerEl.classList.contains('open')) {
-      setTimeout(() => setLearnDrawer(false), 250);
-    } else {
-      try {
-        if (window.matchMedia('(max-width: 1023px)').matches) {
-          const notesEl = document.getElementById('learnContent');
-          if (notesEl) notesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      } catch (e) {}
-    }
+    // On phones the topic list sits above the notes, so selecting one
+    // would otherwise appear to do nothing until the user scrolls down.
+    try {
+      if (window.matchMedia('(max-width: 1023px)').matches) {
+        const notesEl = document.getElementById('learnContent');
+        if (notesEl) notesEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } catch (e) {}
   }
 
   if (searchInput) {
@@ -608,12 +555,10 @@ function initLearnPage() {
     activeTopicName = top;
     renderSidebar();
     renderNotes(top);
-    syncToggleLabel();
   });
 
   renderSidebar();
   renderNotes(activeTopicName);
-  syncToggleLabel();
 }
 
 

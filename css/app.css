@@ -541,48 +541,6 @@ input:focus, textarea:focus, select:focus {
   border-color: #9bb79d !important;
 }
 
-/* Learn page — mobile only: the topic sidebar becomes a slide-in drawer
-   (the in-page toggle bar replaces its always-visible stack). */
-@media (max-width: 1023px) {
-  #learnTopicSidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: min(360px, 88vw);
-    z-index: 70;
-    border-right: 1px solid var(--line);
-    border-bottom: 0;
-    background: var(--paper);
-    transform: translateX(-103%);
-    transition: transform 0.26s cubic-bezier(0.32, 0.72, 0, 1);
-    overflow-y: auto;
-    max-height: none;
-    pointer-events: none;
-  }
-  #learnTopicSidebar.open {
-    transform: none;
-    pointer-events: auto;
-    box-shadow: 30px 0 60px rgba(15, 13, 11, 0.28);
-  }
-  html.theme-dark #learnTopicSidebar,
-  body.theme-dark #learnTopicSidebar {
-    background: var(--dark);
-  }
-  #learnTopicSidebar #learnTopicList {
-    max-height: none;
-  }
-  #learnDrawerBackdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 60;
-    background: rgba(18, 16, 14, 0.45);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  #learnTopicSidebar { transition: none; }
-}
-
 /* Success Banner Pop In */
 @keyframes popIn {
   0% {
