@@ -158,6 +158,19 @@ describe('problem.js - file handles (mock)', () => {
     assert.match(html, /id="explanationPanel"/);
   });
 
+  it('every themed page configures Tailwind darkMode class before the CDN (theme toggle must work everywhere)', () => {
+    const files = fs.readdirSync(path.join(__dirname, '..')).filter(f => f.endsWith('.html'));
+    for (const file of files) {
+      const html = fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
+      if (!html.includes('data-theme-toggle')) continue; // no toggle (e.g. auth pages force light)
+      const cfgIdx = html.indexOf("darkMode: 'class'");
+      assert.notEqual(cfgIdx, -1, `${file}: must configure darkMode class for the theme toggle to work`);
+      const cdnIdx = html.indexOf('cdn.tailwindcss.com');
+      assert.notEqual(cdnIdx, -1, `${file}: Tailwind CDN missing`);
+      assert.ok(cfgIdx < cdnIdx, `${file}: darkMode config must be set BEFORE the CDN script loads`);
+    }
+  });
+
   it('level selection is respected: cards link at filtered level, tabs switch in place', () => {
     const pages = fs.readFileSync(path.join(__dirname, '../js/pages.js'), 'utf8');
     // Directory cards must open at the selected level filter (basic for "All levels"),
