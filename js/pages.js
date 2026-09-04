@@ -399,14 +399,14 @@ function initProgressPage() {
 
     return `
       <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=basic"
-         class="card reveal group relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 p-5 sm:p-6 rounded-[18px] border border-line hover:border-[var(--green)]/40 hover:shadow-[0_12px_32px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:-translate-y-[2px] transition-all duration-300 overflow-hidden block"
+         class="card reveal group relative flex flex-row items-start gap-3.5 sm:items-center sm:justify-between sm:gap-6 p-4 sm:p-6 rounded-[18px] border border-line hover:border-[var(--green)]/40 hover:shadow-[0_12px_32px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:-translate-y-[2px] transition-all duration-300 overflow-hidden block"
          style="animation-delay: ${idx * 0.02}s">
         <!-- Left accent indicator on hover -->
         <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[var(--green)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        <!-- Left Index & Icon Box -->
+        <!-- Left Icon Box (the 01/02 index is desktop-only — phones stay compact) -->
         <div class="flex items-center gap-3.5 sm:gap-4 shrink-0">
-          <span class="font-mono text-xs sm:text-sm font-bold text-muted/50 tracking-wider w-5 text-right shrink-0">${num}</span>
+          <span class="hidden sm:inline font-mono text-xs sm:text-sm font-bold text-muted/50 tracking-wider w-5 text-right shrink-0">${num}</span>
           <div class="h-12 w-12 rounded-[14px] bg-[var(--soft)] border border-line grid place-items-center text-ink text-base group-hover:bg-[var(--green)] group-hover:text-white group-hover:border-[var(--green)] group-hover:shadow-[0_4px_16px_rgba(91,115,93,0.25)] transition-all duration-300 dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6] shrink-0">
             <i class="${iconClass} text-[16px]"></i>
           </div>
@@ -434,8 +434,8 @@ function initProgressPage() {
             <div class="h-full ${isDone ? 'bg-emerald-500' : 'green-bg'} rounded-full transition-all duration-700 ease-out" style="width:${pct}%"></div>
           </div>
 
-          <!-- Status and remaining count -->
-          <div class="mt-2 flex items-center justify-between gap-2 text-[10px] sm:text-[11px]">
+          <!-- Status and remaining count (wraps on very narrow phones) -->
+          <div class="mt-2 flex items-center justify-between gap-x-2 gap-y-1 flex-wrap text-[10px] sm:text-[11px]">
             <span class="uppercase tracking-[.14em] font-semibold ${statusColor} inline-flex items-center gap-1.5">
               <i class="${statusIcon} text-[10px]"></i> ${statusLabel}
             </span>

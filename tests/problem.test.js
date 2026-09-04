@@ -246,4 +246,15 @@ describe('problem.js - file handles (mock)', () => {
       assert.match(html, /#rightFormPane[\s\S]{0,400}?overflow-y: auto !important/, page + ': form area absorbs remaining height');
     }
   });
+
+  it('progress page: compact mobile cards — index numbers hidden, arrow in the row', () => {
+    const pages = fs.readFileSync(path.join(__dirname, '../js/pages.js'), 'utf8');
+    const start = pages.indexOf('function initProgressPage');
+    assert.ok(start !== -1, 'initProgressPage exists');
+    const body = pages.slice(start, start + 9000);
+    assert.match(body, /flex flex-row items-start gap-3\.5 sm:items-center sm:justify-between sm:gap-6 p-4 sm:p-6/,
+      'card is a single row on mobile (icon | content | arrow) with tighter padding');
+    assert.match(body, /class="hidden sm:inline font-mono text-xs sm:text-sm font-bold/,
+      '01/02 index is hidden on mobile, kept on desktop');
+  });
 });
