@@ -125,7 +125,8 @@ test('learn notes: code blocks render as one minimal box with copy chip + highli
   assert.ok(w2.classList.contains('code-snippet') && w2.classList.contains('output-block'), 'B1 output wrapper classes');
   const outLabel = w2.children[0];
   assert.equal(outLabel.tagName, 'span', 'B2 output chip is a label');
-  assert.ok(outLabel.innerHTML.includes('Output'), 'B3 Output label text');
+  assert.equal(outLabel.textContent, 'Output', 'B3 plain Output label (no >_ terminal icon)');
+  assert.ok(!String(outLabel.innerHTML).includes('<i'), 'B4 no icon markup in the label');
   assert.equal(w2.children[1], pre2, 'B4 output pre inside wrapper');
 
   // C) bare pre (no code child) still gets the box, no highlighting

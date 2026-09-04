@@ -98,7 +98,7 @@ function enhanceCodeBlocks(container) {
     if (isOutput) {
       const label = document.createElement('span');
       label.className = 'snip-chip';
-      label.innerHTML = '<i class="fa-solid fa-terminal"></i> Output';
+      label.textContent = 'Output';
       wrapper.appendChild(label);
     } else {
       const copyBtn = document.createElement('button');
