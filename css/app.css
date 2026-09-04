@@ -1118,6 +1118,10 @@ body:has(#mobileMenu.open)::after {
 }
 .btn-primary:active::after, .btn-ghost:active::after { transition: none; }
 
+/* Theme toggle: plain, stable button — no magnetic lift, no shine sweep */
+[data-theme-toggle] { transform: none !important; }
+[data-theme-toggle]::after { display: none !important; }
+
 /* Ripple on click */
 .ripple {
   position: absolute;

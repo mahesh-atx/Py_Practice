@@ -778,6 +778,16 @@ function initProblemPage() {
               </div>
             </div>
           `;
+          // Robust navigation: force it explicitly so the jump works even if
+          // something on the page swallows the anchor's default navigation
+          // (a reported mobile issue where tapping did nothing).
+          const bannerLink = resultPanel.querySelector('a');
+          if (bannerLink) {
+            bannerLink.addEventListener('click', () => {
+              const href = bannerLink.getAttribute('href');
+              if (href) window.location.href = href;
+            });
+          }
           toast('Question solved and progress saved!');
         } else {
           const failedCount = results.length - Object.values(testCaseResults).filter(v => v.passed).length;

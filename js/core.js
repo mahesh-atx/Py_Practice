@@ -286,7 +286,12 @@ function setTheme(theme) {
   document.documentElement.classList.toggle('theme-dark', isDark);
   document.documentElement.classList.toggle('dark', isDark);
   localStorage.setItem(themeKey, theme);
-  document.querySelectorAll('[data-theme-icon]').forEach(e => e.textContent = isDark ? '☼' : '◐');
+  // Proper sun/moon icons — moon = switch to dark, sun = switch to light
+  document.querySelectorAll('[data-theme-icon]').forEach(e => {
+    e.innerHTML = isDark
+      ? '<i class="fa-solid fa-sun text-[13px]"></i>'
+      : '<i class="fa-solid fa-moon text-[13px]"></i>';
+  });
   document.querySelectorAll('[data-theme-label]').forEach(e => e.textContent = isDark ? 'Light mode' : 'Dark mode');
 }
 
@@ -324,9 +329,7 @@ function setupHeader() {
   document.querySelectorAll('[data-theme-toggle]').forEach(b => {
     b.addEventListener('click', () => {
       const isDark = document.body.classList.contains('theme-dark');
-      // tiny scale pop before theme switches
-      b.style.transform = 'scale(0.92)';
-      setTimeout(() => b.style.transform = '', 140);
+      // No scale/magnetic pop — a clean, instant toggle
       setTheme(isDark ? 'light' : 'dark');
       // re-trigger reveal to adapt to new theme colors if needed
       document.body.animate([{ filter: 'brightness(0.98)' }, { filter: 'brightness(1)' }], { duration: 260, easing: 'ease-out' });
