@@ -324,8 +324,6 @@ function initProblemPage() {
   if (topicEl) topicEl.textContent = q.topic;
   const lvlEl = document.getElementById('problemLevel');
   if (lvlEl) lvlEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${escapeHtml(levelMeta[q.level].label)}`;
-  const numEl = document.getElementById('problemNumber');
-  if (numEl) numEl.innerHTML = `<i class="fa-solid fa-hashtag text-[10px] opacity-60"></i> Question ${q.number}`;
   // Highlight keywords — single primary accent, no background
   function highlightDesc(text) {
     const esc = escapeHtml(text);
@@ -335,7 +333,13 @@ function initProblemPage() {
     return esc.replace(re, m => `<span class="kw-primary">${m}</span>`);
   }
   const titleEl = document.getElementById('problemTitle');
-  if (titleEl) titleEl.textContent = q.title;
+  if (titleEl) {
+    // The actual question number is part of the heading now (the separate
+    // "# Question N" line was removed) so it always matches this problem.
+    titleEl.innerHTML =
+      `<span class="font-mono text-[13px] sm:text-sm font-semibold tracking-[.08em] text-[var(--green)] bg-[var(--green-soft)] border border-[var(--green)]/25 rounded-md px-2 py-1 shrink-0">Q${q.number}</span>` +
+      `<span>${escapeHtml(q.title)}</span>`;
+  }
   const descEl = document.getElementById('problemDesc');
   if (descEl) descEl.innerHTML = `<span class="kw-prompt">>_</span> ` + highlightDesc(q.description);
   const exInEl = document.getElementById('exampleInput');
@@ -375,14 +379,26 @@ function initProblemPage() {
   const backPracticeEl = document.querySelector('[data-back-practice]');
   if (backPracticeEl) backPracticeEl.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
 
-  // Breadcrumb
+  // Breadcrumb — the level crumb reflects the ACTUAL level of this question,
+  // so an Intermediate/Advanced question no longer looks like a "Basic" one.
+  // Topic and title are fitted at word boundaries ("…after the word").
   const bcTopic = document.getElementById('problemBreadcrumbTopic');
   if (bcTopic) {
-    bcTopic.textContent = q.topic;
-    bcTopic.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+    bcTopic.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=basic`;
+    fitBreadcrumbText(bcTopic, q.topic);
+  }
+  const bcLevel = document.getElementById('problemBreadcrumbLevel');
+  if (bcLevel) {
+    bcLevel.textContent = levelMeta[q.level].label;
+    bcLevel.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
   }
   const bcTitle = document.getElementById('problemBreadcrumbTitle');
-  if (bcTitle) bcTitle.textContent = q.title;
+  if (bcTitle) fitBreadcrumbText(bcTitle, q.title);
+  // Re-fit word ellipses when the pane width changes
+  window.addEventListener('resize', () => {
+    if (bcTopic) fitBreadcrumbText(bcTopic, q.topic);
+    if (bcTitle) fitBreadcrumbText(bcTitle, q.title);
+  });
 
   initMonaco(editorContainer, initialCode, (newCode) => {
     localStorage.setItem(codeKey, newCode);

@@ -231,7 +231,10 @@ function initPracticePage() {
   const qs = questionsFor(t.name, level);
 
   const breadcrumbTopic = document.getElementById('practiceBreadcrumbTopic');
-  if (breadcrumbTopic) breadcrumbTopic.textContent = t.name;
+  if (breadcrumbTopic) {
+    fitBreadcrumbText(breadcrumbTopic, t.name);
+    window.addEventListener('resize', () => fitBreadcrumbText(breadcrumbTopic, t.name));
+  }
   const topicDescEl = document.getElementById('practiceTopicDesc');
   if (topicDescEl) topicDescEl.textContent = t.desc;
   const pageTitleEl = document.getElementById('practicePageTitle');

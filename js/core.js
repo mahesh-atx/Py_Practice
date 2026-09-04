@@ -262,6 +262,24 @@ function escapeHtml(v) {
   }[c]));
 }
 
+/* Truncate a breadcrumb crumb at a WORD boundary with "…" appended.
+   Plain CSS ellipsis (Tailwind `truncate`) can cut mid-word, which reads
+   badly in breadcrumbs. Walks back to the last whole word that fits.
+   The element needs `white-space: nowrap` + `overflow: hidden` + a
+   constrained max-width (Tailwind `truncate` + `max-w-*` covers this). */
+function fitBreadcrumbText(el, text) {
+  if (!el) return;
+  el.textContent = text;
+  if (el.scrollWidth <= el.clientWidth + 1) return;
+  const words = String(text).split(/\s+/).filter(Boolean);
+  if (words.length <= 1) return; // single long word — let CSS ellipsis handle it
+  for (let n = words.length - 1; n >= 1; n--) {
+    el.textContent = words.slice(0, n).join(' ') + '…';
+    if (el.scrollWidth <= el.clientWidth + 1) return;
+  }
+  el.textContent = text; // nothing fits — fall back to CSS ellipsis
+}
+
 function setTheme(theme) {
   const isDark = theme === 'dark';
   document.body.classList.toggle('theme-dark', isDark);
