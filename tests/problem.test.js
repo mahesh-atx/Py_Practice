@@ -264,6 +264,16 @@ describe('problem.js - file handles (mock)', () => {
     assert.doesNotMatch(css, /output-header/, 'output header bar CSS removed');
   });
 
+  it('home: hero headline is larger on phones only', () => {
+    const css = fs.readFileSync(path.join(__dirname, '../css/app.css'), 'utf8');
+    const heroStart = css.indexOf('HERO — Mobile-enhanced composition');
+    assert.ok(heroStart !== -1, 'hero mobile block exists');
+    const mobile640 = css.slice(heroStart, css.indexOf('Extra-tight refinement'));
+    assert.match(mobile640, /\.hero-copy h1 \{[\s\S]*?font-size: 48px !important/, 'phone hero h1 bumped to 48px');
+    const narrow = css.slice(css.indexOf('Extra-tight refinement'));
+    assert.match(narrow, /\.hero-copy h1 \{[\s\S]*?font-size: 40px !important/, 'narrow-phone hero h1 bumped to 40px');
+  });
+
   it('progress page: compact mobile cards — index numbers hidden, arrow in the row', () => {
     const pages = fs.readFileSync(path.join(__dirname, '../js/pages.js'), 'utf8');
     const start = pages.indexOf('function initProgressPage');
