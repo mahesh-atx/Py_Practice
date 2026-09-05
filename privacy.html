@@ -14,6 +14,9 @@
     <link rel="apple-touch-icon" href="assets/favicon.svg" />
     <meta name="theme-color" content="#2e5a33" />
 
+    <script>
+      tailwind = { config: { darkMode: 'class' } };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/app.css" />
@@ -54,7 +57,7 @@
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
               </button>
             </div>
-            <button data-theme-toggle class="h-10 w-10 border border-line grid place-items-center text-sm btn-ghost rounded-[10px]" aria-label="Toggle dark mode"><span data-theme-icon>◐</span></button>
+            <button data-theme-toggle class="h-10 w-10 border border-line grid place-items-center text-sm btn-ghost rounded-[10px]" aria-label="Toggle dark mode"><span data-theme-icon><i class="fa-solid fa-moon text-[13px]"></i></span></button>
             <button data-mobile-toggle class="md:hidden h-10 w-10 border border-line btn-ghost rounded-[10px]" aria-label="Open menu">☰</button>
           </div>
         </div>
@@ -134,7 +137,7 @@
             </p>
             <ul class="list-disc list-inside text-sm text-muted space-y-1.5 leading-relaxed">
               <li><strong>Export your progress</strong>: Download all your solved challenges and activity in JSON format from the Profile page at any time.</li>
-              <li><strong>Reset or delete data</strong>: Click "Reset Progress" on the Profile or Topics page to wipe all stored progress.</li>
+              <li><strong>Reset or delete data</strong>: Click "Reset" on the Profile page to wipe all stored progress.</li>
               <li><strong>Disconnect Google Access</strong>: Revoke PyPractice permissions at any time via your <a href="https://myaccount.google.com/permissions" target="_blank" rel="noopener" class="text-[var(--green)] underline">Google Account Permissions</a>.</li>
             </ul>
           </section>

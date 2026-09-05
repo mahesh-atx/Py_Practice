@@ -103,6 +103,8 @@ function renderPracticeTopics() {
   if (!grid) return;
   const q = (document.getElementById('topicSearch')?.value || '').toLowerCase();
   const level = document.getElementById('levelFilter')?.value || 'all';
+  // Card buttons open the topic at the filtered level (basic when "All levels").
+  const linkLevel = level !== 'all' ? level : 'basic';
   const loggedIn = typeof isLoggedIn === 'function' ? isLoggedIn() : false;
   const items = topics.filter(t => (!q || t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q)) && (level === 'all' || questionsFor(t.name, level).length));
 
@@ -171,7 +173,7 @@ function renderPracticeTopics() {
                 </span>
               </button>
             ` : `
-              <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=basic" class="w-full relative overflow-hidden inline-flex items-center justify-between gap-2 px-4 py-3 rounded-[10px] text-xs font-semibold ${btnClass} transition-all hover:shadow-md group/btn isolate">
+              <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=${linkLevel}" class="w-full relative overflow-hidden inline-flex items-center justify-between gap-2 px-4 py-3 rounded-[10px] text-xs font-semibold ${btnClass} transition-all hover:shadow-md group/btn isolate">
                 <!-- Track (subtle) -->
                 <span class="absolute inset-0 rounded-[10px] ${isDone ? 'bg-emerald-500/[0.07] dark:bg-emerald-500/10' : 'bg-black/[0.04] dark:bg-white/[0.06]'} pointer-events-none" aria-hidden="true"></span>
                 <!-- Fill — high contrast + right edge + shimmer -->
@@ -225,33 +227,41 @@ function initPracticePage() {
   const title = document.getElementById('practicePageTitle');
   if (!title) return;
   const params = new URLSearchParams(location.search);
-  const topic = params.get('topic') || topics[0].name;
-  const level = params.get('level') || 'basic';
-  const t = topics.find(x => x.name === topic) || topics[0];
-  const qs = questionsFor(t.name, level);
+  const t = topics.find(x => x.name === params.get('topic')) || topics[0];
+  const state = {
+    topic: t.name,
+    level: levels.includes(params.get('level')) ? params.get('level') : 'basic'
+  };
 
   const breadcrumbTopic = document.getElementById('practiceBreadcrumbTopic');
-  if (breadcrumbTopic) breadcrumbTopic.textContent = t.name;
+  if (breadcrumbTopic) {
+    fitBreadcrumbText(breadcrumbTopic, state.topic);
+    window.addEventListener('resize', () => fitBreadcrumbText(breadcrumbTopic, state.topic));
+  }
   const topicDescEl = document.getElementById('practiceTopicDesc');
   if (topicDescEl) topicDescEl.textContent = t.desc;
-  const pageTitleEl = document.getElementById('practicePageTitle');
-  if (pageTitleEl) pageTitleEl.textContent = `${levelMeta[level].label} practice`;
-  const countEl = document.getElementById('practiceCount');
-  if (countEl) countEl.innerHTML = `<i class="fa-solid fa-list-ol text-[11px] opacity-60"></i> ${qs.length} ${levelMeta[level].label.toLowerCase()} questions`;
-  document.querySelectorAll('[data-level-link]').forEach(a => {
-    a.href = `practice.html?topic=${encodeURIComponent(t.name)}&level=${a.dataset.level}`;
-    a.classList.toggle('border-ink', a.dataset.level === level);
-    a.classList.toggle('bg-[var(--soft)]', a.dataset.level === level);
-    a.classList.toggle('font-medium', a.dataset.level === level);
-  });
-  const progEl = document.getElementById('practiceProgress');
-  if (progEl) progEl.innerHTML = `<i class="fa-solid fa-chart-pie text-[11px] opacity-60"></i> ${topicProgress(t.name).pct}% complete across this topic`;
 
-  const topicIndex = topics.findIndex(x => x.name === t.name);
-  const loggedIn = typeof isLoggedIn === 'function' ? isLoggedIn() : false;
-  if (!loggedIn && topicIndex >= 2) {
+  const renderLevel = () => {
+    const lvl = state.level;
+    const qs = questionsFor(state.topic, lvl);
+    const pageTitleEl = document.getElementById('practicePageTitle');
+    if (pageTitleEl) pageTitleEl.textContent = `${levelMeta[lvl].label} practice`;
+    const countEl = document.getElementById('practiceCount');
+    if (countEl) countEl.innerHTML = `<i class="fa-solid fa-list-ol text-[11px] opacity-60"></i> ${qs.length} ${levelMeta[lvl].label.toLowerCase()} questions`;
+    document.querySelectorAll('[data-level-link]').forEach(a => {
+      a.href = `practice.html?topic=${encodeURIComponent(state.topic)}&level=${a.dataset.level}`;
+      a.classList.toggle('border-ink', a.dataset.level === lvl);
+      a.classList.toggle('bg-[var(--soft)]', a.dataset.level === lvl);
+      a.classList.toggle('font-medium', a.dataset.level === lvl);
+    });
+    const progEl = document.getElementById('practiceProgress');
+    if (progEl) progEl.innerHTML = `<i class="fa-solid fa-chart-pie text-[11px] opacity-60"></i> ${topicProgress(state.topic).pct}% complete`;
+
     const listEl = document.getElementById('practiceQuestionList');
-    if (listEl) {
+    if (!listEl) return;
+    const topicIndex = topics.findIndex(x => x.name === state.topic);
+    const loggedIn = typeof isLoggedIn === 'function' ? isLoggedIn() : false;
+    if (!loggedIn && topicIndex >= 2) {
       listEl.innerHTML = `
         <div class="card p-10 sm:p-14 text-center rounded-[20px] max-w-xl mx-auto my-8 border border-amber-500/30 bg-amber-500/[0.04]">
           <div class="w-14 h-14 rounded-2xl bg-amber-500/15 text-amber-600 dark:text-amber-400 grid place-items-center text-2xl mx-auto mb-4">
@@ -259,7 +269,7 @@ function initPracticePage() {
           </div>
           <h2 class="text-2xl font-bold tracking-tight text-ink">Topic Locked for Guests</h2>
           <p class="text-sm text-muted mt-2.5 leading-relaxed">
-            The first 2 topics (<b>${escapeHtml(topics[0].name)}</b> and <b>${escapeHtml(topics[1].name)}</b>) are completely free to practice. Please log in or create a free account to unlock <b>${escapeHtml(t.name)}</b> and all ${topics.length} topics!
+            The first 2 topics (<b>${escapeHtml(topics[0].name)}</b> and <b>${escapeHtml(topics[1].name)}</b>) are completely free to practice. Please log in or create a free account to unlock <b>${escapeHtml(state.topic)}</b> and all ${topics.length} topics!
           </p>
           <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a href="login.html" class="btn-primary w-full sm:w-auto px-6 py-2.5 text-xs font-semibold rounded-[10px]">Log in</a>
@@ -270,21 +280,20 @@ function initPracticePage() {
           </div>
         </div>
       `;
+      renderHeaderProgress();
+      return;
     }
-    renderHeaderProgress();
-    return;
-  }
 
-  document.getElementById('practiceQuestionList').innerHTML = qs.map((q, idx) => {
-    const isSolved = solved(q.id);
-    return `
+    listEl.innerHTML = qs.map((q, idx) => {
+      const isSolved = solved(q.id);
+      return `
     <article class="group card reveal topic-card flex flex-col sm:flex-row sm:items-center gap-5 p-5 sm:p-6 rounded-[14px] relative overflow-hidden" style="animation-delay: ${idx * 0.04}s">
       <div class="absolute top-0 left-0 right-0 h-[2.5px] ${isSolved ? 'bg-emerald-500' : 'bg-[var(--line)]'} opacity-80"></div>
       <div class="flex gap-4 flex-1 min-w-0">
         <div class="h-11 w-11 shrink-0 rounded-xl border ${isSolved ? 'bg-emerald-50 border-emerald-100 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-300' : 'bg-[var(--soft)] border-line text-ink dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6]'} grid place-items-center text-xs font-mono shrink-0 group-hover:scale-105 transition-transform duration-300">${String(q.number).padStart(2, '0')}</div>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono px-2.5 py-1 rounded-full border ${isSolved ? 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-300' : 'bg-[var(--soft)] border-line text-muted dark:bg-white/[0.06] dark:border-white/10'}"><i class="fa-solid ${isSolved ? 'fa-check' : 'fa-play'} text-[10px]"></i> ${levelMeta[level].label} • Q${q.number}</span>
+            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono px-2.5 py-1 rounded-full border ${isSolved ? 'bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-900/20 dark:border-emerald-800 dark:text-emerald-300' : 'bg-[var(--soft)] border-line text-muted dark:bg-white/[0.06] dark:border-white/10'}"><i class="fa-solid ${isSolved ? 'fa-check' : 'fa-play'} text-[10px]"></i> ${levelMeta[lvl].label} • Q${q.number}</span>
             ${isSolved ? '<span class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 dark:text-emerald-300"><i class="fa-solid fa-circle-check text-[11px]"></i> Completed</span>' : '<span class="text-[11px] text-muted inline-flex items-center gap-1"><i class="fa-regular fa-circle text-[11px]"></i> Not started</span>'}
           </div>
           <h3 class="text-[17px] font-semibold tracking-[-.02em] mt-2 leading-tight">${escapeHtml(q.title)}</h3>
@@ -296,8 +305,42 @@ function initPracticePage() {
       </div>
     </article>
   `;
-  }).join('');
-  renderHeaderProgress();
+    }).join('');
+    renderHeaderProgress();
+    // Re-run reveal/tilt for the freshly rendered cards.
+    if (typeof refreshReveals === 'function') refreshReveals();
+  };
+
+  renderLevel();
+
+  // Level tabs switch the list in place — no full page reload.
+  // pushState keeps the URL shareable and back/forward-aware.
+  document.querySelectorAll('[data-level-link]').forEach(a => {
+    a.addEventListener('click', (e) => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      e.preventDefault();
+      const lvl = levels.includes(a.dataset.level) ? a.dataset.level : 'basic';
+      if (lvl === state.level) return;
+      state.level = lvl;
+      try {
+        history.pushState({ practiceLevel: lvl }, '', `practice.html?topic=${encodeURIComponent(state.topic)}&level=${lvl}`);
+      } catch {}
+      renderLevel();
+    });
+  });
+
+  // Back/forward inside this page (level switches are history entries): re-sync from the URL.
+  window.addEventListener('popstate', () => {
+    const p = new URLSearchParams(location.search);
+    const t2 = topics.find(x => x.name === p.get('topic')) || topics[0];
+    state.topic = t2.name;
+    state.level = levels.includes(p.get('level')) ? p.get('level') : 'basic';
+    const descEl = document.getElementById('practiceTopicDesc');
+    if (descEl) descEl.textContent = t2.desc;
+    const bcEl = document.getElementById('practiceBreadcrumbTopic');
+    if (bcEl) fitBreadcrumbText(bcEl, t2.name);
+    renderLevel();
+  });
 }
 
 function initProgressPage() {
@@ -356,14 +399,14 @@ function initProgressPage() {
 
     return `
       <a href="practice.html?topic=${encodeURIComponent(t.name)}&level=basic"
-         class="card reveal group relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-6 p-5 sm:p-6 rounded-[18px] border border-line hover:border-[var(--green)]/40 hover:shadow-[0_12px_32px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:-translate-y-[2px] transition-all duration-300 overflow-hidden block"
+         class="card reveal group relative flex flex-row items-start gap-3.5 sm:items-center sm:justify-between sm:gap-6 p-4 sm:p-6 rounded-[18px] border border-line hover:border-[var(--green)]/40 hover:shadow-[0_12px_32px_rgba(43,39,34,0.06)] dark:hover:shadow-[0_12px_32px_rgba(0,0,0,0.35)] hover:-translate-y-[2px] transition-all duration-300 overflow-hidden block"
          style="animation-delay: ${idx * 0.02}s">
         <!-- Left accent indicator on hover -->
         <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[var(--green)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        <!-- Left Index & Icon Box -->
+        <!-- Left Icon Box (the 01/02 index is desktop-only — phones stay compact) -->
         <div class="flex items-center gap-3.5 sm:gap-4 shrink-0">
-          <span class="font-mono text-xs sm:text-sm font-bold text-muted/50 tracking-wider w-5 text-right shrink-0">${num}</span>
+          <span class="hidden sm:inline font-mono text-xs sm:text-sm font-bold text-muted/50 tracking-wider w-5 text-right shrink-0">${num}</span>
           <div class="h-12 w-12 rounded-[14px] bg-[var(--soft)] border border-line grid place-items-center text-ink text-base group-hover:bg-[var(--green)] group-hover:text-white group-hover:border-[var(--green)] group-hover:shadow-[0_4px_16px_rgba(91,115,93,0.25)] transition-all duration-300 dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6] shrink-0">
             <i class="${iconClass} text-[16px]"></i>
           </div>
@@ -391,8 +434,8 @@ function initProgressPage() {
             <div class="h-full ${isDone ? 'bg-emerald-500' : 'green-bg'} rounded-full transition-all duration-700 ease-out" style="width:${pct}%"></div>
           </div>
 
-          <!-- Status and remaining count -->
-          <div class="mt-2 flex items-center justify-between gap-2 text-[10px] sm:text-[11px]">
+          <!-- Status and remaining count (wraps on very narrow phones) -->
+          <div class="mt-2 flex items-center justify-between gap-x-2 gap-y-1 flex-wrap text-[10px] sm:text-[11px]">
             <span class="uppercase tracking-[.14em] font-semibold ${statusColor} inline-flex items-center gap-1.5">
               <i class="${statusIcon} text-[10px]"></i> ${statusLabel}
             </span>

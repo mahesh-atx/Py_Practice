@@ -33,17 +33,19 @@
       <header class="paper sticky top-0 z-50 border-b border-line shrink-0">
         <div class="app-max h-[68px] flex items-center justify-between gap-2">
           <div class="flex items-center gap-3 min-w-0">
-            <a href="index.html" class="text-[19px] sm:text-[27px] tracking-[-.05em] font-medium mr-0 sm:mr-2 inline-flex items-center gap-2 sm:gap-2.5 shrink-0"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span><span class="hidden sm:inline"> PyPractice</span></a>
-
+            <!-- Mobile only: back chevron replaces the logo -->
+            <button
+              data-mobile-back
+              type="button"
+              class="sm:hidden h-9 w-9 rounded-[10px] border border-line btn-ghost grid place-items-center text-ink shrink-0"
+              aria-label="Go back"
+              title="Go back"
+            >
+              <span class="text-2xl font-extrabold leading-none -mt-0.5">&lt;</span>
+            </button>
+            <a href="index.html" class="hidden sm:inline-flex text-[27px] tracking-[-.05em] font-medium mr-0 sm:mr-2 items-center gap-2.5 shrink-0"><span class="h-8 w-8 rounded-[10px] bg-[var(--green)] text-white grid place-items-center text-[16px] shadow-sm shrink-0"><i class="fa-brands fa-python"></i></span> PyPractice</a>
           </div>
           <div class="flex items-center gap-1.5 sm:gap-3 shrink-0">
-            <button
-              id="resetBtn"
-              class="btn-ghost px-2.5 sm:px-3 py-2 sm:py-1.5 text-xs rounded-[10px] inline-flex items-center gap-1.5 min-h-[36px]"
-              title="Reset Code"
-            >
-              <i class="fa-solid fa-rotate-left text-[11px]"></i><span class="hidden sm:inline"> Reset Code</span>
-            </button>
             <div data-auth-only class="hidden md:inline-flex items-center gap-2">
               <a href="profile.html" title="Profile" aria-label="Profile" class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-line rounded-full bg-white text-ink text-xs font-medium hover:bg-[var(--soft)] hover:text-ink transition dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6]"><i class="fa-solid fa-user text-[11px] opacity-70"></i> Profile</a>
             </div>
@@ -56,7 +58,7 @@
               class="h-9 w-9 sm:h-8 sm:w-8 border border-line btn-ghost rounded-[10px]"
               aria-label="Toggle theme"
             >
-              <span data-theme-icon>◐</span>
+              <span data-theme-icon><i class="fa-solid fa-moon text-[13px]"></i></span>
             </button>
 
             <!-- Mobile Hamburger Toggle -->
@@ -129,34 +131,31 @@
         <main
           id="problemWorkspace"
           data-pane="problem"
-          class="flex-1 min-w-0 h-full overflow-hidden grid lg:grid-cols-[.85fr_1.65fr] gap-3 sm:gap-4 p-3 sm:p-4"
+          class="flex-1 min-w-0 h-full overflow-hidden grid grid-rows-1 lg:grid-cols-[.85fr_1.65fr] gap-3 sm:gap-4 p-3 sm:p-4"
         >
           <!-- Left Pane: Problem Statement (Independently Scrollable) -->
           <section
             id="problemPane"
             class="paper p-5 sm:p-8 lg:p-9 overflow-y-auto side-scroll h-full border border-line flex flex-col justify-between rounded-[14px]"
           >
-            <div>
+            <div id="problemStatement">
               <div>
-                <!-- Breadcrumb -->
-                <nav id="problemBreadcrumb" class="flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3">
-                  <a href="index.html" class="flex items-center gap-1 hover:text-ink transition"><i class="fa-solid fa-house text-[10px]"></i> Home</a>
-                  <span class="opacity-40">/</span>
-                  <a href="topics.html" class="hover:text-ink transition">Practice</a>
-                  <span class="opacity-40">/</span>
-                  <a id="problemBreadcrumbTopic" href="#" class="hover:text-ink transition">Topic</a>
-                  <span class="opacity-40">/</span>
-                  <span id="problemBreadcrumbTitle" class="text-[var(--green)] font-semibold truncate max-w-[140px]">Problem</span>
+                <!-- Breadcrumb — hidden on mobile, shown from sm (640px) up;
+                     home icon only; level crumb shows the actual level -->
+                <nav id="problemBreadcrumb" class="hidden sm:flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3" aria-label="Breadcrumb">
+                  <a href="index.html" aria-label="Home" class="shrink-0 grid place-items-center hover:text-ink transition"><i class="fa-solid fa-house text-[11px]"></i></a>
+                  <span class="opacity-40 shrink-0">/</span>
+                  <a href="topics.html" class="hidden sm:inline whitespace-nowrap hover:text-ink transition">Practice</a>
+                  <span class="hidden sm:inline opacity-40 shrink-0">/</span>
+                  <a id="problemBreadcrumbTopic" href="#" class="min-w-0 max-w-[30vw] sm:max-w-[160px] truncate hover:text-ink transition">Topic</a>
+                  <span class="hidden sm:inline opacity-40 shrink-0">/</span>
+                  <a id="problemBreadcrumbLevel" href="#" class="hidden sm:inline whitespace-nowrap hover:text-ink transition">Level</a>
+                  <span class="opacity-40 shrink-0">/</span>
+                  <span id="problemBreadcrumbTitle" class="text-[var(--green)] font-semibold min-w-0 max-w-[44vw] sm:max-w-[230px] truncate">Problem</span>
                 </nav>
-                <div
-                  id="problemNumber"
-                  class="text-[11px] uppercase tracking-[.18em] text-muted font-mono flex items-center gap-1.5"
-                >
-                  <i class="fa-solid fa-hashtag text-[10px] opacity-60"></i> Question 1
-                </div>
                 <h1
                   id="problemTitle"
-                  class="text-3xl sm:text-4xl tracking-[-.05em] mt-1 font-semibold text-ink"
+                  class="text-3xl sm:text-4xl tracking-[-.05em] mt-4 font-semibold text-ink flex items-baseline gap-2.5 sm:gap-3"
                 >
                   Problem Title
                 </h1>
@@ -174,8 +173,9 @@
                   <span>Sample Example</span>
                   <span class="text-[10px] text-muted lowercase">case 1</span>
                 </div>
-                <div class="grid sm:grid-cols-2 text-xs">
+                <div class="grid sm:grid-cols-2 text-xs" id="sampleIogrid">
                   <div
+                    id="exampleInputCell"
                     class="p-3.5 border-b sm:border-b-0 sm:border-r border-line bg-black/[.015]"
                   >
                     <div
@@ -209,8 +209,8 @@
               ></div>
             </div>
 
-            <!-- Animated Banner above navigation -->
-            <div class="mt-5 mb-2 rounded-[14px] overflow-hidden border border-line shadow-sm shrink-0">
+            <!-- Animated Banner — pushed as low as possible, flush above the nav buttons -->
+            <div class="mt-5 mb-1.5 rounded-[14px] overflow-hidden border border-line shadow-sm shrink-0">
               <img
                 src="assets/29_asset.gif"
                 alt="Python Practice"
@@ -219,7 +219,7 @@
               />
             </div>
 
-            <div class="pt-4 border-t border-line shrink-0 flex gap-3">
+            <div class="shrink-0 flex gap-3">
               <a
                 id="prevQuestionBtn"
                 class="flex-1 btn-ghost py-3 text-xs font-medium rounded-[12px] inline-flex items-center justify-center gap-2 text-center"
@@ -245,14 +245,18 @@
             >
               <div class="flex items-center gap-2 min-w-0 font-mono">
                 <span class="text-[11px] text-white/55 tracking-tight shrink-0">solution.py</span>
-                <span class="hidden sm:inline text-white/10 shrink-0">·</span>
-                <div id="pyodideStatus" class="flex items-center gap-1.5 text-[11px] text-white/30 min-w-0">
-                  <span class="inline-block w-1.5 h-1.5 rounded-full bg-white/20 animate-pulse shrink-0"></span>
-                  <span class="truncate">Initializing…</span>
-                </div>
               </div>
 
               <div class="flex items-center gap-2 shrink-0">
+                <!-- Reset Button (with Run & Submit) -->
+                <button
+                  id="resetBtn"
+                  class="px-3 sm:px-3.5 py-2 sm:py-1.5 border border-white/15 text-xs text-white/70 hover:bg-white/10 hover:text-white rounded-[8px] transition flex items-center gap-1.5 active:scale-95 cursor-pointer font-mono font-medium min-h-[34px]"
+                  title="Reset Code"
+                >
+                  <i class="fa-solid fa-rotate-left text-[10px]"></i> <span class="hidden sm:inline">Reset</span>
+                </button>
+
                 <!-- Run Button (Top) -->
                 <button
                   id="runBtn"

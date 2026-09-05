@@ -15,6 +15,9 @@
     <link rel="apple-touch-icon" href="assets/favicon.svg" />
     <meta name="theme-color" content="#2e5a33" />
 
+    <script>
+      tailwind = { config: { darkMode: 'class' } };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/app.css" />
@@ -61,7 +64,7 @@
               class="h-10 w-10 border border-line btn-ghost grid place-items-center text-sm rounded-[10px]"
               aria-label="Toggle dark mode"
             >
-              <span data-theme-icon>◐</span>
+              <span data-theme-icon><i class="fa-solid fa-moon text-[13px]"></i></span>
             </button>
             <button data-mobile-toggle class="md:hidden h-10 w-10 border border-line btn-ghost rounded-[10px]">☰</button>
           </div>

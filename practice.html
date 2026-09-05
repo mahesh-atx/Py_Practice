@@ -63,7 +63,7 @@
             </div>
 
             <button data-theme-toggle class="h-10 w-10 border border-line btn-ghost rounded-[10px]" aria-label="Toggle theme">
-              <span data-theme-icon>◐</span>
+              <span data-theme-icon><i class="fa-solid fa-moon text-[13px]"></i></span>
             </button>
             <button data-mobile-toggle class="md:hidden h-10 w-10 border border-line btn-ghost rounded-[10px]">☰</button>
           </div>
@@ -108,12 +108,12 @@
               <div class="mt-7 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                   <!-- Breadcrumb -->
-                  <nav id="practiceBreadcrumb" class="flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3">
-                    <a href="index.html" class="flex items-center gap-1 hover:text-ink transition"><i class="fa-solid fa-house text-[10px]"></i> Home</a>
-                    <span class="opacity-40">/</span>
-                    <a href="topics.html" class="hover:text-ink transition">Practice</a>
-                    <span class="opacity-40">/</span>
-                    <span id="practiceBreadcrumbTopic" class="text-[var(--green)] font-semibold">Topic</span>
+                  <nav id="practiceBreadcrumb" class="flex items-center gap-1.5 text-[12px] text-muted font-mono mb-3" aria-label="Breadcrumb">
+                    <a href="index.html" aria-label="Home" class="shrink-0 grid place-items-center hover:text-ink transition"><i class="fa-solid fa-house text-[11px]"></i></a>
+                    <span class="opacity-40 shrink-0">/</span>
+                    <a href="topics.html" class="hidden sm:inline whitespace-nowrap hover:text-ink transition">Practice</a>
+                    <span class="hidden sm:inline opacity-40 shrink-0">/</span>
+                    <span id="practiceBreadcrumbTopic" class="text-[var(--green)] font-semibold min-w-0 max-w-[70vw] sm:max-w-none truncate">Topic</span>
                   </nav>
                   <h1 id="practicePageTitle" class="text-[32px] sm:text-5xl tracking-[-.05em] font-medium">Basic practice</h1>
                 </div>

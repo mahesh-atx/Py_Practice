@@ -122,18 +122,14 @@ function createPyWorker() {
 }
 
 function updatePyodideStatus(status) {
-  const statusEl = document.getElementById('pyodideStatus');
-  if (!statusEl) return;
-
+  // Lifecycle notifications are toasts now — the toolbar only shows the
+  // file label, so no status text can get stuck in a stale state.
   if (status === 'loading') {
-    statusEl.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-white/25 animate-pulse shrink-0"></span><span>Python loading…</span>';
-    statusEl.className = 'flex items-center gap-1.5 text-[11px] text-white/30 font-mono min-w-0';
+    if (typeof toast === 'function') toast('Python loading…');
   } else if (status === 'ready') {
-    statusEl.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400/70 shrink-0"></span><span>Python ready</span>';
-    statusEl.className = 'flex items-center gap-1.5 text-[11px] text-white/30 font-mono min-w-0';
+    if (typeof toast === 'function') toast('Python ready');
   } else if (status === 'error') {
-    statusEl.innerHTML = '<span class="inline-block w-1.5 h-1.5 rounded-full bg-red-400/70 shrink-0"></span><span>Python error</span>';
-    statusEl.className = 'flex items-center gap-1.5 text-[11px] text-white/30 font-mono min-w-0';
+    if (typeof toast === 'function') toast('Python error');
     appendTerminal('Failed to load Python environment. Check connection and reload.', 'stderr');
   }
 }

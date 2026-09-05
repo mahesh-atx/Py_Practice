@@ -303,12 +303,30 @@ function initProblemPage() {
   initWorkspacePaneSwitcher();
 
   const params = new URLSearchParams(location.search);
-  const topic = params.get('topic') || topics[0].name;
-  const level = params.get('level') || 'basic';
-  const index = Math.max(0, Number(params.get('q') || 0));
+  let topic = params.get('topic') || topics[0].name;
+  let level = params.get('level') || 'basic';
+  let index = Math.max(0, Number(params.get('q')) || 0);
 
-  const qs = questionsFor(topic, level);
-  const q = qs[index] || qs[0];
+  // Safety net: some environments drop the query string on navigation, so
+  // the page would otherwise always open Question 1. When the URL cannot
+  // identify the question, restore the one saved at link-click time.
+  const qsProbe = questionsFor(topic, level);
+  const urlIdentifiesQuestion = params.get('topic') !== null && params.get('q') !== null && !!qsProbe[index];
+  if (!urlIdentifiesQuestion && typeof takeNavTarget === 'function') {
+    const nav = takeNavTarget();
+    if (nav) {
+      const navQs = questionsFor(nav.topic, nav.level);
+      if (navQs[nav.index]) {
+        topic = nav.topic;
+        level = nav.level;
+        index = nav.index;
+        console.warn('[PyPractice] Query string missing — restored question from click handoff:', navQs[nav.index].title);
+      }
+    }
+  }
+
+  let qs = questionsFor(topic, level);
+  let q = qs[index] || qs[0];
   if (!q) return;
 
   const topicIndex = topics.findIndex(t => t.name === q.topic);
@@ -320,31 +338,13 @@ function initProblemPage() {
 
   rememberQuestion(q);
 
-  const topicEl = document.getElementById('problemTopic');
-  if (topicEl) topicEl.textContent = q.topic;
-  const lvlEl = document.getElementById('problemLevel');
-  if (lvlEl) lvlEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${escapeHtml(levelMeta[q.level].label)}`;
-  const numEl = document.getElementById('problemNumber');
-  if (numEl) numEl.innerHTML = `<i class="fa-solid fa-hashtag text-[10px] opacity-60"></i> Question ${q.number}`;
-  // Highlight keywords — single primary accent, no background
-  function highlightDesc(text) {
-    const esc = escapeHtml(text);
-    const keywords = ['if','elif','else','for','while','def','return','import','class','try','except','finally','with','as','in','is','and','or','not','from','True','False','None','break','continue','pass','lambda','yield','raise','assert','print','input','range','len','type','int','float','str','bool','list','tuple','set','dict','open','append','extend','pop','sort','sorted','map','filter','sum','min','max','abs','round','enumerate','zip','Python','variable','Variable','String','string','List','Tuple','Set','Dictionary','Function','Loop','Conditional','File','Module','Class','Exception'];
-    const sorted = [...keywords].sort((a,b)=>b.length-a.length);
-    const re = new RegExp('\\b(' + sorted.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|') + ')\\b','g');
-    return esc.replace(re, m => `<span class="kw-primary">${m}</span>`);
-  }
-  const titleEl = document.getElementById('problemTitle');
-  if (titleEl) titleEl.textContent = q.title;
-  const descEl = document.getElementById('problemDesc');
-  if (descEl) descEl.innerHTML = `<span class="kw-prompt">>_</span> ` + highlightDesc(q.description);
-  const exInEl = document.getElementById('exampleInput');
-  if (exInEl) exInEl.textContent = q.input ? q.input.replace(/\\n/g, '\n') : '(none)';
-  const exOutEl = document.getElementById('exampleOutput');
-  if (exOutEl) exOutEl.textContent = q.output ? q.output.replace(/\\n/g, '\n') : '(empty)';
+  // ---- Question-dependent UI -------------------------------------------------
+  // Everything that changes when moving between questions is re-rendered by
+  // renderQuestion(). Next/Previous (and the "Next Question" banner) switch
+  // questions IN PLACE with a slide transition — no full reload, so the
+  // editor and Pyodide stay warm.
 
-  const codeKey = 'code:' + q.id;
-  const initialCode = localStorage.getItem(codeKey) || defaultCode(q.topic);
+  let codeKey = 'code:' + q.id;
 
   const explanation = document.getElementById('explanationPanel');
   const editorContainer = document.getElementById('monacoEditor');
@@ -353,38 +353,198 @@ function initProblemPage() {
   // Previous / Next navigation (bottom) — replaces manual complete button
   const prevBtn = document.getElementById('prevQuestionBtn');
   const nextBtn = document.getElementById('nextQuestionBtn');
-  if (prevBtn) {
-    if (index > 0) {
-      prevBtn.href = `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index - 1}`;
-      prevBtn.classList.remove('opacity-50','pointer-events-none');
-    } else {
-      prevBtn.classList.add('opacity-50','pointer-events-none');
-      prevBtn.removeAttribute('href');
+
+  // Breadcrumb elements — the level crumb reflects the ACTUAL level of this
+  // question, so an Intermediate/Advanced question no longer looks "Basic".
+  const bcTopic = document.getElementById('problemBreadcrumbTopic');
+  const bcLevel = document.getElementById('problemBreadcrumbLevel');
+  const bcTitle = document.getElementById('problemBreadcrumbTitle');
+  // Re-fit word ellipses when the pane width changes (reads the CURRENT question)
+  window.addEventListener('resize', () => {
+    if (bcTopic) fitBreadcrumbText(bcTopic, q.topic);
+    if (bcTitle) fitBreadcrumbText(bcTitle, q.title);
+  });
+
+  // Highlight keywords — single primary accent, no background
+  function highlightDesc(text) {
+    const esc = escapeHtml(text);
+    const keywords = ['if','elif','else','for','while','def','return','import','class','try','except','finally','with','as','in','is','and','or','not','from','True','False','None','break','continue','pass','lambda','yield','raise','assert','print','input','range','len','type','int','float','str','bool','list','tuple','set','dict','open','append','extend','pop','sort','sorted','map','filter','sum','min','max','abs','round','enumerate','zip','Python','variable','Variable','String','string','List','Tuple','Set','Dictionary','Function','Loop','Conditional','File','Module','Class','Exception'];
+    const sorted = [...keywords].sort((a,b)=>b.length-a.length);
+    const re = new RegExp('\\b(' + sorted.map(w=>w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|') + ')\\b','g');
+    return esc.replace(re, m => `<span class="kw-primary">${m}</span>`);
+  }
+
+  function renderQuestion() {
+    const topicEl = document.getElementById('problemTopic');
+    if (topicEl) topicEl.textContent = q.topic;
+    const lvlEl = document.getElementById('problemLevel');
+    if (lvlEl) lvlEl.innerHTML = `<i class="fa-solid fa-layer-group text-[10px] opacity-60"></i> ${escapeHtml(levelMeta[q.level].label)}`;
+    const titleEl = document.getElementById('problemTitle');
+    if (titleEl) {
+      // The actual question number is part of the heading (primary accent),
+      // so it always matches this problem.
+      titleEl.innerHTML =
+        `<span class="green-text shrink-0">Q${q.number}</span>` +
+        `<span>${escapeHtml(q.title)}</span>`;
     }
+    const descEl = document.getElementById('problemDesc');
+    if (descEl) descEl.innerHTML = `<span class="kw-prompt">>_</span> ` + highlightDesc(q.description);
+    // Only show the Input block when the question actually has input
+    const exInEl = document.getElementById('exampleInput');
+    const exInCell = document.getElementById('exampleInputCell');
+    const exGrid = document.getElementById('sampleIogrid');
+    const hasSampleInput = !!q.input;
+    if (exInCell) exInCell.classList.toggle('hidden', !hasSampleInput);
+    if (exGrid) exGrid.classList.toggle('sm:grid-cols-2', hasSampleInput);
+    if (exInEl) exInEl.textContent = hasSampleInput ? q.input.replace(/\\n/g, '\n') : '';
+    const exOutEl = document.getElementById('exampleOutput');
+    if (exOutEl) exOutEl.textContent = q.output ? q.output.replace(/\\n/g, '\n') : '(empty)';
+
+    // Editor code for this question — the Monaco instance itself persists
+    setEditorCode(localStorage.getItem(codeKey) || defaultCode(q.topic));
+
+    if (prevBtn) {
+      if (index > 0) {
+        prevBtn.href = `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index - 1}`;
+        prevBtn.classList.remove('opacity-50','pointer-events-none');
+      } else {
+        prevBtn.classList.add('opacity-50','pointer-events-none');
+        prevBtn.removeAttribute('href');
+      }
+    }
+    if (nextBtn) {
+      if (index + 1 < qs.length) {
+        nextBtn.href = `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index + 1}`;
+        nextBtn.classList.remove('opacity-50','pointer-events-none');
+        nextBtn.innerHTML = `Next <i class="fa-solid fa-arrow-right text-[11px]"></i>`;
+      } else {
+        nextBtn.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+        nextBtn.classList.remove('opacity-50','pointer-events-none');
+        nextBtn.innerHTML = `Back to list <i class="fa-solid fa-list text-[11px]"></i>`;
+      }
+    }
+
+    const backPracticeEl = document.querySelector('[data-back-practice]');
+    if (backPracticeEl) backPracticeEl.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+
+    if (bcTopic) {
+      bcTopic.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=basic`;
+      fitBreadcrumbText(bcTopic, q.topic);
+    }
+    if (bcLevel) {
+      bcLevel.textContent = levelMeta[q.level].label;
+      bcLevel.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+    }
+    if (bcTitle) fitBreadcrumbText(bcTitle, q.title);
+
+    // Reset per-question UI state
+    activeCaseIdx = 0;
+    testCaseResults = {};
+    renderTestCasePills();
+    renderActiveCaseDetail();
+    const resultPanel = document.getElementById('resultPanel');
+    if (resultPanel) { resultPanel.classList.add('hidden'); resultPanel.innerHTML = ''; }
+    if (explanation) { explanation.classList.add('hidden'); explanation.innerHTML = ''; }
+    clearTimeout(window.__hintTimer);
+    if (testTabBadge) testTabBadge.classList.add('hidden');
+    const customOut = document.getElementById('customOutputPanel');
+    if (customOut) { customOut.classList.add('hidden'); customOut.innerHTML = ''; }
+    rememberQuestion(q);
+  }
+
+  const isPlainClick = (e) => e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
+
+  let switching = false;
+  function switchQuestion(targetIndex) {
+    if (switching || targetIndex === index) return;
+    if (targetIndex < 0 || targetIndex >= qs.length) return;
+    const direction = targetIndex > index ? 'next' : 'prev';
+
+    // Persist the current work before swapping
+    try { localStorage.setItem(codeKey, getEditorCode()); } catch {}
+
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const animEls = ['problemStatement', 'tabContentTestCases']
+      .map(id => document.getElementById(id)).filter(Boolean);
+    const editorEl = document.getElementById('monacoEditor');
+
+    const finish = () => {
+      index = targetIndex;
+      q = qs[targetIndex];
+      codeKey = 'code:' + q.id;
+      try {
+        history.pushState({ problem: { topic: q.topic, level: q.level, index } }, '',
+          `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index}`);
+      } catch {}
+      renderQuestion();
+      // Fresh terminal per question so stale output never leaks across
+      initTerminal();
+      appendTerminal(`Switched to Q${q.number} — ${q.title}`, 'system');
+      const pane = document.getElementById('problemPane');
+      if (pane) pane.scrollTop = 0;
+      // On phones make sure the problem pane is the visible one after switching
+      try { if (window.matchMedia('(max-width: 1023px)').matches) setWorkspacePane('problem'); } catch {}
+      switching = false;
+    };
+
+    if (reduced || !animEls.length) { finish(); return; }
+    switching = true;
+    animEls.forEach(el => el.classList.add(direction === 'next' ? 'q-out-next' : 'q-out-prev'));
+    if (editorEl) editorEl.classList.add('q-fade-out');
+    setTimeout(() => {
+      finish();
+      requestAnimationFrame(() => {
+        animEls.forEach(el => {
+          el.classList.add(direction === 'next' ? 'q-in-next' : 'q-in-prev');
+          el.classList.remove('q-out-next', 'q-out-prev');
+        });
+        if (editorEl) { editorEl.classList.add('q-fade-in'); editorEl.classList.remove('q-fade-out'); }
+        animEls.forEach(el => el.getBoundingClientRect()); // force reflow at start position
+        requestAnimationFrame(() => {
+          animEls.forEach(el => el.classList.remove('q-in-next', 'q-in-prev'));
+          if (editorEl) editorEl.classList.remove('q-fade-in');
+        });
+      });
+    }, 220);
+  }
+
+  // Plain taps switch in place; modified taps (ctrl/cmd/middle) keep the
+  // anchor behaviour so "open in new tab" and similar still work.
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      if (!isPlainClick(e) || index <= 0) return;
+      e.preventDefault();
+      switchQuestion(index - 1);
+    });
   }
   if (nextBtn) {
-    if (index + 1 < qs.length) {
-      nextBtn.href = `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index + 1}`;
-      nextBtn.classList.remove('opacity-50','pointer-events-none');
-    } else {
-      nextBtn.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
-      nextBtn.innerHTML = `Back to list <i class="fa-solid fa-list text-[11px]"></i>`;
-    }
+    nextBtn.addEventListener('click', (e) => {
+      if (!isPlainClick(e)) return;
+      if (index + 1 >= qs.length) return; // last question → "Back to list" navigates
+      e.preventDefault();
+      switchQuestion(index + 1);
+    });
   }
 
-  const backPracticeEl = document.querySelector('[data-back-practice]');
-  if (backPracticeEl) backPracticeEl.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
+  // Back/forward inside this page (each in-place switch is a history entry)
+  window.addEventListener('popstate', () => {
+    const p = new URLSearchParams(location.search);
+    const t = topics.find(x => x.name === p.get('topic'));
+    if (!t) return;
+    const nqs = questionsFor(t.name, p.get('level'));
+    const idx = Math.max(0, Number(p.get('q')) || 0);
+    if (!nqs[idx]) return;
+    try { localStorage.setItem(codeKey, getEditorCode()); } catch {}
+    topic = t.name;
+    level = p.get('level');
+    qs = nqs;
+    index = idx;
+    q = nqs[idx];
+    codeKey = 'code:' + q.id;
+    renderQuestion();
+  });
 
-  // Breadcrumb
-  const bcTopic = document.getElementById('problemBreadcrumbTopic');
-  if (bcTopic) {
-    bcTopic.textContent = q.topic;
-    bcTopic.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
-  }
-  const bcTitle = document.getElementById('problemBreadcrumbTitle');
-  if (bcTitle) bcTitle.textContent = q.title;
-
-  initMonaco(editorContainer, initialCode, (newCode) => {
+  initMonaco(editorContainer, localStorage.getItem(codeKey) || defaultCode(q.topic), (newCode) => {
     localStorage.setItem(codeKey, newCode);
     const editorState = document.getElementById('editorState');
     if (editorState) editorState.textContent = 'Editing';
@@ -503,8 +663,8 @@ function initProblemPage() {
     `;
   }
 
-  renderTestCasePills();
-  renderActiveCaseDetail();
+  // First question render (nav, pills, editor code all flow from here)
+  renderQuestion();
 
   // Helper to show explanation safely — now as fixed toast so it never pushes the image/banner
   function showExplanation() {
@@ -531,12 +691,11 @@ function initProblemPage() {
     const customInputToggle = document.getElementById('customInputToggle');
     const customInputEl = document.getElementById('customInputText');
     const customOutputPanel = document.getElementById('customOutputPanel');
-    const pyodideStatus = document.getElementById('pyodideStatus');
-    const runnerStatus = document.getElementById('runnerStatus') || pyodideStatus;
-
     if (runBtn) { runBtn.disabled = true; runBtn.style.opacity = '0.6'; }
     if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; }
-    if (runnerStatus) runnerStatus.textContent = mode === 'submit' ? 'Running all test cases…' : 'Running sample…';
+    // Transient run feedback goes to the toast — the toolbar keeps the
+    // persistent Python state (loading / ready / error) untouched.
+    toast(mode === 'submit' ? 'Running all test cases…' : 'Running sample…');
     if (testSummary) testSummary.textContent = 'Executing…';
     if (editorState) editorState.textContent = 'Running';
 
@@ -735,22 +894,20 @@ function initProblemPage() {
           const nextQuestion = hasNextQuestion ? qs[index + 1] : null;
 
           if (resultPanel) resultPanel.innerHTML = `
-            <div class="pop-in bg-[#051108] border-y border-[#1a381c] px-4 py-2 flex items-center justify-between font-mono shadow-sm">
-              <div class="flex items-center gap-2.5">
+            <div class="pop-in bg-[#051108] border-y border-[#1a381c] px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 font-mono shadow-sm">
+              <div class="flex items-center gap-2 min-w-0">
                 <svg class="text-[#7CB342] w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                <div>
-                  <span class="text-[#7CB342] font-bold text-xs tracking-wide">Accepted · All ${results.length} Test Cases Passed!</span>
-                  ${wasAlreadySolved ? '<span class="text-white/40 text-[11px] ml-2">(Already completed)</span>' : '<span class="text-emerald-400 text-[11px] ml-2">(+1 Solved!)</span>'}
-                </div>
+                <span class="text-[#7CB342] font-bold text-xs tracking-wide whitespace-nowrap">Accepted</span>
+                <span class="text-emerald-300/70 text-[11px] truncate">${results.length}/${results.length} passed${wasAlreadySolved ? ' · already completed' : ' · +1 solved'}</span>
               </div>
-              <div class="flex items-center gap-2">
+              <div class="flex shrink-0">
                 ${hasNextQuestion ? `
-                  <a href="${questionUrl(nextQuestion)}" class="bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors inline-flex items-center gap-1">
+                  <a href="${questionUrl(nextQuestion)}" class="w-full sm:w-auto bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-2 rounded-[3px] transition-colors inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <span>Next Question</span>
                     <span>→</span>
                   </a>
                 ` : `
-                  <a href="practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}" class="bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-1.5 rounded-[2px] transition-colors inline-flex items-center gap-1">
+                  <a href="practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}" class="w-full sm:w-auto bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-2 rounded-[3px] transition-colors inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
                     <span>Back to Topics</span>
                     <span>✓</span>
                   </a>
@@ -758,6 +915,22 @@ function initProblemPage() {
               </div>
             </div>
           `;
+          // Next Question switches in place (slide transition, warm editor);
+          // "Back to Topics" (last question) navigates. Navigation is forced
+          // explicitly as a safety net (a reported mobile issue where a plain
+          // tap did nothing).
+          const bannerLink = resultPanel.querySelector('a');
+          if (bannerLink) {
+            bannerLink.addEventListener('click', (e) => {
+              const href = bannerLink.getAttribute('href');
+              if (hasNextQuestion && isPlainClick(e)) {
+                e.preventDefault();
+                switchQuestion(index + 1);
+              } else if (href) {
+                window.location.href = href;
+              }
+            });
+          }
           toast('Question solved and progress saved!');
         } else {
           const failedCount = results.length - Object.values(testCaseResults).filter(v => v.passed).length;
@@ -765,12 +938,10 @@ function initProblemPage() {
           if (editorState) editorState.textContent = 'Wrong Answer';
           
           if (resultPanel) resultPanel.innerHTML = `
-            <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center justify-between font-mono">
-              <div class="flex items-center gap-2 text-red-400 text-xs font-semibold">
-                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-                <span>Wrong Answer · Failed ${failedCount} of ${results.length} test cases.</span>
-              </div>
-              <span class="text-white/40 text-[11px]">Inspect failed test cases below.</span>
+            <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-3 sm:px-4 py-2 flex items-center gap-2 font-mono">
+              <svg class="w-4 h-4 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              <span class="text-red-400 text-xs font-semibold whitespace-nowrap">Wrong Answer · Failed ${failedCount} of ${results.length} test cases.</span>
+              <span class="hidden sm:inline text-white/40 text-[11px] ml-auto whitespace-nowrap">Inspect failed test cases below.</span>
             </div>
           `;
         }
@@ -783,18 +954,25 @@ function initProblemPage() {
       const editorState = document.getElementById('editorState');
       if (testSummary) testSummary.textContent = 'Error';
       if (editorState) editorState.textContent = 'Error';
-      appendTerminal(err.message || 'Execution error occurred.', 'stderr');
+      const errMsg = err.message || 'Execution error occurred.';
+      appendTerminal(errMsg, 'stderr');
       const customOutputPanel = document.getElementById('customOutputPanel');
       if (customOutputPanel && document.getElementById('customInputToggle')?.checked) {
         customOutputPanel.classList.remove('hidden');
-        customOutputPanel.innerHTML = `<pre class="m-0 p-2.5 rounded-md bg-red-950/15 border border-red-500/20 text-red-300/90 font-mono text-[11px] leading-5 whitespace-pre-wrap break-words">${escapeHtml(err.message || String(err))}</pre>`;
+        customOutputPanel.innerHTML = `<pre class="m-0 p-2.5 rounded-md bg-red-950/15 border border-red-500/20 text-red-300/90 font-mono text-[11px] leading-5 whitespace-pre-wrap break-words">${escapeHtml(errMsg)}</pre>`;
       }
-      toast('Execution error.');
+      // Surface the ACTUAL reason — load failures (CDN/network) usually
+      // just need a reload, so say so explicitly.
+      const isLoadFailure = /failed to load|timed out|worker error|initializ/i.test(errMsg);
+      toast(
+        isLoadFailure
+          ? `Execution error: ${errMsg} — reload the page and try again.`
+          : `Execution error: ${errMsg}`,
+        6000
+      );
     } finally {
       if (runBtn) { runBtn.disabled = false; runBtn.style.opacity = ''; }
       if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; }
-      const runnerStatus2 = document.getElementById('runnerStatus') || document.getElementById('pyodideStatus');
-      if (runnerStatus2 && runnerStatus2.id === 'runnerStatus') runnerStatus2.textContent = '';
     }
   }
 

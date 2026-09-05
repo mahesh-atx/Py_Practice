@@ -262,13 +262,36 @@ function escapeHtml(v) {
   }[c]));
 }
 
+/* Truncate a breadcrumb crumb at a WORD boundary with "…" appended.
+   Plain CSS ellipsis (Tailwind `truncate`) can cut mid-word, which reads
+   badly in breadcrumbs. Walks back to the last whole word that fits.
+   The element needs `white-space: nowrap` + `overflow: hidden` + a
+   constrained max-width (Tailwind `truncate` + `max-w-*` covers this). */
+function fitBreadcrumbText(el, text) {
+  if (!el) return;
+  el.textContent = text;
+  if (el.scrollWidth <= el.clientWidth + 1) return;
+  const words = String(text).split(/\s+/).filter(Boolean);
+  if (words.length <= 1) return; // single long word — let CSS ellipsis handle it
+  for (let n = words.length - 1; n >= 1; n--) {
+    el.textContent = words.slice(0, n).join(' ') + '…';
+    if (el.scrollWidth <= el.clientWidth + 1) return;
+  }
+  el.textContent = text; // nothing fits — fall back to CSS ellipsis
+}
+
 function setTheme(theme) {
   const isDark = theme === 'dark';
   document.body.classList.toggle('theme-dark', isDark);
   document.documentElement.classList.toggle('theme-dark', isDark);
   document.documentElement.classList.toggle('dark', isDark);
   localStorage.setItem(themeKey, theme);
-  document.querySelectorAll('[data-theme-icon]').forEach(e => e.textContent = isDark ? '☼' : '◐');
+  // Proper sun/moon icons — moon = switch to dark, sun = switch to light
+  document.querySelectorAll('[data-theme-icon]').forEach(e => {
+    e.innerHTML = isDark
+      ? '<i class="fa-solid fa-sun text-[13px]"></i>'
+      : '<i class="fa-solid fa-moon text-[13px]"></i>';
+  });
   document.querySelectorAll('[data-theme-label]').forEach(e => e.textContent = isDark ? 'Light mode' : 'Dark mode');
 }
 
@@ -296,12 +319,17 @@ function toast(msg, durationMs) {
 }
 
 function setupHeader() {
+  // Mobile back chevron (replaces the logo on the problem page)
+  document.querySelectorAll('[data-mobile-back]').forEach(b => {
+    b.addEventListener('click', () => {
+      if (history.length > 1) history.back();
+      else location.replace('topics.html');
+    });
+  });
   document.querySelectorAll('[data-theme-toggle]').forEach(b => {
     b.addEventListener('click', () => {
       const isDark = document.body.classList.contains('theme-dark');
-      // tiny scale pop before theme switches
-      b.style.transform = 'scale(0.92)';
-      setTimeout(() => b.style.transform = '', 140);
+      // No scale/magnetic pop — a clean, instant toggle
       setTheme(isDark ? 'light' : 'dark');
       // re-trigger reveal to adapt to new theme colors if needed
       document.body.animate([{ filter: 'brightness(0.98)' }, { filter: 'brightness(1)' }], { duration: 260, easing: 'ease-out' });
@@ -482,6 +510,33 @@ function questionUrl(q) {
 
 function rememberQuestion(q) {
   localStorage.setItem(lastQuestionKey, JSON.stringify({ topic: q.topic, level: q.level, index: q.number - 1, id: q.id }));
+}
+
+/* Question deep-link handoff.
+   Some environments (WebView/PWA wrappers, certain mobile browsers) drop
+   the query string when navigating, so problem.html?topic=…&level=…&q=N
+   arrives as bare problem.html and silently opens Question 1. When a
+   question link is clicked, the intended question is stashed here; the
+   problem page consumes it when the URL fails to identify the question. */
+const navTargetKey = 'pypractice-nav-target-v1';
+function rememberNavTarget(q) {
+  try {
+    sessionStorage.setItem(navTargetKey, JSON.stringify({ topic: q.topic, level: q.level, index: q.number - 1, id: q.id, at: Date.now() }));
+  } catch {}
+}
+function takeNavTarget() {
+  try {
+    const raw = sessionStorage.getItem(navTargetKey);
+    if (!raw) return null;
+    sessionStorage.removeItem(navTargetKey);
+    const t = JSON.parse(raw);
+    // Ignore stale handoffs (user clicked 10 minutes ago, then opened a
+    // fresh tab) — only same-tab, same-moment clicks should apply.
+    if (!t || typeof t.at !== 'number' || Date.now() - t.at > 60000) return null;
+    return t;
+  } catch {
+    return null;
+  }
 }
 
 function getLastQuestion() {

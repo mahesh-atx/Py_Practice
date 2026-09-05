@@ -524,23 +524,6 @@ input:focus, textarea:focus, select:focus {
   }
 }
 
-/* Code Snippet Copy Button */
-.copy-btn {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.copy-btn:hover {
-  transform: scale(1.05);
-  background: rgba(255, 255, 255, 0.15) !important;
-}
-.copy-btn:active {
-  transform: scale(0.95);
-}
-.copy-btn.copied {
-  background: rgba(91, 115, 93, 0.4) !important;
-  color: #9bb79d !important;
-  border-color: #9bb79d !important;
-}
-
 /* Success Banner Pop In */
 @keyframes popIn {
   0% {
@@ -554,6 +537,26 @@ input:focus, textarea:focus, select:focus {
 }
 .pop-in {
   animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Question switching (problem page) — in-place slide/fade between questions */
+#problemStatement,
+#tabContentTestCases {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+#monacoEditor {
+  transition: opacity 0.22s ease;
+}
+.q-out-next { opacity: 0; transform: translateX(-16px); }
+.q-out-prev  { opacity: 0; transform: translateX(16px); }
+.q-in-next  { opacity: 0; transform: translateX(16px);  transition: none; }
+.q-in-prev  { opacity: 0; transform: translateX(-16px); transition: none; }
+.q-fade-out { opacity: 0; }
+.q-fade-in  { opacity: 0; transition: none; }
+@media (prefers-reduced-motion: reduce) {
+  #problemStatement,
+  #tabContentTestCases,
+  #monacoEditor { transition: none; }
 }
 
 /* Ambient Pulse for Continue Banner & Active Step */
@@ -706,6 +709,18 @@ img, svg, video, canvas { max-width: 100%; }
     max-height: none !important;
     overflow: visible !important;
     margin-bottom: 18px;
+  }
+
+  /* Problem pane fills the whole window on phones (same formula as the
+     editor pane below: 155px = header 68 + pane switcher 55 + workspace
+     padding 12 + bottom room 20). Content scrolls INSIDE the pane; the
+     topic image and Previous/Next buttons stay pinned to its bottom via
+     the flex column (justify-between + shrink-0 in the markup). */
+  #problemWorkspace[data-pane="problem"] #problemPane {
+    height: calc(100dvh - 155px) !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    margin-bottom: 0 !important;
   }
 
   /* Editor pane keeps an explicit height: the Monaco host is
@@ -1106,6 +1121,10 @@ body:has(#mobileMenu.open)::after {
 }
 .btn-primary:active::after, .btn-ghost:active::after { transition: none; }
 
+/* Theme toggle: plain, stable button — no magnetic lift, no shine sweep */
+[data-theme-toggle] { transform: none !important; }
+[data-theme-toggle]::after { display: none !important; }
+
 /* Ripple on click */
 .ripple {
   position: absolute;
@@ -1213,27 +1232,63 @@ input:hover:not(:focus), textarea:hover:not(:focus), select:hover:not(:focus) {
   animation: none !important;
 }
 
-/* Output code block — minimal light style (for ```text output) */
-/* Output block — dark like code window but minimal (no dots, compact) */
+/* Learn notes — minimal code blocks. The <pre> is the ONLY visible box;
+   the .code-snippet wrapper (no background of its own) just hosts the
+   floating chip in the top-right corner (Copy for code, OUTPUT for
+   text blocks). No header bar, no window dots, no box-in-a-box. */
+.prose-notes .code-snippet {
+  position: relative;
+  margin: 1.4rem 0;
+}
+.prose-notes .code-snippet pre {
+  margin: 0;
+  border-radius: 10px;
+}
+.prose-notes .code-snippet pre code {
+  padding: 1rem 1.25rem;
+}
+.prose-notes .code-snippet .snip-chip {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10.5px;
+  line-height: 1;
+  padding: 6px 9px;
+  border-radius: 7px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(28, 26, 25, 0.82);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: rgba(244, 239, 230, 0.65);
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+}
+.prose-notes .code-snippet button.snip-chip {
+  cursor: pointer;
+}
+.prose-notes .code-snippet button.snip-chip:hover {
+  color: #f4efe6;
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(28, 26, 25, 0.95);
+}
+.prose-notes .code-snippet button.snip-chip:active {
+  transform: scale(0.96);
+}
+.prose-notes .code-snippet button.snip-chip.copied {
+  color: #9bb79d;
+  border-color: rgba(155, 183, 157, 0.4);
+}
+
+/* Output text blocks (```text) — same single-box treatment, muted color */
 .prose-notes .output-block {
   border: 1px solid #3b3835;
   background: #211f1e;
-  border-radius: 4px;
+  border-radius: 10px;
   overflow: hidden;
-  margin: 1.1rem 0;
-}
-.prose-notes .output-block .output-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-  background: #1c1a19;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: rgba(244,239,230,0.55);
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 .prose-notes .output-block pre {
   margin: 0 !important;
@@ -1250,25 +1305,37 @@ input:hover:not(:focus), textarea:hover:not(:focus), select:hover:not(:focus) {
   line-height: 1.6 !important;
   border: none !important;
 }
-.prose-notes .output-block .copy-btn {
-  font-size: 10px;
-  padding: 3px 8px;
-  border: 1px solid rgba(255,255,255,0.12);
+
+/* Syntax highlighting palette — highlight.js tokens on the dark block
+   (class names verified against highlight.js 11.9 for python/bash/json) */
+.prose-notes .code-snippet code.hljs {
   background: transparent;
-  color: rgba(244,239,230,0.6);
-  border-radius: 3px;
-  transition: all 0.15s ease;
+  color: #e8e2d8;
 }
-.prose-notes .output-block .copy-btn:hover {
-  background: rgba(255,255,255,0.08) !important;
-  color: #f4efe6 !important;
-  border-color: rgba(255,255,255,0.14) !important;
-}
-.prose-notes .output-block .copy-btn.copied {
-  background: rgba(91,115,93,0.22) !important;
-  color: #9bb79d !important;
-  border-color: rgba(155,183,157,0.35) !important;
-}
+.prose-notes .code-snippet .hljs-keyword,
+.prose-notes .code-snippet .hljs-selector-tag { color: #c586c0; }
+.prose-notes .code-snippet .hljs-string,
+.prose-notes .code-snippet .hljs-regexp { color: #ce9178; }
+.prose-notes .code-snippet .hljs-number { color: #b5cea8; }
+.prose-notes .code-snippet .hljs-literal { color: #569cd6; }
+.prose-notes .code-snippet .hljs-built_in,
+.prose-notes .code-snippet .hljs-builtin-name,
+.prose-notes .code-snippet .hljs-type { color: #4ec9b0; }
+.prose-notes .code-snippet .hljs-title,
+.prose-notes .code-snippet .hljs-title.function_,
+.prose-notes .code-snippet .hljs-title.class_ { color: #6cb6ff; }
+.prose-notes .code-snippet .hljs-meta,
+.prose-notes .code-snippet .hljs-decorator { color: #dcdcaa; }
+.prose-notes .code-snippet .hljs-attr,
+.prose-notes .code-snippet .hljs-attribute { color: #9ecbff; }
+.prose-notes .code-snippet .hljs-subst { color: #e8e2d8; }
+.prose-notes .code-snippet .hljs-comment,
+.prose-notes .code-snippet .hljs-quote { color: #7a746a; font-style: italic; }
+.prose-notes .code-snippet .hljs-operator { color: #9ecbff; }
+.prose-notes .code-snippet .hljs-punctuation { color: #a8a29a; }
+.prose-notes .code-snippet .hljs-variable { color: #e8e2d8; }
+.prose-notes .code-snippet .hljs-emphasis { font-style: italic; }
+.prose-notes .code-snippet .hljs-strong { font-weight: 700; }
 
 .code-window .dot {
   transition: transform 0.25s ease, background 0.25s ease;
@@ -2281,7 +2348,7 @@ footer [data-total-topics]:hover, footer [data-total-questions]:hover {
 
   /* Copy stays on a clean canvas — no halo / text-shadow needed */
   .hero-grid .hero-copy h1 {
-    font-size: 40px !important;
+    font-size: 48px !important;
     line-height: .92 !important;
     text-wrap: balance;
     letter-spacing: -.065em;
@@ -2435,7 +2502,7 @@ footer [data-total-topics]:hover, footer [data-total-questions]:hover {
     gap: 22px !important;
   }
   .hero-grid .hero-copy h1 {
-    font-size: 34px !important;
+    font-size: 40px !important;
     line-height: .94 !important;
   }
   .hero-grid .hero-media {

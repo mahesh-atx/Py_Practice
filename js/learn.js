@@ -78,6 +78,57 @@ function stripFencedCodeBlocks(md) {
     .replace(/^[ \t]*```[^`\n]*\n[\s\S]*?^[ \t]*```[ \t]*$/gm, '');
 }
 
+/* Minimal code blocks for learn notes: the <pre> is the ONLY visible
+   box; a floating chip sits in the top-right corner (Copy for code,
+   OUTPUT for text blocks). No header bar, no window dots, no box in a
+   box. Colourful Python syntax highlighting via highlight.js (CDN);
+   degrades to plain text if the CDN is unavailable. */
+function enhanceCodeBlocks(container) {
+  if (!container) return;
+  container.querySelectorAll('pre').forEach(pre => {
+    if (pre.closest('.code-snippet')) return;
+    const code = pre.querySelector('code');
+    const text = code ? code.innerText : pre.innerText;
+    const langClass = code ? (code.className || '') : '';
+    const isOutput = /language-(text|output|plain)/.test(langClass);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-snippet' + (isOutput ? ' output-block' : '');
+
+    if (isOutput) {
+      const label = document.createElement('span');
+      label.className = 'snip-chip';
+      label.textContent = 'Output';
+      wrapper.appendChild(label);
+    } else {
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'snip-chip';
+      copyBtn.setAttribute('aria-label', 'Copy code');
+      copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(text);
+        copyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Copied';
+        copyBtn.classList.add('copied');
+        toast('Code snippet copied!');
+        setTimeout(() => {
+          copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+          copyBtn.classList.remove('copied');
+        }, 1800);
+      });
+      wrapper.appendChild(copyBtn);
+    }
+
+    pre.parentNode.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+
+    if (!isOutput && code && typeof hljs !== 'undefined' && hljs.highlightElement) {
+      try { hljs.highlightElement(code); } catch (e) {}
+    }
+  });
+}
+
+
 function initLearnPage() {
   const root = document.getElementById('learnPage');
   if (!root) return;
@@ -225,81 +276,6 @@ function initLearnPage() {
     if (activeBtn && window.matchMedia('(min-width: 1024px)').matches) {
       activeBtn.scrollIntoView({ block: 'nearest' });
     }
-  }
-
-  function enhanceCodeBlocks(container) {
-    if (!container) return;
-    container.querySelectorAll('pre').forEach(pre => {
-      if (pre.closest('.code-window-wrapped') || pre.closest('.output-block')) return;
-      const code = pre.querySelector('code');
-      const text = code ? code.innerText : pre.innerText;
-      const langClass = code ? (code.className || '') : '';
-      const isOutput = langClass.includes('language-text') || langClass.includes('language-output') || langClass.includes('language-plain');
-
-      if (isOutput) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'output-block code-window-wrapped my-5 rounded-[12px] overflow-hidden border border-line bg-[var(--paper-2)]';
-        const header = document.createElement('div');
-        header.className = 'px-3.5 py-1.5 border-b border-line flex items-center justify-between text-[11px] font-mono text-muted bg-[var(--soft)]';
-        header.innerHTML = `
-          <span class="flex items-center gap-1.5"><i class="fa-solid fa-terminal text-[10px] opacity-60"></i> Output</span>
-          <button class="copy-btn hover:text-ink transition">Copy</button>
-        `;
-        const copyBtn = header.querySelector('.copy-btn');
-        copyBtn.addEventListener('click', () => {
-          navigator.clipboard.writeText(text);
-          copyBtn.textContent = 'Copied! ✓';
-          copyBtn.classList.add('copied');
-          toast('Output copied to clipboard!');
-          setTimeout(() => {
-            copyBtn.textContent = 'Copy';
-            copyBtn.classList.remove('copied');
-          }, 1800);
-        });
-        pre.parentNode.insertBefore(wrapper, pre);
-        wrapper.appendChild(header);
-        wrapper.appendChild(pre);
-        pre.className = 'm-0 p-3.5 text-xs font-mono text-ink overflow-x-auto';
-        return;
-      }
-
-      const wrapper = document.createElement('div');
-      wrapper.className = 'code-window code-window-wrapped rounded-[12px] overflow-hidden my-6 border border-[#3b3835] shadow-md';
-
-      const header = document.createElement('div');
-      header.className = 'px-4 py-2.5 border-b border-white/10 flex items-center justify-between text-xs text-white/50 bg-[#1c1a19]';
-      header.innerHTML = `
-        <div class="flex items-center gap-1.5">
-          <span class="h-2 w-2 rounded-full bg-[#ff5f56]"></span>
-          <span class="h-2 w-2 rounded-full bg-[#ffbd2e]"></span>
-          <span class="h-2 w-2 rounded-full bg-[#27c93f]"></span>
-          <span class="ml-2 font-mono text-[11px] text-white/40">example.py</span>
-        </div>
-        <div class="flex items-center gap-2">
-          <span class="text-[10px] font-mono text-white/30 uppercase tracking-wider">Python 3</span>
-          <button class="text-[11px] text-white/60 hover:text-white transition px-2.5 py-1 rounded bg-white/5 hover:bg-white/10 border border-white/10 copy-btn">
-            Copy
-          </button>
-        </div>
-      `;
-
-      const copyBtn = header.querySelector('.copy-btn');
-      copyBtn.addEventListener('click', () => {
-        navigator.clipboard.writeText(text);
-        copyBtn.textContent = 'Copied! ✓';
-        copyBtn.classList.add('copied');
-        toast('Code snippet copied!');
-        setTimeout(() => {
-          copyBtn.textContent = 'Copy';
-          copyBtn.classList.remove('copied');
-        }, 1800);
-      });
-
-      pre.parentNode.insertBefore(wrapper, pre);
-      wrapper.appendChild(header);
-      wrapper.appendChild(pre);
-      pre.className = 'm-0 p-4 text-[13px] leading-6 overflow-x-auto font-mono text-[#f4efe6] bg-[#211f1e]';
-    });
   }
 
   function renderMarkdownNotes(mdText, t, progress) {
