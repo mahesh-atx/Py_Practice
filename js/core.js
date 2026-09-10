@@ -592,7 +592,12 @@ function explanationFor(q) {
     'Exception Handling': 'Protect only the operation that can fail and handle the specific error you expect.',
     'File Handling': 'Open the file safely with a context manager (with open), read or write the data, then print results cleanly.',
     'Modules and Packages': 'Import the standard module (e.g. math, random, datetime, collections) and use its functions cleanly.',
-    'Object-Oriented Programming': 'Give each class a clear responsibility. Store related data on the object and keep behavior close to that data.'
+    'Object-Oriented Programming': 'Give each class a clear responsibility. Store related data on the object and keep behavior close to that data.',
+    'Iterators & Generators': 'Use iter() and next() to pull values, and yield to produce lazy sequences.',
+    'Decorators': 'Wrap a function to add behavior before or after it runs, using *args and **kwargs.',
+    'Regular Expressions': 'Choose the right re function and craft a pattern with character classes and quantifiers.',
+    'JSON': 'Convert between JSON strings and Python dicts with json.loads and dumps, then chain keys for nested data.',
+    'Working with APIs': 'Build a requests call with params and timeout, check status, then parse JSON.'
   };
   return byTopic[q.topic] || 'Break the problem into input, processing, and output. Start with the simplest correct solution, then improve it.';
 }

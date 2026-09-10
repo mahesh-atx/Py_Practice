@@ -30,7 +30,7 @@ const TOTAL = derivedTotal();
 describe('question counts are derived, not hardcoded', () => {
   it('derived total is stable and sane', () => {
     assert.ok(TOTAL > 500, `expected a few hundred questions, got ${TOTAL}`);
-    assert.equal(topics.length, 21);
+    assert.equal(topics.length, 26);
   });
 
   it('no page still says 162', () => {

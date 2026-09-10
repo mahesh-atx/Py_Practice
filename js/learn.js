@@ -26,7 +26,12 @@ const LEARN_FA_ICONS = {
   'While Loops': 'fa-solid fa-arrows-rotate',
   'Nested Loops': 'fa-solid fa-table-cells-large',
   'String Methods': 'fa-solid fa-font',
-  'List Comprehension': 'fa-solid fa-bolt'
+  'List Comprehension': 'fa-solid fa-bolt',
+  'Iterators & Generators': 'fa-solid fa-infinity',
+  'Decorators': 'fa-solid fa-wand-magic-sparkles',
+  'Regular Expressions': 'fa-solid fa-magnifying-glass-chart',
+  'JSON': 'fa-solid fa-code',
+  'Working with APIs': 'fa-solid fa-cloud-arrow-down'
 };
 
 const TOPIC_DOMAINS = {
@@ -51,7 +56,12 @@ const TOPIC_DOMAINS = {
   'Exception Handling': { domain: 'Defensive Code', level: 'Advanced', readTime: '7 min' },
   'File Handling': { domain: 'I/O & Persistence', level: 'Advanced', readTime: '7 min' },
   'Modules and Packages': { domain: 'Architecture', level: 'Advanced', readTime: '8 min' },
-  'Object-Oriented Programming': { domain: 'OOP & Design', level: 'Advanced', readTime: '10 min' }
+  'Object-Oriented Programming': { domain: 'OOP & Design', level: 'Advanced', readTime: '10 min' },
+  'Iterators & Generators': { domain: 'Iteration', level: 'Advanced', readTime: '7 min' },
+  'Decorators': { domain: 'Metaprogramming', level: 'Advanced', readTime: '7 min' },
+  'Regular Expressions': { domain: 'Text Processing', level: 'Advanced', readTime: '8 min' },
+  'JSON': { domain: 'Data Format', level: 'Intermediate', readTime: '6 min' },
+  'Working with APIs': { domain: 'Networking', level: 'Advanced', readTime: '9 min' }
 };
 
 function getLearnIcon(name) { return LEARN_FA_ICONS[name] || 'fa-solid fa-code'; }

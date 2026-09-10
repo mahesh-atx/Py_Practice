@@ -4,8 +4,8 @@ const assert = require('node:assert/strict');
 const { topics, questionSeeds } = require('../js/topics-data.js');
 
 describe('topics-data.js - topics array', () => {
-  it('should have 21 topics', () => {
-    assert.equal(topics.length, 21);
+  it('should have 26 topics', () => {
+    assert.equal(topics.length, 26);
   });
 
   it('each topic should have name, desc, icon', () => {
@@ -27,7 +27,7 @@ describe('topics-data.js - topics array', () => {
 
   it('should include expected core topics', () => {
     const names = topics.map(t => t.name);
-    const mustHave = ['Python Basics', 'Variables', 'Data Types', 'Input and Output', 'Operators', 'Conditional Statements', 'For Loops', 'While Loops', 'Nested Loops', 'Strings', 'String Methods', 'Functions', 'Lists', 'Dictionaries', 'Comprehension', 'Exception Handling', 'File Handling', 'Object-Oriented Programming'];
+    const mustHave = ['Python Basics', 'Variables', 'Data Types', 'Input and Output', 'Operators', 'Conditional Statements', 'For Loops', 'While Loops', 'Nested Loops', 'Strings', 'String Methods', 'Functions', 'Lists', 'Dictionaries', 'Comprehension', 'Exception Handling', 'File Handling', 'Object-Oriented Programming', 'Iterators & Generators', 'Decorators', 'Regular Expressions', 'JSON', 'Working with APIs'];
     for (const n of mustHave) {
       assert.ok(names.includes(n), `missing topic ${n}`);
     }

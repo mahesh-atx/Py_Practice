@@ -102,7 +102,7 @@ describe('canonical question ids', () => {
     const ids = new Set(sandbox.allQuestions().map(q => q.id));
     assert.equal(total, ids.size);
     // Aliased topics no longer inflate the total by 30.
-    assert.equal(total, 579);
+    assert.equal(total, 639);
   });
 });
 

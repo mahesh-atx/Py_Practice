@@ -41,7 +41,12 @@ const NOTES_MAP = {
   'Exception Handling': '14_exception_handling.md',
   'File Handling': '15_file_handling.md',
   'Modules and Packages': '16_modules_and_packages.md',
-  'Object-Oriented Programming': '17_object_oriented_programming.md'
+  'Object-Oriented Programming': '17_object_oriented_programming.md',
+  'Iterators & Generators': '18_iterators_generators.md',
+  'Decorators': '19_decorators.md',
+  'Regular Expressions': '20_regular_expressions.md',
+  'JSON': '21_json.md',
+  'Working with APIs': '22_apis.md'
 };
 
 /* Alias topics exist in questionSeeds and may be looked up by name, but

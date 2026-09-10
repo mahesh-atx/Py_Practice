@@ -70,10 +70,10 @@ describe('notes content — structure the Learn page depends on', () => {
   const files = fs.readdirSync(notesDir).filter(f => f.endsWith('.md')).sort();
 
   it('has one .md file per topic', () => {
-    assert.equal(files.length, 18, `Expected 18 note files, found ${files.length}`);
+    assert.equal(files.length, 23, `Expected 23 note files, found ${files.length}`);
   });
 
-  it('files are numbered 00..17 so the build can map them to topics', () => {
+  it('files are numbered 00..22 so the build can map them to topics', () => {
     files.forEach((f, i) => {
       assert.ok(
         f.startsWith(String(i).padStart(2, '0') + '_'),

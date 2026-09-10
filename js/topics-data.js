@@ -19,7 +19,12 @@ const topics = [
   { name:'Exception Handling', desc:'Handle errors with try, except, else, and finally.', icon:'17' },
   { name:'File Handling', desc:'Read from and write to text files using Python.', icon:'18' },
   { name:'Modules and Packages', desc:'Structure code with import, built-in modules, custom modules, packages, and pip.', icon:'19' },
-  { name:'Object-Oriented Programming', desc:'Use classes, objects, methods, inheritance, and composition.', icon:'20' }
+  { name:'Object-Oriented Programming', desc:'Use classes, objects, methods, inheritance, and composition.', icon:'20' },
+  { name:'Iterators & Generators', desc:'Create iterables, iterators, yield, and lazy generator expressions.', icon:'21' },
+  { name:'Decorators', desc:'Wrap functions with decorators, arguments, and functools.wraps.', icon:'22' },
+  { name:'Regular Expressions', desc:'Match and extract text with re, character classes, and quantifiers.', icon:'23' },
+  { name:'JSON', desc:'Parse and build JSON with json.loads, dumps, and nested data.', icon:'24' },
+  { name:'Working with APIs', desc:'Call live APIs with requests, endpoints, and response handling.', icon:'25' }
 ];
 
 const questionSeeds = {
@@ -1501,6 +1506,106 @@ const questionSeeds = {
       ['Method overriding with super','Call the parent method from a child overridden method.','','Woof and Animal',[{input:'',output:'Woof and Animal'}]],
       ['Bank inheritance','Have SavingsAccount inherit from BankAccount and add interest.','1000\n5','1050',[{input:'2000\n10',output:'2200'}]],
       ['Composition','Compose a Library from multiple Book objects and list titles.','Python\nJava','Python\nJava',[{input:'Go\nRust',output:'Go\nRust'}]]
+     ]
+   },
+  'Iterators & Generators': {
+    basic:[
+      ['Iterate with iter and next','Use iter() and next() to get the first element from a list.','10 20 30','10',[{input:'5 6',output:'5'}]],
+      ['Generator evens','Write a generator evens(n) that yields the first n even numbers and print them.','5','0 2 4 6 8',[{input:'3',output:'0 2 4'}]],
+      ['For loop is iterator','Show that a for loop works by consuming an iterable twice.','1 2','1 2\n1 2',[{input:'a b',output:'a b\na b'}]],
+      ['Generator expression','Use a generator expression (x*x for x in range(n)) to compute a sum.','5','30',[{input:'3',output:'5'}]]
+    ],
+    intermediate:[
+      ['Fibonacci generator','Build a Fibonacci generator and print the first n values.','6','0 1 1 2 3 5',[{input:'4',output:'0 1 1 2'}]],
+      ['Batch generator','Yield batches of size k from a list.','1 2 3 4 5\n2','1 2\n3 4\n5',[{input:'a b c d\n3',output:'a b c\nd'}]],
+      ['Yield vs return','Demonstrate that a function with yield returns a generator object.','3','generator',[{input:'5',output:'generator'}]],
+      ['Lazy file lines','Write a generator that yields non-empty stripped lines from a file.','a\n\nb','a\nb',[{input:'x\ny',output:'x\ny'}]]
+    ],
+    advanced:[
+      ['Infinite generator','Create an infinite counter generator and take first n values.','5','0 1 2 3 4',[{input:'3',output:'0 1 2'}]],
+      ['Generator memory','Compare memory of list comprehension vs generator expression for 1M squares.','1000000','generator wins',[{input:'100',output:'generator wins'}]],
+      ['Custom iterator class','Implement an iterator class with __iter__ and __next__.','3','1 2 3',[{input:'2',output:'1 2'}]],
+      ['Chained generators','Chain two generators to process data in pipeline.','5','10 20 30 40 50',[{input:'3',output:'10 20 30'}]]
+    ]
+  },
+  'Decorators': {
+    basic:[
+      ['Function as value','Assign a function to a variable and call it.','hello','HELLO',[{input:'world',output:'WORLD'}]],
+      ['Simple decorator','Write a @shout decorator that uppercases a string result.','Ravi','HELLO, RAVI',[{input:'Asha',output:'HELLO, ASHA'}]],
+      ['@ syntax sugar','Explain that @deco is sugar for func = deco(func).','test','decorated',[{input:'hi',output:'decorated'}]],
+      ['Wrapper returns','A decorator wrapper must return the result of the original function.','5','25',[{input:'3',output:'9'}]]
+    ],
+    intermediate:[
+      ['Timer decorator','Write @timer that prints execution time.','sum 1000','timed',[{input:'sum 100',output:'timed'}]],
+      ['Log calls','Write @log_calls that logs arguments and return value.','add 3 5','called with (3, 5) returned 8',[{input:'add 2 2',output:'called with (2, 2) returned 4'}]],
+      ['Stacked decorators','Stack @timer and @log_calls on one function.','add','logged and timed',[{input:'mul',output:'logged and timed'}]],
+      ['functools.wraps','Use @wraps to preserve __name__ and docstring.','greet','greet',[{input:'hello',output:'hello'}]]
+    ],
+    advanced:[
+      ['Retry decorator','Write @retry that retries up to 3 times on exception.','fail fail ok','ok',[{input:'ok',output:'ok'}]],
+      ['Count calls','Write @count_calls that tracks call count.','3','3 calls',[{input:'2',output:'2 calls'}]],
+      ['Decorator with arguments','Write a decorator factory that takes a prefix argument.','hi','prefix: hi',[{input:'hello',output:'prefix: hello'}]],
+      ['Class decorator','Apply decorator to methods like @staticmethod.','myfunc','static',[{input:'test',output:'static'}]]
+    ]
+  },
+  'Regular Expressions': {
+    basic:[
+      ['Find digits','Use re.findall(r"\\d+", text) to extract numbers.','There are 3 cats and 12 dogs','3 12',[{input:'a1b22c',output:'1 22'}]],
+      ['Search first','Use re.search to find first match and print group().','Order 3 items','3',[{input:'abc123',output:'123'}]],
+      ['Replace with sub','Use re.sub to replace digits with X.','Order 3 items','Order X items',[{input:'a1b2',output:'aXbX'}]],
+      ['Raw strings','Explain why patterns use raw strings r"\\d+".','pattern','raw',[{input:'test',output:'raw'}]]
+    ],
+    intermediate:[
+      ['Find Indian mobiles','Extract 10-digit mobiles starting 6-9 with word boundaries.','Reach 9876543210','9876543210',[{input:'call 9123456789',output:'9123456789'}]],
+      ['Email check','Validate email with pattern r"^.+@.+\\.[a-z]{2,}$".','ravi@gmail.com','True',[{input:'not-email',output:'False'}]],
+      ['Capture groups','Use groups to split email into user and domain.','ravi@gmail.com','ravi gmail.com',[{input:'a@b.com',output:'a b.com'}]],
+      ['Word boundaries','Use \\b to avoid matching part of longer number.','123456789012','no match',[{input:'9876543210',output:'9876543210'}]]
+    ],
+    advanced:[
+      ['Mask phones','Mask phones with re.sub(r"\\b[6-9]\\d{9}\\b", "XXXXX", text).','call 9876543210','call XXXXX',[{input:'phone 9123456789',output:'phone XXXXX'}]],
+      ['Date pattern','Match dates like 05-09-2026 with \\d{2}-\\d{2}-\\d{4}.','05-09-2026','match',[{input:'2026-09-05',output:'match'}]],
+      ['String methods vs regex','Prefer string methods for literal searches.','hello','found',[{input:'world',output:'found'}]],
+      ['Findall tuples','Use re.findall with two groups to get (word, price) tuples.','pencil 10 pen 5','pencil 10 pen 5',[{input:'a 1 b 2',output:'a 1 b 2'}]]
+    ]
+  },
+  'JSON': {
+    basic:[
+      ['Parse JSON','Use json.loads to parse {"name":"Ravi"} and print name.','{"name":"Ravi"}','Ravi',[{input:'{"age":21}',output:'21'}]],
+      ['Dump JSON','Use json.dumps to convert dict to JSON string.','Ravi 21','{"name": "Ravi", "age": 21}',[{input:'Asha 19',output:'{"name": "Asha", "age": 19}'}]],
+      ['JSON types','Map JSON true/false/null to Python True/False/None.','true','True',[{input:'null',output:'None'}]],
+      ['Pretty print','Use json.dumps with indent=2 to pretty-print.','{"a":1}','{\n  "a": 1\n}',[{input:'{"b":2}',output:'{\n  "b": 2\n}'}]]
+    ],
+    intermediate:[
+      ['Nested lookup','Chain lookups response["top_student"]["name"] to get Asha.','{"top_student":{"name":"Asha"}}','Asha',[{input:'{"a":{"b":5}}',output:'5'}]],
+      ['List of dicts','Loop over JSON array of users and print names.','[{"name":"Ravi"},{"name":"Asha"}]','Ravi\nAsha',[{input:'[{"name":"X"}]',output:'X'}]],
+      ['json.load vs loads','Explain s means string: load for files, loads for strings.','file','loads for string',[{input:'string',output:'loads for string'}]],
+      ['Common mistake','Fix single quotes by using json correctly.','{"name":"Ravi"}','Ravi',[{input:'{"x":1}',output:'1'}]]
+    ],
+    advanced:[
+      ['Build JSON','Create dict with lists and bools then dump to JSON.','Ravi python','{"name":"Ravi","skills":["python"]}',[{input:'Asha java',output:'{"name":"Asha","skills":["java"]}'}]],
+      ['Save to file','Use json.dump with file object to save profile.json.','profile','saved',[{input:'data',output:'saved'}]],
+      ['Temps average','Parse {"temps":[28,30,27]} and compute average.','{"temps":[28,30,27]}','28.33',[{input:'{"temps":[10,20]}',output:'15.00'}]],
+      ['Student grades','Given students JSON, print each name and average marks.','[{"name":"Ravi","marks":[80,90]}]','Ravi 85.0',[{input:'[{"name":"A","marks":[100]}]',output:'A 100.0'}]]
+    ]
+  },
+  'Working with APIs': {
+    basic:[
+      ['GET request','Use requests.get(url, params=...) to fetch weather.','Pune 18.52 73.86','200',[{input:'Mumbai 19 72',output:'200'}]],
+      ['Status code','Check response.status_code == 200 for success.','200','OK',[{input:'404',output:'Not Found'}]],
+      ['response.json','Call response.json() to get dict from API.','{"temp":25}','25',[{input:'{"a":1}',output:'1'}]],
+      ['HTTP methods','List GET POST PUT DELETE meanings.','GET','fetch',[{input:'POST',output:'create'}]]
+    ],
+    intermediate:[
+      ['Open-Meteo fetch','Fetch current_weather from open-meteo and print temperature.','18.52 73.86','temp: 25',[{input:'19 72',output:'temp: 20'}]],
+      ['POST to JSONPlaceholder','Use requests.post with json=payload to create a post.','Learning APIs','201',[{input:'test',output:'201'}]],
+      ['Params vs URL','Use params dict instead of building URL string.','lat 18 lon 73','?lat=18&lon=73',[{input:'a 1 b 2',output:'?a=1&b=2'}]],
+      ['Chain trick','Use data["current_weather"]["temperature"] to get nested value.','{"current_weather":{"temperature":25}}','25',[{input:'{"a":{"b":5}}',output:'5'}]]
+    ],
+    advanced:[
+      ['Timeout and retry','Add timeout=10 and try/except for requests.','timeout','handled',[{input:'ok',output:'handled'}]],
+      ['Weather checker','Build get_weather(city, lat, lon) function combining requests and JSON.','Pune','Weather in Pune: 25C',[{input:'Mumbai',output:'Weather in Mumbai: 25C'}]],
+      ['Count user posts','Fetch /posts and count posts where userId==1.','1','10',[{input:'2',output:'8'}]],
+      ['Save API response','Save API JSON to file with json.dump.','data','saved',[{input:'json',output:'saved'}]]
     ]
   }
 };

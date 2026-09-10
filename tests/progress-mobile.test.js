@@ -61,7 +61,7 @@ test('progress page: rendered cards use the compact mobile layout', () => {
 
   const html = els.progressGrid.innerHTML;
   const cards = (html.match(/practice\.html\?topic=/g) || []).length;
-  assert.equal(cards, 21, 'all 21 topic cards rendered');
+  assert.equal(cards, 26, 'all 26 topic cards rendered');
 
   assert.match(html, /<span class="font-mono text-muted\/50 mr-1">0\d<\/span>/,
     'index number is part of the title, not a separate left column');
