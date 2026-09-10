@@ -651,6 +651,7 @@ function initProblemPage() {
 
   // First question render (nav, pills, editor code all flow from here)
   renderQuestion();
+  initHintToggle();
 
   // Helper to show explanation safely — now as fixed toast so it never pushes the image/banner
   function showExplanation() {
@@ -660,11 +661,34 @@ function initProblemPage() {
     explanation.innerHTML = `<div class="text-sm leading-6">${escapeHtml(hintText)}</div>`;
     const explText = document.getElementById('explanationText');
     if (explText) explText.textContent = hintText;
+    const hintBtn = document.getElementById('hintToggleBtn');
+    if (hintBtn) { hintBtn.textContent = 'Hide hint'; hintBtn.classList.remove('hidden'); }
     // auto-hide after longer than normal toast (2600) so hint stays ~5s like a toast
     clearTimeout(window.__hintTimer);
     window.__hintTimer = setTimeout(() => {
       explanation.classList.add('hidden');
+      if (hintBtn) hintBtn.textContent = '? Hint';
     }, 5000);
+  }
+
+  function hideExplanation() {
+    if (!explanation) return;
+    explanation.classList.add('hidden');
+    clearTimeout(window.__hintTimer);
+    const hintBtn = document.getElementById('hintToggleBtn');
+    if (hintBtn) hintBtn.textContent = '? Hint';
+  }
+
+  function initHintToggle() {
+    const hintBtn = document.getElementById('hintToggleBtn');
+    if (!hintBtn || hintBtn.dataset.bound) return;
+    hintBtn.dataset.bound = '1';
+    hintBtn.classList.remove('hidden');
+    hintBtn.addEventListener('click', () => {
+      if (!explanation) return;
+      if (explanation.classList.contains('hidden')) showExplanation();
+      else hideExplanation();
+    });
   }
 
   async function runCode(mode = 'sample') {
@@ -801,7 +825,7 @@ function initProblemPage() {
         if (testSummary) testSummary.textContent = hasError ? 'Error' : 'Custom done';
         if (editorState) editorState.textContent = hasError ? 'Error' : 'Done';
         if (hasError) showExplanation();
-        else if (explanation) { explanation.classList.add('hidden'); clearTimeout(window.__hintTimer); }
+        else hideExplanation();
         return;
       }
 
@@ -842,8 +866,9 @@ function initProblemPage() {
         if (resultPanel) resultPanel.classList.remove('hidden');
 
         if (passed) {
+          toast(isSubmit ? 'Accepted — progress saved' : 'Passed — press Submit to save');
           if (testSummary) testSummary.textContent = '1/1 passed';
-          if (editorState) editorState.textContent = 'Accepted';
+          if (editorState) editorState.textContent = isSubmit ? 'Accepted' : 'Passed';
           appendTerminal('[Test case passed in ' + totalElapsed + 'ms]', 'stdout');
           if (isSubmit) {
             const wasAlreadySolved = state.solved[q.id] ? true : false;
@@ -906,10 +931,12 @@ function initProblemPage() {
               <span class="hidden sm:inline text-white/40 text-[11px] ml-auto whitespace-nowrap">Check your output below.</span>
             </div>
           `;
+          toast('Wrong Answer — check output below');
         }
-        // Only show hint when the answer is wrong — not on Accepted/Passed
+        // Only auto-show hint when the answer is wrong — on correct it stays hidden
+        // but the ? Hint toggle remains available on demand (initHintToggle).
         if (currentResult && !currentResult.passed) showExplanation();
-        else if (explanation) { explanation.classList.add('hidden'); clearTimeout(window.__hintTimer); }
+        else hideExplanation();
       }
 
 

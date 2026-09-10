@@ -207,6 +207,13 @@
                 id="explanationPanel"
                 class="card mt-6 p-5 hidden rounded-[14px] border-l-4 border-l-[var(--green)]"
               ></div>
+              <button
+                id="hintToggleBtn"
+                type="button"
+                class="mt-2 text-[11px] font-mono text-muted hover:text-ink underline underline-offset-2 decoration-dotted hidden"
+              >
+                ? Hint
+              </button>
             </div>
 
             <!-- Animated Banner — pushed as low as possible, flush above the nav buttons -->
@@ -260,6 +267,7 @@
                 <!-- Run Button (Top) -->
                 <button
                   id="runBtn"
+                  title="Run — check output (no progress saved)"
                   class="px-3 sm:px-3.5 py-2 sm:py-1.5 border border-white/15 text-xs text-white hover:bg-white/10 rounded-[8px] transition flex items-center gap-1.5 active:scale-95 cursor-pointer font-mono font-medium min-h-[34px]"
                 >
                   <i class="fa-solid fa-play text-[10px]"></i> <span>Run</span>
@@ -268,6 +276,7 @@
                 <!-- Submit Button (Top) -->
                 <button
                   id="submitBtn"
+                  title="Submit — check and save progress if correct"
                   class="px-3 sm:px-4 py-2 sm:py-1.5 bg-[#f4efe6] text-black text-xs font-semibold rounded-[8px] hover:bg-white transition flex items-center gap-1.5 shadow active:scale-95 cursor-pointer font-mono font-medium min-h-[34px]"
                 >
                   <i class="fa-solid fa-paper-plane text-[10px]"></i> <span>Submit</span>
