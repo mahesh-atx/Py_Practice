@@ -26,18 +26,41 @@ async function initPyodide() {
   return pyodideLoadingPromise;
 }
 
+function baseMockFiles() {
+  return {
+    'hello.txt': 'Hello\nWorld\nPython file handling',
+    'notes.txt': 'Learning Python\nPractice makes perfect\nLine 3 notes',
+    'source.txt': 'Sample source content for copying and processing.',
+    'data.csv': 'name,score\nNina,95\nAman,88\nRiya,92',
+    // Shared defaults so file questions never hit FileNotFound.
+    // Questions with their own needs override these via per-case mockFiles.
+    'nums.txt': '5\n5\n5',
+    'data.txt': '11\n11\n11',
+    'a.txt': 'dog barks\ncat naps\ndog runs\nline one\nline two\nline three',
+    'b.txt': 'x\ny\nz',
+    'x.txt': 'hello from x',
+    'y.txt': 'hello from y',
+    'config.txt': 'host localhost\nport 8080',
+    'counter.txt': '41'
+  };
+}
+
 function setupMockFS(py) {
   try {
-    py.FS.writeFile('hello.txt', 'Hello\nWorld\nPython file handling');
-    py.FS.writeFile('notes.txt', 'Learning Python\nPractice makes perfect\nLine 3 notes');
-    py.FS.writeFile('source.txt', 'Sample source content for copying and processing.');
-    py.FS.writeFile('data.csv', 'name,score\nNina,95\nAman,88\nRiya,92');
+    const base = baseMockFiles();
+    for (const [name, content] of Object.entries(base)) {
+      try { py.FS.writeFile(name, content); } catch (e) {}
+    }
   } catch (err) {
     // ignore - FS may not be ready on some pyodide builds
   }
 }
 
-async function runTestCase(py, code, inputValue, mockFiles, interactive, requestId) {
+function resetMockFS(py, mockFiles) {
+  // Re-create base files before every case so deletions/appends from a
+  // previous case never leak into the next one (the classic
+  // "case 1 passes but case 2 fails" file-state bug).
+  setupMockFS(py);
   if (mockFiles && typeof mockFiles === 'object') {
     for (const [filename, content] of Object.entries(mockFiles)) {
       try {
@@ -45,24 +68,29 @@ async function runTestCase(py, code, inputValue, mockFiles, interactive, request
       } catch (e) {}
     }
   }
+}
+
+async function runTestCase(py, code, inputValue, mockFiles, interactive, requestId) {
+  resetMockFS(py, mockFiles);
 
   const escapedInput = JSON.stringify(String(inputValue || ''));
   const escapedCode = JSON.stringify(String(code || ''));
   const isInteractive = interactive ? 'True' : 'False';
   const escapedId = JSON.stringify(String(requestId || ''));
 
-  // Conditional import of js helpers only when interactive to avoid overhead/bugs
+  // Unified stdin: input() and sys.stdin.read/readline share one buffer,
+  // so solutions using either style (or a mix) see the same bytes.
+  // input() strips exactly one trailing \r?\n, preserving other spaces.
   const harness = `
 import sys, io, builtins
 
 _input_data = ${escapedInput}
-_input_lines = _input_data.splitlines()
-_input_index = 0
+_stdin_buf = io.StringIO(_input_data)
 _interactive = ${isInteractive}
 _req_id = ${escapedId}
 
 def _input(prompt=''):
-    global _input_index
+    global _stdin_buf
     if prompt:
         print(prompt, end='')
     if _interactive:
@@ -80,22 +108,27 @@ def _input(prompt=''):
         else:
             raise EOFError('Input cancelled or failed')
     else:
-        if _input_index >= len(_input_lines):
+        line = _stdin_buf.readline()
+        if line == '':
             raise EOFError('No more input values.')
-        value = _input_lines[_input_index]
-        _input_index += 1
-        return value
+        if line.endswith('\\r\\n'):
+            return line[:-2]
+        if line.endswith('\\n') or line.endswith('\\r'):
+            return line[:-1]
+        return line
 
 _out = io.StringIO()
 _err = io.StringIO()
 _original_input = builtins.input
 _original_stdout = sys.stdout
 _original_stderr = sys.stderr
+_original_stdin = sys.stdin
 
 try:
     builtins.input = _input
     sys.stdout = _out
     sys.stderr = _err
+    sys.stdin = _stdin_buf
     exec(${escapedCode}, {})
 except Exception as _exc:
     import traceback
@@ -104,6 +137,10 @@ finally:
     builtins.input = _original_input
     sys.stdout = _original_stdout
     sys.stderr = _original_stderr
+    try:
+        sys.stdin = _original_stdin
+    except Exception:
+        pass
 
 (_out.getvalue(), _err.getvalue())
 `;
@@ -220,5 +257,5 @@ self.onmessage = async (event) => {
 
 // Export for Node testing (not used in browser worker context)
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { normalizeOutput, runTestCase };
+  module.exports = { normalizeOutput, runTestCase, baseMockFiles, resetMockFS };
 }

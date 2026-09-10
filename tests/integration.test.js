@@ -42,20 +42,21 @@ finally:
 sys.stdout.write(_out.getvalue())
 sys.stderr.write(_err.getvalue())
 `;
-  const tmp = path.join(os.tmpdir(), `pypractice_test_${Date.now()}_${Math.random().toString(36).slice(2)}.py`);
+  const workdir = fs.mkdtempSync(path.join(os.tmpdir(), 'pypractice_test_'));
+  const tmp = path.join(workdir, 'run.py');
   fs.writeFileSync(tmp, harness, 'utf8');
   return new Promise((resolve, reject) => {
-    const proc = spawn('python', [tmp], { timeout: 5000 });
+    const proc = spawn('python', [tmp], { timeout: 5000, cwd: workdir });
     let stdout = '';
     let stderr = '';
     proc.stdout.on('data', d => stdout += d.toString());
     proc.stderr.on('data', d => stderr += d.toString());
     proc.on('error', (err) => {
-      try { fs.unlinkSync(tmp); } catch {}
+      try { fs.rmSync(workdir, { recursive: true, force: true }); } catch {}
       reject(err);
     });
     proc.on('close', (code) => {
-      try { fs.unlinkSync(tmp); } catch {}
+      try { fs.rmSync(workdir, { recursive: true, force: true }); } catch {}
       // harness writes stdout to stdout via sys.stdout.write, so stdout contains program output
       // _err was written to _err StringIO then to sys.stderr? Actually we wrote _err to sys.stderr via sys.stderr.write at end, but we set sys.stderr back before, so _err content goes to real stderr via _err.getvalue not automatically.
       // Our harness's final sys.stdout.write(_out.getvalue()) writes captured stdout, but we didn't write _err to stderr - we need to capture it.
@@ -104,17 +105,18 @@ finally:
 # Output as JSON for easy parsing
 print(json.dumps({"stdout": _out.getvalue(), "stderr": _err.getvalue()}))
 `;
-  const tmp = path.join(os.tmpdir(), `pypractice_harness_${Date.now()}_${Math.random().toString(36).slice(2)}.py`);
+  const workdir = fs.mkdtempSync(path.join(os.tmpdir(), 'pypractice_harness_'));
+  const tmp = path.join(workdir, 'run.py');
   fs.writeFileSync(tmp, harness, 'utf8');
   return new Promise((resolve, reject) => {
-    const proc = spawn('python', [tmp], { timeout: 7000 });
+    const proc = spawn('python', [tmp], { timeout: 7000, cwd: workdir });
     let out = '';
     let err = '';
     proc.stdout.on('data', d => out += d.toString());
     proc.stderr.on('data', d => err += d.toString());
     proc.on('error', reject);
     proc.on('close', () => {
-      try { fs.unlinkSync(tmp); } catch {}
+      try { fs.rmSync(workdir, { recursive: true, force: true }); } catch {}
       if (err) return resolve({ stdout: '', stderr: err, raw: out });
       try {
         const parsed = JSON.parse(out.trim().split('\n').pop());

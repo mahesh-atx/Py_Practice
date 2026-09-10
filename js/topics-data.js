@@ -216,23 +216,23 @@ const questionSeeds = {
       ['Sign of difference','Print which number is larger: a, b, or Equal.','7 7','Equal',[{input:'9 3',output:'a'}]]
     ],
     intermediate:[
-      ['Grade calculator','Print a grade A/B/C/D/F from a score.','82','A',[{input:'65',output:'B'}]],
+      ['Grade calculator','Print a grade from a score: A for 80+, B for 60+, C for 40+, D for 33+, else F.','82','A',[{input:'65',output:'B'}]],
       ['Largest of three','Read three integers and print the largest.','7 14 9','14',[{input:'20 15 8',output:'20'}]],
       ['Leap year','Check whether a year is a leap year.','2024','Leap year',[{input:'2023',output:'Not a leap year'}]],
       ['Number category','Print Even positive, Odd positive, Even negative, Odd negative, or Zero.','-9','Odd negative',[{input:'8',output:'Even positive'}]],
-      ['BMI category','Read weight and height and print a category based on BMI.','70 1.7','Overweight',[{input:'60 1.7',output:'Normal'}]],
+      ['BMI category','Read weight (kg) and height (m), compute BMI = weight / height^2, and print Underweight (<18.5), Normal (18.5-22.9), or Overweight (23+).','70 1.7','Overweight',[{input:'60 1.7',output:'Normal'}]],
       ['Three-way comparison','Print Smaller, Equal, or Larger by comparing two values.','7 4','Larger',[{input:'5 5',output:'Equal'}]],
       ['Discount bracket','Print 10% when a price is below 500, else 20%.','400','10%',[{input:'900',output:'20%'}]],
       ['Quadrant finder','Read x and y and print which quadrant the point lies in.','-3 4','Quadrant II',[{input:'2 -5',output:'Quadrant IV'}]],
-      ['Grade with feedback','Print a comment based on a score: High, Average, or Low.','60','Average',[{input:'95',output:'High'}]],
+      ['Grade with feedback','Print High for 85+, Average for 50-84, or Low below 50.','60','Average',[{input:'95',output:'High'}]],
       ['Valid triangle','Read three sides and print whether they can form a triangle.','3 4 5','Valid',[{input:'1 2 3',output:'Invalid'}]]
     ],
     advanced:[
-      ['Shipping tier','Choose a shipping price based on order amount and membership status.','1250 True','Free',[{input:'300 False',output:'Standard'}]],
+      ['Shipping tier','Print Free for orders of 1000+ (or 500+ for members), else Standard.','1250 True','Free',[{input:'300 False',output:'Standard'}]],
       ['Triangle type','Given three sides, print whether the triangle is valid and its type.','3 3 4','Valid - Isosceles',[{input:'3 4 5',output:'Valid - Scalene'}]],
-      ['Tax bracket','Calculate tax using three income brackets.','50000','5000.0',[{input:'20000',output:'0.0'}]],
-      ['Electricity bill','Read units and compute a slab-based bill.','350','380',[{input:'120',output:'90'}]],
-      ['Student result with grace','Read marks and decide: Pass, Fail, Or Pass with grace when marks are within 5 of the pass mark.','41','Pass',[{input:'36','output':'Pass with grace'}]],
+      ['Tax bracket','Calculate flat-rate tax: 0 up to 25000, 10% up to 100000, 20% above.','50000','5000.0',[{input:'20000',output:'0.0'}]],
+      ['Electricity bill','Compute the bill at 0.75/unit up to 200 units and 1.50/unit above, plus a 5 surcharge above 200 units.','350','380.0',[{input:'120',output:'90.0'}]],
+      ['Student result with grace','Read marks and decide: Pass, Fail, Or Pass with grace when marks are within 5 of the pass mark.','41','Pass',[{input:'36',output:'Pass with grace'}]],
       ['Age group','Read an age and print Toddler, Child, Teenager, Adult, or Senior.','15','Teenager',[{input:'70',output:'Senior'}]],
       ['Divisibility combo','Read a number and print its category by combinations of 3 and 5.','15','FizzBuzz',[{input:'9',output:'Fizz'}]],
       ['Largest and smallest','Read three numbers and print both the largest and the smallest.','9 2 6','Largest: 9\nSmallest: 2',[{input:'5 4 3',output:'Largest: 5\nSmallest: 3'}]],
@@ -332,7 +332,7 @@ const questionSeeds = {
     ],
     intermediate:[
       ['Multiplication grid','Print a 1 to n multiplication grid.','3','1 2 3\n2 4 6\n3 6 9',[{input:'2',output:'1 2\n2 4'}]],
-      ['Diagonal of numbers','Print a triangle where each row prints increasing numbers.','4','1\n2 3\n4 5 6',[{input:'3',output:'1\n2 3\n4 5 6'}]],
+      ['Diagonal of numbers','Print N rows; row i holds i consecutive numbers counting up from 1.','4','1\n2 3\n4 5 6\n7 8 9 10',[{input:'3',output:'1\n2 3\n4 5 6'}]],
       ['Pyramid of spaces and stars','Print a centered star pyramid with n rows.','4','   *\n  ***\n *****\n*******',[{input:'3',output:'  *\n ***\n*****'}]],
       ['Pattern of same number','Print rows containing the row number repeated that many times.','4','1\n22\n333\n4444',[{input:'3',output:'1\n22\n333'}]],
       ['Inverted centered triangle','Print an inverted centered star pyramid with n rows.','4','*******\n *****\n  ***\n   *',[{input:'3',output:'*****\n ***\n  *'}]],
@@ -425,8 +425,8 @@ const questionSeeds = {
       ['Check if title is clean','Print True when a string contains no spaces and every word rule is met.','hello-world','True',[{input:'hello world',output:'False'}]],
       ['Count vowels and consonants','Count vowels and consonants in a word.','python','vowels=1\nconsonants=5',[{input:'education',output:'vowels=5\nconsonants=4'}]],
       ['Mask a credit card','Show only the last four digits of a card number.','123456789012','****9012',[{input:'43219876',output:'****9876'}]],
-      ['Extract numbers','Read a line and print only the digit groups found in it.','x12y345z6','12 345 6',[{input:'a1b22c','output':'1 22'}]],
-      ['Remove punctuation','Remove every punctuation character and print the clean word.','hello, world!','hello world',[{input:'code.java','output':'codejava'}]],
+      ['Extract numbers','Read a line and print only the digit groups found in it.','x12y345z6','12 345 6',[{input:'a1b22c',output:'1 22'}]],
+      ['Remove punctuation','Remove every punctuation character and print the clean word.','hello, world!','hello world',[{input:'code.java',output:'codejava'}]],
       ['Pad a number','Pad a number to 6 characters with leading zeros.','42','000042',[{input:'7',output:'000007'}]],
       ['Capitalize each word and strip','Remove extra spaces and capitalize each word of a sentence.','  learn  python  ','Learn Python',[{input:'  code daily  ',output:'Code Daily'}]]
     ]
@@ -497,13 +497,13 @@ const questionSeeds = {
     advanced:[
       ['Stable partition','Move all negative numbers before non-negative values while keeping relative order.','3 -1 4 -2 5','-1 -2 3 4 5',[{input:'-5 1 -2 3',output:'-5 -2 1 3'}]],
       ['Merge two sorted lists','Merge two sorted lists into one sorted list.','1 3 5\n2 4 6','1 2 3 4 5 6',[{input:'1 4\n2 3',output:'1 2 3 4'}]],
-      ['Frequency of each item','Print each unique value with its count.','a b a c','a:2\nb:1\nc:1',[{input:'x y x y','output':'x:2\ny:2'}]],
-      ['Pair sum target','Print pairs from a list whose values add to a target.','1 2 3 4\n5','1 4\n2 3',[{input:'2 3 4\n6','output':'2 4'}]],
+      ['Frequency of each item','Print each unique value with its count.','a b a c','a:2\nb:1\nc:1',[{input:'x y x y',output:'x:2\ny:2'}]],
+      ['Pair sum target','Print pairs from a list whose values add to a target.','1 2 3 4\n5','1 4\n2 3',[{input:'2 3 4\n6',output:'2 4'}]],
       ['Remove duplicates keeping order','Remove duplicates while keeping the original order.','3 1 3 2 1','3 1 2',[{input:'a b a c',output:'a b c'}]],
       ['Move zeros to the end','Move all zeros in a list to the end keeping order of others.','1 0 2 0 3','1 2 3 0 0',[{input:'0 5 0 6',output:'5 6 0 0'}]],
       ['Find the missing number','A list holds 1..n with one missing value. Print it.','4\n1 2 4','3',[{input:'5\n1 2 4 5',output:'3'}]],
       ['List of common values','Print values present in both of two lists.','1 2 3\n2 3 4','2 3',[{input:'a b\nb c',output:'b'}]],
-      ['Longest word in list','Print the longest word from a list of words.','cat elephant dog','elephant',[{input:'a bb ccc','output':'ccc'}]],
+      ['Longest word in list','Print the longest word from a list of words.','cat elephant dog','elephant',[{input:'a bb ccc',output:'ccc'}]],
       ['Rotate list left by k','Shift a list left by k positions.','1 2 3 4 5\n2','3 4 5 1 2',[{input:'a b c\n1',output:'b c a'}]]
     ]
   },
@@ -525,11 +525,11 @@ const questionSeeds = {
       ['Min max pair','Return the smallest and largest item from a tuple.','8 2 5 1','1\n8',[{input:'10 50 30 20',output:'10\n50'}]],
       ['Nested tuple access','Read nested tuple-like data and print one inner value.','A 10 B 20\nB','20',[{input:'X 1 Y 2\nY',output:'2'}]],
       ['Count even in tuple','Count how many even numbers are in a tuple.','1 2 3 4 6','3',[{input:'5 7 9',output:'0'}]],
-      ['Tuple of pairs to list','Turn a tuple of pairs into a list of keys only.','(a,1) (b,2)','a b',[{input:'(x,1) (y,4)','output':'x y'}]],
+      ['Tuple of pairs to list','Turn a tuple of pairs into a list of keys only.','(a,1) (b,2)','a b',[{input:'(x,1) (y,4)',output:'x y'}]],
       ['Reverse a tuple','Print a tuple reversed.','1 2 3','(3, 2, 1)',[{input:'a b c',output:'(c, b, a)'}]],
       ['Sum of a tuple','Print the sum of numbers in a tuple.','4 8 2','14',[{input:'3 5 7',output:'15'}]],
       ['Average of tuple','Print the average of a tuple rounded to two decimals.','10 20 30','20.00',[{input:'5 10 15',output:'10.00'}]],
-      ['Concatenate tuples','Print the result of joining two tuples.','1 2\n3 4','(1, 2, 3, 4)',[{input:'a b\nc','output':'(a, b, c)'}]],
+      ['Concatenate tuples','Print the result of joining two tuples.','1 2\n3 4','(1, 2, 3, 4)',[{input:'a b\nc',output:'(a, b, c)'}]],
       ['Find the second largest','Print the second largest value in a tuple.','4 9 7 9','7',[{input:'10 20 30',output:'20'}]]
     ],
     advanced:[
@@ -538,11 +538,11 @@ const questionSeeds = {
       ['Sort pairs by second','Sort tuple pairs by the second element.','(a,3) (b,1) (c,2)','(b, 1)\n(c, 2)\n(a, 3)',[{input:'(x,5) (y,2)',output:'(y, 2)\n(x, 5)'}]],
       ['Unpack a tuple','Read a tuple of 3 items and print each item on its own line.','10 20 30','10\n20\n30',[{input:'1 2 3',output:'1\n2\n3'}]],
       ['Tuple of numbers sum','Sum pairs inside a tuple and print each row total.','1 2\n3 4','3\n7',[{input:'5 5\n2 3',output:'10\n5'}]],
-      ['Swap a tuple pair','Swap the two elements of each pair in a list of pairs.','1 2\n3 4','(2, 1)\n(4, 3)',[{input:'a b\nc d','output':'(b, a)\n(d, c)'}]],
-      ['Count above average','Count how many items in a tuple are above the average.','10 20 30 40','2',[{input:'1 2 3 4','output':'2'}]],
+      ['Swap a tuple pair','Swap the two elements of each pair in a list of pairs.','1 2\n3 4','(2, 1)\n(4, 3)',[{input:'a b\nc d',output:'(b, a)\n(d, c)'}]],
+      ['Count above average','Count how many items in a tuple are above the average.','10 20 30 40','2',[{input:'1 2 3 4',output:'2'}]],
       ['Head and tail','Print all but the first item of a tuple.','1 2 3 4','(2, 3, 4)',[{input:'a b c',output:'(b, c)'}]],
-      ['Tuple as keys','Use a tuple of pairs to print each unique first value.','a 1\na 2\nb 3','a b',[{input:'x 1\ny 2\nx 3','output':'x y'}]],
-      ['Nested sum','Sum the first value of each pair in a tuple of pairs.','(1,2) (3,4) (5,6)','9',[{input:'(2,7) (8,1)','output':'10'}]]
+      ['Tuple as keys','Use a tuple of pairs to print each unique first value.','a 1\na 2\nb 3','a b',[{input:'x 1\ny 2\nx 3',output:'x y'}]],
+      ['Nested sum','Sum the first value of each pair in a tuple of pairs.','(1,2) (3,4) (5,6)','9',[{input:'(2,7) (8,1)',output:'10'}]]
     ]
   },
   'Sets': {
@@ -566,7 +566,7 @@ const questionSeeds = {
       ['Set difference','Print values that are in the first set but not the second.','1 2 3\n2','1 3',[{input:'a b c\nb',output:'a c'}]],
       ['Remove duplicates preserving order','Remove duplicates from a list while keeping order of first occurrence.','3 1 3 2','3 1 2',[{input:'a b a c',output:'a b c'}]],
       ['Intersection count','Print how many values appear in both sets.','1 2 3 4\n2 3','2',[{input:'a b\nc d',output:'0'}]],
-      ['Add several','Add multiple values to a set and print its length.','1 2\n2 3 4','4',[{input:'a\nb c','output':'3'}]],
+      ['Add several','Add multiple values to a set and print its length.','1 2\n2 3 4','4',[{input:'a\nb c',output:'3'}]],
       ['Symmetric check','Print values that are in set A or set B but not both.','1 2 3\n2 3 4','1 4',[{input:'1 2\n3 4',output:'1 2 3 4'}]],
       ['Largest unique','Print the largest number in a set.','4 9 2 9','9',[{input:'5 1 4',output:'5'}]]
     ],
@@ -576,9 +576,9 @@ const questionSeeds = {
       ['Unique word count','Count unique normalized words in a sentence.','Code code, PYTHON python','2',[{input:'apple Apple BANANA',output:'2'}]],
       ['Letters in both','Print the letters that appear in both words (unique).','python\nphone','p h o n',[{input:'abc\nbcd',output:'b c'}]],
       ['Find common from many','Print values shared by four lists.','1 2 3\n2 3 4\n2 3 5\n2 3 6','2 3',[{input:'a b\nb c\nb d\nb e',output:'b'}]],
-      ['First non-repeating','Print the first character that appears only once in a word.','swiss','w',[{input:'aabbc','output':'c'}]],
+      ['First non-repeating','Print the first character that appears only once in a word.','swiss','w',[{input:'aabbc',output:'c'}]],
       ['Unique characters count','Print the count of unique characters in a word without using len(set()).','hello','4',[{input:'code',output:'4'}]],
-      ['Common in all sizes','Given several words, print letters common to all of them.','car\ntea\ncat','a',[{input:'red\nrun','output':'r'}]],
+      ['Common in all sizes','Given several words, print letters common to all of them.','car\ntea\ncat','a',[{input:'red\nrun',output:'r'}]],
       ['Sort a set','Print the sorted version of a set.','3 1 2','1 2 3',[{input:'c a b',output:'a b c'}]],
       ['Set equality','Print True when two sets contain the same elements.','1 2 3\n3 2 1','True',[{input:'1 2\n2 3',output:'False'}]]
     ]
@@ -605,19 +605,19 @@ const questionSeeds = {
       ['Default value','Print value for a key or a default when it is missing.','a 1 b 2\nc','0',[{input:'x 5\nx',output:'5'}]],
       ['Empty check','Print True when a dictionary is empty.','','True',[{input:'a 1',output:'False'}]],
       ['Merge two dicts','Merge two dictionaries into one, later values overriding.','a 1 b 2\nb 3 c 4',"{'a': 1, 'b': 3, 'c': 4}",[{input:'x 1\nx 2 y 3',output:"{'x': 2, 'y': 3}"}]],
-      ['Values match key count','Print the keys whose value is greater than 10.','a 5 b 15 c 20','b c',[{input:'x 2 y 12','output':'y'}]],
-      ['Square the values','Return a new dict where each value is squared.','a 2 b 3',"{'a': 4, 'b': 9}",[{input:'x 4','output':"{'x': 16}"}]]
+      ['Values match key count','Print the keys whose value is greater than 10.','a 5 b 15 c 20','b c',[{input:'x 2 y 12',output:'y'}]],
+      ['Square the values','Return a new dict where each value is squared.','a 2 b 3',"{'a': 4, 'b': 9}",[{input:'x 4',output:"{'x': 16}"}]]
     ],
     advanced:[
       ['Nested totals','Sum numeric values inside a nested dictionary.','a:10,20\nb:5,7','42',[{input:'x:1,2\ny:3,4',output:'10'}]],
       ['Top scorer','Read names and scores and print the highest scorer.','Nina 88\nAman 94\nRiya 91','Aman',[{input:'Leo 80\nSam 99',output:'Sam'}]],
       ['Merge settings','Merge two nested configuration dictionaries with later values overriding.','theme dark lang en\nlang fr font mono',"{'theme': 'dark', 'lang': 'fr', 'font': 'mono'}",[{input:'a 1 b 2\nb 3 c 4',output:"{'a': 1, 'b': 3, 'c': 4}"}]],
       ['Most common word','Print the word that appears most often in a sentence.','a b a c a b','a',[{input:'x y x y y',output:'y'}]],
-      ['Word length map','Build a dict mapping each word to its length.','hi hello',"{'hi': 2, 'hello': 5}",[{input:'a abc','output':"{'a': 1, 'abc': 3}"}]],
-      ['Count grades','Count how many students have each grade.','A B A C A',"{'A': 3, 'B': 1, 'C': 1}",[{input:'A A B','output':"{'A': 2, 'B': 1}"}]],
+      ['Word length map','Build a dict mapping each word to its length.','hi hello',"{'hi': 2, 'hello': 5}",[{input:'a abc',output:"{'a': 1, 'abc': 3}"}]],
+      ['Count grades','Count how many students have each grade.','A B A C A',"{'A': 3, 'B': 1, 'C': 1}",[{input:'A A B',output:"{'A': 2, 'B': 1}"}]],
       ['Sum by key group','Given pairs, sum values that share the same key.','a 5\na 3\nb 2',"{'a': 8, 'b': 2}",[{input:'x 1\nx 2\ny 4',output:"{'x': 3, 'y': 4}"}]],
-      ['Dict of reversed char count','Print the count of each letter in a sentence.','hello world',"{'h': 1, 'e': 1, 'l': 3, 'o': 2, 'w': 1, 'r': 1, 'd': 1}",[{input:'aab','output':"{'a': 2, 'b': 1}"}]],
-      ['Frequency of numbers','Count how many times each number appears in a list.','1 2 1 3',"{'1': 2, '2': 1, '3': 1}",[{input:'4 4 5','output':"{'4': 2, '5': 1}"}]],
+      ['Dict of reversed char count','Print the count of each letter in a sentence.','hello world',"{'h': 1, 'e': 1, 'l': 3, 'o': 2, 'w': 1, 'r': 1, 'd': 1}",[{input:'aab',output:"{'a': 2, 'b': 1}"}]],
+      ['Frequency of numbers','Count how many times each number appears in a list.','1 2 1 3',"{'1': 2, '2': 1, '3': 1}",[{input:'4 4 5',output:"{'4': 2, '5': 1}"}]],
       ['Max value key','Print the key with the largest value in a dict.','a 3 b 8 c 5','b',[{input:'x 2 y 10',output:'y'}]]
     ]
   },
@@ -1022,7 +1022,7 @@ const questionSeeds = {
       ['Zero check in subtraction','Subtract two numbers, catching only when the result is exact.','10 3','7',[{input:'9 5',output:'4'}]],
       ['List element getter','Read an index into a list and print the value or Default.','2','30',[{input:'9',output:'Default'}]],
       ['Dict lookup guard','Look up a key and print Missing when it is not present.','name Nina\nage','Missing',[{input:'name Nina\nname',output:'Nina'}]],
-      ['Parse a list of numbers','Convert each token to int, skipping invalid ones.','10 a 20','10 20',[{input:'1 x 2','output':'1 2'}]],
+      ['Parse a list of numbers','Convert each token to int, skipping invalid ones.','10 a 20','10 20',[{input:'1 x 2',output:'1 2'}]],
       ['Safe type conversion','Try to convert a value to int, falling back to its string length on failure.','123','123',[{input:'abc',output:'3'}]],
       ['Divide many','Divide 100 by each value in a list, printing errors for zeros.','10 0 4','10\nError\n25',[{input:'2 0',output:'50\nError'}]]
     ],
@@ -1030,13 +1030,13 @@ const questionSeeds = {
       ['Retry input','Keep asking for a valid integer using try/except.','x\n12','12',[{input:'15',output:'15'}]],
       ['File-style parser','Parse several values and skip invalid numeric entries.','10 a 4 b 7','10 4 7',[{input:'1 x 2 y',output:'1 2'}]],
       ['Key guard','Safely access a dictionary key and print Missing when absent.','name Nina\ncity','Missing',[{input:'name Nina\nname',output:'Nina'}]],
-      ['Convert then add','Read two values, convert to int, and add, handling errors.','3 4','7',[{input:'a 4','output':'Invalid'}]],
+      ['Convert then add','Read two values, convert to int, and add, handling errors.','3 4','7',[{input:'a 4',output:'Invalid'}]],
       ['Safe average','Compute an average of a list of numbers, guarding against empty.','','0.00',[{input:'4 6',output:'5.00'}]],
-      ['Try a division table','Print 100 / n for numbers in a range, skipping zero.','0 1 2','Error\n100.0\n50.0',[{input:'1 2','output':'100.0\n50.0'}]],
+      ['Try a division table','Print 100 / n for numbers in a range, skipping zero.','0 1 2','Error\n100.0\n50.0',[{input:'1 2',output:'100.0\n50.0'}]],
       ['Parse scores','Count how many valid integers appear on a line.','10 abc 30','2',[{input:'a b',output:'0'}]],
       ['Exception type message','Read two values and print the specific error that occurs on invalid input.','10 0','ZeroDivisionError',[{input:'10 2',output:'None'}]],
-      ['Retry with max attempts','Keep reading until a valid int or after 3 failures print Fail.','a\nb\nc','Fail',[{input:'1','output':'1'}]],
-      ['Safe list sum','Sum a comma-separated list, ignoring non-numeric values.','1,2,x,3','6',[{input:'a,4,b','output':'4'}]]
+      ['Retry with max attempts','Keep reading until a valid int or after 3 failures print Fail.','a\nb\nc','Fail',[{input:'1',output:'1'}]],
+      ['Safe list sum','Sum a comma-separated list, ignoring non-numeric values.','1,2,x,3','6',[{input:'a,4,b',output:'4'}]]
     ],
     advanced:[
       ['Custom error','Raise ValueError for a negative age and handle it cleanly.','-2','Age must be non-negative',[{input:'25',output:'25'}]],
@@ -1045,9 +1045,9 @@ const questionSeeds = {
       ['Safe percentage','Calculate a percentage, guarding against non-numeric and zero denominators.','10 0','Error',[{input:'20 50',output:'40.0'}]],
       ['Parse salary slip','Read a salary and raise an error when it is negative.','-5','Salary cannot be negative',[{input:'5000',output:'5000'}]],
       ['List access custom','Read an index and print the value or a custom IndexError message.','5','Invalid index',[{input:'1',output:'50'}]],
-      ['Convert a CSV row','Convert each cell of a row to int, raising for invalid cells.','1,2,3','1 2 3',[{input:'1,x','output':"'x' is not a number"}]],
-      ['Graceful percentage of many','Compute percentages for many values, printing entries on error.','10 0 25\n40','25.0\nError\n62.5',[{input:'20 0\n50','output':'40.0\nError'}]],
-      ['Trade calculation','Compute a price with a markup, raising when markup is invalid.','100 50','150.0',[{input:'100 -10','output':'Invalid markup'}]],
+      ['Convert a CSV row','Convert each cell of a row to int, raising for invalid cells.','1,2,3','1 2 3',[{input:'1,x',output:"'x' is not a number"}]],
+      ['Graceful percentage of many','Compute percentages for many values, printing entries on error.','10 0 25\n40','25.0\nError\n62.5',[{input:'20 0\n50',output:'40.0\nError'}]],
+      ['Trade calculation','Compute a price with a markup, raising when markup is invalid.','100 50','150.0',[{input:'100 -10',output:'Invalid markup'}]],
       ['Two types of errors','Read two numbers and report whether an error is a type or value error.','abc 2','Type error',[{input:'10 0',output:'Value error'}]]
     ]
   },
@@ -1060,33 +1060,33 @@ const questionSeeds = {
       ['Read a file in a loop','Loop over a file and print each line.','notes.txt','Learning Python\nPractice makes perfect\nLine 3 notes',[{input:'hello.txt',output:'Hello\nWorld\nPython file handling'}]],
       ['Check if a file exists','Print True when a file exists.','hello.txt','True',[{input:'missing.txt',output:'False'}]],
       ['Append a line','Add a line to a file and report success.','done','Appended',[{input:'new',output:'Appended'}]],
-      ['Word count in file','Count all words in a text file.','notes.txt','7',[{input:'hello.txt',output:'4'}]],
+      ['Word count in file','Count all words in a text file.','notes.txt','8',[{input:'hello.txt',output:'5'}]],
       ['Print last line','Print the last line of a text file.','notes.txt','Line 3 notes',[{input:'hello.txt',output:'Python file handling'}]],
-      ['Delete a file','Delete a file and print a message.','notes.txt','File deleted',[{input:'temp.txt',output:'File deleted'}]]
+      ['Delete a file','Delete a file and print a message.','notes.txt','File deleted',[{input:'temp.txt',output:'File deleted',mockFiles:{'temp.txt':'temporary data'}}]]
     ],
     intermediate:[
       ['Copy a file','Read one file and write its contents into another file.','source.txt','Copied',[{input:'hello.txt',output:'Copied'}]],
       ['Log summary','Read a log and count ERROR and INFO lines.','INFO\nERROR\nINFO','INFO: 2\nERROR: 1',[{input:'ERROR\nERROR',output:'INFO: 0\nERROR: 2'}]],
       ['Append notes','Append a new note to a file and print the new line count.','done','4',[{input:'another',output:'4'}]],
-      ['Read numbers and sum','Read integers from a file and print their total.','nums.txt','15',[{input:'data.txt',output:'33'}]],
-      ['Reverse file lines','Print the lines of a file in reverse order.','a.txt','c\nb\na',[{input:'b.txt',output:'z\ny\nx'}]],
-      ['Longest line','Print the length of the longest line in a file.','notes.txt','22',[{input:'hello.txt',output:'21'}]],
-      ['Word frequency','Count how often a word appears in a file.','notes.txt\nPython','2',[{input:'notes.txt\nperfect',output:'1'}]],
+      ['Read numbers and sum','Read integers from a file and print their total.','nums.txt','15',[{input:'data.txt',output:'33',mockFiles:{'data.txt':'11\n11\n11'}}],{mockFiles:{'nums.txt':'5\n5\n5'}}],
+      ['Reverse file lines','Print the lines of a file in reverse order.','a.txt','c\nb\na',[{input:'b.txt',output:'z\ny\nx',mockFiles:{'b.txt':'x\ny\nz'}}],{mockFiles:{'a.txt':'a\nb\nc'}}],
+      ['Longest line','Print the length of the longest line in a file.','notes.txt','22',[{input:'hello.txt',output:'20'}]],
+      ['Word frequency','Count how often a word appears in a file.','notes.txt\nPython','1',[{input:'notes.txt\nperfect',output:'1'}]],
       ['Replace in file','Replace a word in a file and write the result.','python\ncoding','Replaced',[{input:'a\nb',output:'Replaced'}]],
       ['Write numbers','Write numbers from 1 to n into a file.','4','Written',[{input:'5',output:'Written'}]],
-      ['Count a character','Count how many times a character appears in a file.','hello.txt\no','2',[{input:'hello.txt\na',output:'1'}]]
+      ['Count a character','Count how many times a character appears in a file.','hello.txt\no','3',[{input:'hello.txt\na',output:'1'}]]
     ],
     advanced:[
       ['CSV totals','Read rows from a CSV-like file and calculate a numeric column total.','a,10\nb,20','30',[{input:'x,5\ny,15',output:'20'}]],
       ['Safe file read','Handle missing files and print a simple error message.','missing.txt','File not found',[{input:'absent.txt',output:'File not found'}]],
       ['Chunk a large file','Read a text file and report how many chunks of size n are needed.','2500\n1000','3',[{input:'1000\n500',output:'2'}]],
-      ['Filter lines','Print lines from a file that contain a given word.','a.txt\ncat','z line 2',[{input:'a.txt\ndog','output':'z line 2'}]],
-      ['Largest number in file','Read numbers from a file and print the maximum.','nums.txt','15',[{input:'data.txt','output':'22'}]],
+      ['Filter lines','Print lines from a file that contain a given word.','a.txt\ncat','cat naps',[{input:'a.txt\ndog',output:'dog barks\ndog runs'}]],
+      ['Largest number in file','Read numbers from a file and print the maximum.','nums.txt','15',[{input:'data.txt',output:'22',mockFiles:{'data.txt':'22\n10\n5'}}],{mockFiles:{'nums.txt':'5\n15\n10'}}],
       ['Merge two files','Combine the contents of two files into one.','a.txt b.txt','Merged',[{input:'x.txt y.txt',output:'Merged'}]],
-      ['Sort numbers file','Read numbers from a file, sort them and print.','nums.txt','5 7 8 9 10',[{input:'data.txt','output':'9 12 21 33'}]],
+      ['Sort numbers file','Read numbers from a file, sort them and print.','nums.txt','5 7 8 9 10',[{input:'data.txt',output:'9 12 21 33',mockFiles:{'data.txt':'33\n9\n21\n12'}}],{mockFiles:{'nums.txt':'10\n5\n9\n7\n8'}}],
       ['File to dictionary','Build a dictionary from a file of key-value pairs and print one value.','config.txt\nhost','localhost',[{input:'config.txt\nport',output:'8080'}]],
-      ['Read and update a counter','Read a counter, add 1, and write it back.','counter.txt','Incremented',[{input:'counter.txt','output':'Incremented'}]],
-      ['Search and count matches','Count how many lines match a pattern in a file.','a.txt\ndog','2',[{input:'a.txt\nline','output':'3'}]]
+      ['Read and update a counter','Read a counter, add 1, and write it back.','counter.txt','Incremented',[{input:'counter.txt',output:'Incremented'}]],
+      ['Search and count matches','Count how many lines match a pattern in a file.','a.txt\ndog','2',[{input:'a.txt\nline',output:'3'}]]
     ]
   },
     'Modules and Packages': {

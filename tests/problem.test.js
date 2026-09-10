@@ -49,12 +49,22 @@ describe('problem.js - ID and DOM contract', () => {
 
   it('run feedback goes to the toast, not the toolbar status', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
-    // Transient "Running…" messages are toasts now
-    assert.match(p, /toast\(mode === 'submit' \? 'Running all test cases…' : 'Running sample…'\)/);
+    // Transient "Running…" messages are toasts now; Run targets the selected case
+    assert.match(p, /Running all test cases/);
+    assert.match(p, /Running Case/);
+    assert.match(p, /runLabel/);
     // The toolbar only shows the file label now — runner.js owns the
     // Python status (as toasts) and problem.js must not touch it.
     assert.doesNotMatch(p, /runnerStatus/);
     assert.doesNotMatch(p, /pyodideStatus/);
+  });
+
+  it('Run grades the selected case, Submit grades all', () => {
+    const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
+    assert.match(p, /runCaseIdx/);
+    assert.match(p, /casesToRun = \[q\.testCases\[runCaseIdx\]\]/);
+    assert.match(p, /testCaseResults\[runCaseIdx\]/);
+    assert.match(p, /casesToRun = q\.testCases/);
   });
 
   it('pyodide lifecycle status is toasted, not written to the toolbar', () => {

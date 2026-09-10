@@ -53,13 +53,35 @@ describe('pyodide-worker.js - harness generation', () => {
     const content = fs.readFileSync(workerPath, 'utf8');
     // Check key harness pieces
     assert.match(content, /_input_data/);
-    assert.match(content, /_input_lines.*splitlines/);
+    assert.match(content, /_stdin_buf/);
+    assert.match(content, /sys\.stdin = _stdin_buf/);
     assert.match(content, /builtins\.input = _input/);
     assert.match(content, /sys\.stdout = _out/);
     assert.match(content, /io\.StringIO/);
     assert.match(content, /exec\(.*escapedCode/);
     // Conditional js import only when interactive
     assert.match(content, /if _interactive:/);
+  });
+
+  it('harness input() and sys.stdin share one buffer', () => {
+    const fs = require('fs');
+    const content = fs.readFileSync(require('path').join(__dirname, '../js/pyodide-worker.js'), 'utf8');
+    assert.match(content, /_stdin_buf = io\.StringIO\(_input_data\)/);
+    assert.match(content, /_stdin_buf\.readline\(\)/);
+  });
+
+  it('mock FS resets per case and covers file questions', () => {
+    const fs = require('fs');
+    const content = fs.readFileSync(require('path').join(__dirname, '../js/pyodide-worker.js'), 'utf8');
+    assert.match(content, /function baseMockFiles\(\)/);
+    assert.match(content, /function resetMockFS\(/);
+    assert.match(content, /resetMockFS\(py, mockFiles\)/);
+    const worker = require('../js/pyodide-worker.js');
+    assert.equal(typeof worker.baseMockFiles, 'function');
+    const base = worker.baseMockFiles();
+    for (const f of ['hello.txt', 'notes.txt', 'source.txt', 'data.csv', 'nums.txt', 'data.txt', 'a.txt', 'b.txt', 'config.txt', 'counter.txt']) {
+      assert.equal(typeof base[f], 'string', `missing base mock ${f}`);
+    }
   });
 
   it('should handle alias types: run-batch, batch-test, etc.', () => {

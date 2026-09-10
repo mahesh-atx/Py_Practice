@@ -51,7 +51,7 @@ describe('topics-data.js - questionSeeds structure', () => {
     }
   });
 
-  it('each question should be [title, desc, input, output, extraCases]', () => {
+  it('each question should be [title, desc, input, output, extraCases, opts?]', () => {
     let total = 0;
     for (const [topic, levels] of Object.entries(questionSeeds)) {
       for (const lvl of ['basic', 'intermediate', 'advanced']) {
@@ -61,8 +61,8 @@ describe('topics-data.js - questionSeeds structure', () => {
           const q = qs[i];
           total++;
           assert.ok(Array.isArray(q), `question not array ${topic} ${lvl} ${i}`);
-          assert.equal(q.length, 5, `question should have 5 elements ${topic} ${lvl} ${i}: ${q[0]}`);
-          const [title, desc, input, output, extras] = q;
+          assert.ok(q.length === 5 || q.length === 6, `question should have 5-6 elements ${topic} ${lvl} ${i}: ${q[0]}`);
+          const [title, desc, input, output, extras, opts] = q;
           assert.equal(typeof title, 'string', `title not string ${topic} ${lvl} ${i}`);
           assert.ok(title.length > 0);
           assert.equal(typeof desc, 'string');
@@ -70,10 +70,22 @@ describe('topics-data.js - questionSeeds structure', () => {
           assert.equal(typeof input, 'string', `input not string ${topic} ${lvl} ${i}`);
           assert.equal(typeof output, 'string', `output not string ${topic} ${lvl} ${i}`);
           assert.ok(Array.isArray(extras), `extras not array ${topic} ${lvl} ${i}`);
+          if (opts !== undefined) {
+            assert.equal(typeof opts, 'object', `opts not object ${topic} ${lvl} ${i}`);
+            if (opts.mockFiles !== undefined) {
+              assert.equal(typeof opts.mockFiles, 'object', `mockFiles not object ${topic} ${lvl} ${i}`);
+              for (const [fn, content] of Object.entries(opts.mockFiles)) {
+                assert.equal(typeof content, 'string', `mockFiles[${fn}] not string ${topic} ${lvl} ${i}`);
+              }
+            }
+          }
           for (let j = 0; j < extras.length; j++) {
             const ec = extras[j];
             assert.equal(typeof ec.input, 'string', `extra input not string ${topic} ${lvl} ${i} extra ${j}`);
-            assert.equal(typeof ec.output, 'string', `extra output not string ${topic} ${lvl} ${i} extra ${j}`);
+            assert.equal(typeof (ec.output ?? ec.expected), 'string', `extra output not string ${topic} ${lvl} ${i} extra ${j}`);
+            if (ec.mockFiles !== undefined) {
+              assert.equal(typeof ec.mockFiles, 'object', `extra mockFiles not object ${topic} ${lvl} ${i} extra ${j}`);
+            }
           }
         }
       }

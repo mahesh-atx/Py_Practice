@@ -653,11 +653,12 @@ function initProblemPage() {
           </div>
           <pre class="m-0 p-2.5 rounded-md border-l-2 bg-[#1e1c1b] whitespace-pre-wrap break-words font-mono text-[12px] leading-5 min-h-[44px] select-text ${res.passed ? 'border-emerald-500/50 text-emerald-200/90 border-y border-r border-white/[.07]' : 'border-red-400/60 text-red-200/90 border-y border-r border-white/[.07]'}">${escapeHtml(actualVal)}</pre>
           ${hasStderr ? `<pre class="m-0 mt-2 p-2.5 rounded-md bg-amber-950/15 border border-amber-500/15 text-amber-200/80 whitespace-pre-wrap break-words font-mono text-[11px] leading-5 select-text">${escapeHtml(res.stderr)}</pre>` : ''}
+          ${!res.passed && !hasStderr ? `<div class="text-[10px] font-mono text-white/35 leading-4">Comparison is exact except for a trailing newline. Check spaces, line breaks, and number formatting.</div>` : ''}
         </div>
       ` : `
         <div class="mt-3 flex items-center gap-1.5 text-[11px] font-mono text-white/25">
           <span class="w-1 h-1 rounded-full bg-white/20 shrink-0"></span>
-          Run to see output
+          Select a case and press Run to see output — Submit grades all cases
         </div>
       `}
     `;
@@ -695,7 +696,8 @@ function initProblemPage() {
     if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; }
     // Transient run feedback goes to the toast — the toolbar keeps the
     // persistent Python state (loading / ready / error) untouched.
-    toast(mode === 'submit' ? 'Running all test cases…' : 'Running sample…');
+    const runLabel = mode === 'submit' ? 'Running all test cases…' : `Running Case ${activeCaseIdx + 1}…`;
+    toast(runLabel);
     if (testSummary) testSummary.textContent = 'Executing…';
     if (editorState) editorState.textContent = 'Running';
 
@@ -704,12 +706,17 @@ function initProblemPage() {
 
     if (isCustom) {
       appendTerminal(`Executing with custom input…`, 'cmd');
+    } else if (isSubmit) {
+      appendTerminal(`Executing full test suite (${q.testCases.length} cases)…`, 'cmd');
     } else {
-      appendTerminal(`Executing ${mode === 'submit' ? 'full test suite' : 'sample'}…`, 'cmd');
+      appendTerminal(`Executing Case ${activeCaseIdx + 1} (${q.testCases[activeCaseIdx]?.label || 'sample'})…`, 'cmd');
     }
 
     try {
       let casesToRun = [];
+      // Run targets the currently selected case tab so any failing case
+      // can be debugged in isolation; Submit always grades every case.
+      let runCaseIdx = activeCaseIdx;
 
       if (isCustom) {
         const customVal = customInputEl ? customInputEl.value : '';
@@ -722,7 +729,8 @@ function initProblemPage() {
       } else if (isSubmit) {
         casesToRun = q.testCases;
       } else {
-        casesToRun = [q.testCases[0]];
+        runCaseIdx = Math.min(Math.max(0, activeCaseIdx), q.testCases.length - 1);
+        casesToRun = [q.testCases[runCaseIdx]];
       }
 
       const startTime = performance.now();
@@ -800,38 +808,60 @@ function initProblemPage() {
         return;
       }
 
-      // Run (sample) — no grading, terminal only
+      // Run (selected case) — grade this one case, keep others untouched
       if (!isSubmit) {
         const r = res.results && res.results[0];
         if (!r) throw new Error('No result returned');
         const stdout = r.stdout ?? r.actual ?? '';
         const stderr = r.stderr ?? '';
         const hasError = !!(stderr && String(stderr).trim());
+        const expected = r.expected ?? r.output ?? (casesToRun[0] ? casesToRun[0].output : '');
+        let passed = r.passed;
+        if (typeof passed === 'undefined') {
+          const normActual = typeof normalizeOutput === 'function' ? normalizeOutput(stdout) : String(stdout).trim();
+          const normExpected = typeof normalizeOutput === 'function' ? normalizeOutput(expected) : String(expected).trim();
+          passed = normActual === normExpected && !hasError;
+        }
+
+        testCaseResults[runCaseIdx] = {
+          passed,
+          actual: stdout,
+          expected,
+          elapsed: r.elapsed ?? totalElapsed,
+          stderr
+        };
+        activeCaseIdx = runCaseIdx;
+        renderTestCasePills();
+        renderActiveCaseDetail();
+
+        if (testTabBadge) {
+          const correctPassed = Object.values(testCaseResults).filter(v => v.passed).length;
+          const total = q.testCases.length;
+          testTabBadge.classList.remove('hidden');
+          testTabBadge.textContent = `· ${correctPassed}/${total}`;
+        }
 
         if (stdout) appendTerminal(stdout, 'stdout');
         if (stderr) appendTerminal(stderr, 'stderr');
-        appendTerminal(`[Exit code ${hasError ? '1' : '0'}, ${r.elapsed ?? totalElapsed}ms]`, 'system');
+        appendTerminal(`[Case ${runCaseIdx + 1} ${passed ? 'passed' : 'failed'}, ${r.elapsed ?? totalElapsed}ms]`, 'system');
 
-        if (testSummary) testSummary.textContent = hasError ? 'Error' : 'Executed';
-        if (editorState) editorState.textContent = hasError ? 'Error' : 'Done';
-
-        // Show output in Console — switch to terminal tab
-        document.getElementById('tabTerminalBtn')?.click();
+        if (testSummary) testSummary.textContent = passed ? `Case ${runCaseIdx + 1} passed` : `Case ${runCaseIdx + 1} failed`;
+        if (editorState) editorState.textContent = passed ? 'Passed' : 'Wrong Answer';
 
         if (resultPanel) {
           resultPanel.classList.remove('hidden');
-          if (hasError) {
+          if (passed) {
             resultPanel.innerHTML = `
-              <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-4 py-2 flex items-center gap-2 font-mono">
-                <svg class="w-3.5 h-3.5 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                <span class="text-red-400 text-[11px] font-medium">Run failed — see Console.</span>
+              <div class="pop-in bg-[#050f06] border-y border-[#1a381c] px-3 py-2 flex items-center gap-2 font-mono">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                <span class="text-emerald-300/90 text-[11px]">Case ${runCaseIdx + 1} passed.</span>
+                <span class="ml-auto text-white/20 text-[10px]">${r.elapsed ?? totalElapsed}ms</span>
               </div>`;
           } else {
             resultPanel.innerHTML = `
-              <div class="pop-in bg-[#171615] border-y border-white/[.06] px-3 py-2 flex items-center gap-2 font-mono">
-                <span class="w-1.5 h-1.5 rounded-full bg-white/20 shrink-0"></span>
-                <span class="text-white/50 text-[11px]">Run completed — output in Console.</span>
-                <span class="ml-auto text-white/20 text-[10px]">${r.elapsed ?? totalElapsed}ms</span>
+              <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-3 py-2 flex items-center gap-2 font-mono">
+                <svg class="w-3.5 h-3.5 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                <span class="text-red-400 text-[11px] font-medium">Case ${runCaseIdx + 1} failed — compare your output below.</span>
               </div>`;
           }
         }
