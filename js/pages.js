@@ -423,9 +423,8 @@ function initProgressPage() {
         <!-- Left accent indicator on hover -->
         <div class="absolute left-0 top-0 bottom-0 w-[4px] bg-[var(--green)] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
-        <!-- Left Icon Box (the 01/02 index is desktop-only — phones stay compact) -->
+        <!-- Left Icon Box -->
         <div class="flex items-center gap-3.5 sm:gap-4 shrink-0">
-          <span class="hidden sm:inline font-mono text-xs sm:text-sm font-bold text-muted/50 tracking-wider w-5 text-right shrink-0">${num}</span>
           <div class="h-12 w-12 rounded-[14px] bg-[var(--soft)] border border-line grid place-items-center text-ink text-base group-hover:bg-[var(--green)] group-hover:text-white group-hover:border-[var(--green)] group-hover:shadow-[0_4px_16px_rgba(91,115,93,0.25)] transition-all duration-300 dark:bg-[#2a2826] dark:border-[var(--dark-line)] dark:text-[#f4efe6] shrink-0">
             <i class="${iconClass} text-[16px]"></i>
           </div>
@@ -436,7 +435,7 @@ function initProgressPage() {
           <div class="flex items-center justify-between gap-3 flex-wrap">
             <div class="flex items-center gap-2.5 min-w-0">
               <h3 class="text-base sm:text-lg font-semibold tracking-[-.02em] text-ink group-hover:text-[var(--green)] transition-colors truncate">
-                ${escapeHtml(t.name)}
+                <span class="font-mono text-muted/50 mr-1">${num}</span>${escapeHtml(t.name)}
               </h3>
               <span class="hidden md:inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded-full border border-line bg-white/70 dark:bg-white/[0.06] text-muted">
                 ${art.domain}

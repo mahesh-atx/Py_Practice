@@ -63,8 +63,8 @@ test('progress page: rendered cards use the compact mobile layout', () => {
   const cards = (html.match(/practice\.html\?topic=/g) || []).length;
   assert.equal(cards, 21, 'all 21 topic cards rendered');
 
-  assert.match(html, /class="hidden sm:inline font-mono text-xs sm:text-sm font-bold/,
-    'index number is hidden on mobile (kept for sm+)');
+  assert.match(html, /<span class="font-mono text-muted\/50 mr-1">0\d<\/span>/,
+    'index number is part of the title, not a separate left column');
   assert.match(html, /flex flex-row items-start gap-3\.5 sm:items-center sm:justify-between sm:gap-6 p-4 sm:p-6/,
     'mobile card is one row: icon | content | arrow, tighter padding');
   assert.match(html, /flex items-center justify-between gap-x-2 gap-y-1 flex-wrap text-\[10px\]/,

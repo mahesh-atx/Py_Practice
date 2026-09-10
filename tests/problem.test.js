@@ -311,7 +311,7 @@ describe('problem.js - file handles (mock)', () => {
     const body = pages.slice(start, start + 9000);
     assert.match(body, /flex flex-row items-start gap-3\.5 sm:items-center sm:justify-between sm:gap-6 p-4 sm:p-6/,
       'card is a single row on mobile (icon | content | arrow) with tighter padding');
-    assert.match(body, /class="hidden sm:inline font-mono text-xs sm:text-sm font-bold/,
-      '01/02 index is hidden on mobile, kept on desktop');
+    assert.match(body, /<span class="font-mono text-muted\/50 mr-1">/,
+      '01/02 index is part of the title, not a separate left column');
   });
 });
