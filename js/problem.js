@@ -574,6 +574,14 @@ function initProblemPage() {
 
   let activeCaseIdx = 0;
   let testCaseResults = {};
+  // Generation token: every run (Run/Submit) takes a sequence number and
+  // snapshots the question. A response that arrives after a newer run was
+  // started — or after switching to another question — is stale and must
+  // not touch the banner, pills, badge, or details. Without this, a slow
+  // Submit resolving after a fast Run (or vice versa) leaves the banner
+  // disagreeing with the per-case details (e.g. "Failed 1 of 2" while
+  // both visible cases show Passed).
+  let runSeq = 0;
 
   function renderTestCasePills() {
     const tabsContainer = document.getElementById('testCaseTabsContainer');
@@ -684,6 +692,8 @@ function initProblemPage() {
 
   async function runCode(mode = 'sample') {
     const code = getEditorCode();
+    const runQ = q;
+    const mySeq = ++runSeq;
     const runBtn = document.getElementById('runBtn');
     const submitBtn = document.getElementById('submitBtn');
     const testSummary = document.getElementById('testSummary');
@@ -743,6 +753,13 @@ function initProblemPage() {
       });
 
       const totalElapsed = Math.round(performance.now() - startTime);
+
+      // Discard stale responses: a newer run started, or the user
+      // switched questions while this run was executing.
+      if (mySeq !== runSeq || runQ !== q) {
+        appendTerminal('Ignored a stale result from an earlier run.', 'system');
+        return;
+      }
 
       // Handle custom input separately - show raw output, don't grade
       if (isCustom) {
@@ -868,8 +885,10 @@ function initProblemPage() {
         return;
       }
 
-      // Submit — grade against all test cases
-      let allPassed = true;
+      // Submit — grade against all test cases.
+      // The verdict is derived AFTER storing, from the same
+      // testCaseResults the pills/detail/badge render — a single source
+      // of truth, so the banner can never disagree with the cases below.
       const results = res.results || [];
       results.forEach((r, idx) => {
         const actual = r.actual ?? r.stdout ?? '';
@@ -880,7 +899,6 @@ function initProblemPage() {
           const normExpected = typeof normalizeOutput === 'function' ? normalizeOutput(expected) : String(expected).trim();
           passed = normActual === normExpected && !(r.stderr && String(r.stderr).trim());
         }
-        if (!passed) allPassed = false;
 
         testCaseResults[idx] = {
           passed,
@@ -893,6 +911,10 @@ function initProblemPage() {
         if (r.stdout ?? actual) appendTerminal(r.stdout ?? actual, 'stdout');
         if (r.stderr) appendTerminal(r.stderr, 'stderr');
       });
+
+      const storedVals = q.testCases.map((_, i) => testCaseResults[i]);
+      const passedCount = storedVals.filter(v => v && v.passed).length;
+      const allPassed = storedVals.length > 0 && passedCount === storedVals.length && results.length === storedVals.length;
 
       activeCaseIdx = 0;
       renderTestCasePills();
@@ -963,8 +985,8 @@ function initProblemPage() {
           }
           toast('Question solved and progress saved!');
         } else {
-          const failedCount = results.length - Object.values(testCaseResults).filter(v => v.passed).length;
-          if (testSummary) testSummary.textContent = `${results.length - failedCount}/${results.length} passed`;
+          const failedCount = storedVals.length - passedCount;
+          if (testSummary) testSummary.textContent = `${passedCount}/${storedVals.length} passed`;
           if (editorState) editorState.textContent = 'Wrong Answer';
           
           if (resultPanel) resultPanel.innerHTML = `

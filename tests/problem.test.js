@@ -67,6 +67,23 @@ describe('problem.js - ID and DOM contract', () => {
     assert.match(p, /casesToRun = q\.testCases/);
   });
 
+  it('stale run responses are discarded (generation token + question snapshot)', () => {
+    const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
+    assert.match(p, /let runSeq = 0/);
+    assert.match(p, /const mySeq = \+\+runSeq/);
+    assert.match(p, /const runQ = q/);
+    assert.match(p, /if \(mySeq !== runSeq \|\| runQ !== q\)/);
+    assert.match(p, /Ignored a stale result/);
+  });
+
+  it('submit verdict is derived from stored results (banner cannot disagree with cases)', () => {
+    const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
+    assert.match(p, /const storedVals = q\.testCases\.map/);
+    assert.match(p, /const passedCount = storedVals\.filter/);
+    assert.match(p, /const allPassed = storedVals\.length > 0 && passedCount === storedVals\.length/);
+    assert.doesNotMatch(p, /if \(!passed\) allPassed = false/);
+  });
+
   it('pyodide lifecycle status is toasted, not written to the toolbar', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/runner.js'), 'utf8');
     assert.match(p, /toast\('Python loading…'\)/);
