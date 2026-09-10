@@ -770,7 +770,8 @@ function initProblemPage() {
         }
         if (testSummary) testSummary.textContent = hasError ? 'Error' : 'Custom done';
         if (editorState) editorState.textContent = hasError ? 'Error' : 'Done';
-        showExplanation();
+        if (hasError) showExplanation();
+        else if (explanation) { explanation.classList.add('hidden'); clearTimeout(window.__hintTimer); }
         return;
       }
 
@@ -874,9 +875,12 @@ function initProblemPage() {
             </div>
           `;
         }
+        // Only show hint when the answer is wrong — not on Accepted/Passed
+        if (currentResult && !currentResult.passed) showExplanation();
+        else if (explanation) { explanation.classList.add('hidden'); clearTimeout(window.__hintTimer); }
       }
 
-      showExplanation();
+
 
     } catch (err) {
       console.error('Execution error:', err);
