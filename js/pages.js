@@ -112,12 +112,31 @@ function renderPracticeTopics() {
     const originalIdx = topics.findIndex(x => x.name === t.name);
     const isLocked = !loggedIn && originalIdx >= 2;
     const p = topicProgress(t.name);
+    // When a level filter is active, surface per-level progress on the card
+    let displayDone = p.done;
+    let displayTotal = p.total;
+    let displayPct = p.pct;
+    let displayIsDone = displayPct === 100;
+    let displayIsStarted = displayDone > 0;
+    if (level !== 'all') {
+      const lQs = questionsFor(t.name, level);
+      const lDone = lQs.filter(q => solved(q.id)).length;
+      const lTotal = lQs.length;
+      const lPct = lTotal ? Math.round(lDone / lTotal * 100) : 0;
+      displayDone = lDone;
+      displayTotal = lTotal;
+      displayPct = lPct;
+      displayIsDone = lPct === 100;
+      displayIsStarted = lDone > 0;
+    }
     const iconClass = getTopicIcon(t.name);
     const art = getTopicArt(t.name);
-    const pct = p.pct;
-    const isDone = pct === 100;
-    const isStarted = p.done > 0;
-    const statusLabel = isDone ? 'Completed' : isStarted ? pct + '% completed' : 'Not started';
+    const pct = displayPct;
+    const isDone = displayIsDone;
+    const isStarted = displayIsStarted;
+    const statusLabel = level !== 'all'
+      ? (isDone ? `${levelMeta[level].label} completed` : isStarted ? `${levelMeta[level].label} · ${pct}% completed` : `${levelMeta[level].label} · Not started`)
+      : (isDone ? 'Completed' : isStarted ? pct + '% completed' : 'Not started');
     const statusIcon = isDone ? 'fa-solid fa-circle-check' : isStarted ? 'fa-solid fa-chart-simple' : 'fa-regular fa-circle-play';
     const statusColor = isDone ? 'text-emerald-600 dark:text-emerald-400' : isStarted ? 'text-[var(--green)]' : 'text-muted';
     const topBarClass = isLocked ? 'bg-amber-500/70' : isDone ? 'bg-emerald-500' : isStarted ? 'green-bg' : 'bg-[var(--line)]';
@@ -146,7 +165,7 @@ function renderPracticeTopics() {
           <span class="absolute top-3 right-3 card-badge text-[10px] font-mono font-semibold tracking-wider px-2.5 py-1 rounded-full shadow-sm flex items-center gap-1.5 z-10 ${isDone ? '!text-emerald-700 dark:!text-emerald-300' : ''}">
             ${isLocked 
               ? '<i class="fa-solid fa-user-lock text-[10px] opacity-70"></i> Free Account'
-              : `<i class="${isDone ? 'fa-solid fa-medal text-emerald-600' : isStarted ? 'fa-solid fa-fire text-[var(--green)]' : 'fa-regular fa-circle text-muted'} text-[10px]"></i> ${p.done}/${p.total} · ${pct}%`
+              : `<i class="${isDone ? 'fa-solid fa-medal text-emerald-600' : isStarted ? 'fa-solid fa-fire text-[var(--green)]' : 'fa-regular fa-circle text-muted'} text-[10px]"></i> ${displayDone}/${displayTotal} · ${pct}%`
             }
           </span>
         </div>

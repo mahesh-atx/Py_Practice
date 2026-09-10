@@ -704,6 +704,36 @@ function syncAuthUI() {
     document.querySelectorAll('[data-user-email]').forEach(el => el.textContent = auth.email || '');
   }
 
+  // 3b. Header streak · daily chip (auth-only, driven by activityToday/streak)
+  (function renderStreakChip() {
+    const chipEls = document.querySelectorAll('[data-streak-chip]');
+    // If no placeholder exists, inject one into the desktop auth-chip row
+    if (!chipEls.length && loggedIn) {
+      const authRow = document.querySelector('.auth-chip');
+      if (authRow) {
+        const chip = document.createElement('a');
+        chip.setAttribute('data-streak-chip', '');
+        chip.href = 'progress.html';
+        chip.className = 'hidden md:inline-flex items-center gap-1.5 btn-ghost px-2.5 py-1.5 text-xs rounded-[10px] border border-line font-mono';
+        chip.title = 'Streak and daily progress';
+        authRow.prepend(chip);
+        // Re-query after injection
+        updateChip(chip);
+        return;
+      }
+    }
+    chipEls.forEach(updateChip);
+    function updateChip(el) {
+      if (!el) return;
+      if (!loggedIn) { el.classList.add('hidden'); el.style.display = 'none'; return; }
+      el.classList.remove('hidden'); el.style.removeProperty('display');
+      const s = typeof streak === 'function' ? streak() : 0;
+      const t = typeof activityToday === 'function' ? activityToday() : 0;
+      const g = typeof dailyGoal !== 'undefined' ? dailyGoal : 3;
+      el.innerHTML = `<i class="fa-solid fa-fire text-amber-500 text-[11px]"></i> <span>${s}d</span><span class="opacity-30">·</span><span>${Math.min(g, t)}/${g} today</span>`;
+    }
+  })();
+
   // 4. Automatically hide Progress & Profile navigation links when not logged in
   document.querySelectorAll('a[href="progress.html"], a[href="profile.html"]').forEach(a => {
     // Only target header navs, mobile drawers, or footer explore links
