@@ -346,6 +346,17 @@ function initProblemPage() {
 
   let codeKey = 'code:' + q.id;
 
+  // Helper: next question across levels (Basic last → Intermediate first, etc.)
+  function nextQuestionAcrossLevels() {
+    if (index + 1 < qs.length) return qs[index + 1];
+    const curPos = levels.indexOf(q.level);
+    for (let i = curPos + 1; i < levels.length; i++) {
+      const nxt = questionsFor(q.topic, levels[i]);
+      if (nxt.length) return nxt[0];
+    }
+    return null;
+  }
+
   const explanation = document.getElementById('explanationPanel');
   const editorContainer = document.getElementById('monacoEditor');
   const testTabBadge = document.getElementById('testTabBadge');
@@ -413,10 +424,16 @@ function initProblemPage() {
       }
     }
     if (nextBtn) {
-      if (index + 1 < qs.length) {
-        nextBtn.href = `problem.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}&q=${index + 1}`;
+      const nxtQ = nextQuestionAcrossLevels();
+      if (nxtQ && nxtQ.id !== q.id) {
+        nextBtn.href = questionUrl(nxtQ);
         nextBtn.classList.remove('opacity-50','pointer-events-none');
-        nextBtn.innerHTML = `Next <i class="fa-solid fa-arrow-right text-[11px]"></i>`;
+        // Label adapts when crossing a level boundary
+        if (nxtQ.level !== q.level) {
+          nextBtn.innerHTML = `${levelMeta[nxtQ.level].label} <i class="fa-solid fa-arrow-right text-[11px]"></i>`;
+        } else {
+          nextBtn.innerHTML = `Next <i class="fa-solid fa-arrow-right text-[11px]"></i>`;
+        }
       } else {
         nextBtn.href = `practice.html?topic=${encodeURIComponent(q.topic)}&level=${q.level}`;
         nextBtn.classList.remove('opacity-50','pointer-events-none');
@@ -832,8 +849,9 @@ function initProblemPage() {
             const wasAlreadySolved = state.solved[q.id] ? true : false;
             markSolved(q);
             renderHeaderProgress();
-            const hasNextQuestion = index + 1 < qs.length;
-            const nextQuestion = hasNextQuestion ? qs[index + 1] : null;
+            const nextQuestion = nextQuestionAcrossLevels();
+            const hasNextAcross = !!nextQuestion;
+            const isSameLevel = hasNextAcross && nextQuestion.level === q.level;
             if (resultPanel) resultPanel.innerHTML = `
             <div class="pop-in bg-[#051108] border-y border-[#1a381c] px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 font-mono shadow-sm">
               <div class="flex items-center gap-2 min-w-0">
@@ -842,9 +860,9 @@ function initProblemPage() {
                 <span class="text-emerald-300/70 text-[11px] truncate">1/1 passed${wasAlreadySolved ? ' · already completed' : ' · +1 solved'}</span>
               </div>
               <div class="flex shrink-0">
-                ${hasNextQuestion ? `
+                ${hasNextAcross ? `
                   <a href="${questionUrl(nextQuestion)}" class="w-full sm:w-auto bg-[#7CB342] hover:bg-[#689F38] text-[#0A0F0A] font-bold font-mono text-xs px-4 py-2 rounded-[3px] transition-colors inline-flex items-center justify-center gap-1.5 whitespace-nowrap">
-                    <span>Next Question</span>
+                    <span>${isSameLevel ? 'Next Question' : levelMeta[nextQuestion.level].label}</span>
                     <span>→</span>
                   </a>
                 ` : `
@@ -860,7 +878,8 @@ function initProblemPage() {
             if (bannerLink) {
               bannerLink.addEventListener('click', (e) => {
                 const href = bannerLink.getAttribute('href');
-                if (hasNextQuestion && isPlainClick(e)) {
+                // In-place slide only for same-level next; cross-level navigates
+                if (isSameLevel && isPlainClick(e)) {
                   e.preventDefault();
                   switchQuestion(index + 1);
                 } else if (href) {

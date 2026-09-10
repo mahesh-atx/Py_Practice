@@ -131,12 +131,12 @@ test('problem page switches questions in place (no reload) with correct URLs', a
   assert.ok(els.terminalLogs.innerHTML.includes('Switched to Q2'), 'B6 terminal switch line');
   assert.ok(els.selectedTestCaseDetail.innerHTML.length > 0, 'B7 case detail rendered');
 
-  // C) Next again -> Q3 (last of Python Basics basic)
+  // C) Next again -> Q3 (last of Python Basics basic) — now goes to Intermediate, not Back to list
   click(els.nextQuestionBtn);
   await tick();
   assert.ok(title().includes('Print calculations'), 'C1 title Q3');
-  assert.ok(els.nextQuestionBtn.href.startsWith('practice.html'), 'C2 last q -> Back to list href');
-  assert.ok(els.nextQuestionBtn.innerHTML.includes('Back to list'), 'C3 label = Back to list');
+  assert.ok(els.nextQuestionBtn.href.includes('level=intermediate'), 'C2 last basic -> Intermediate href');
+  assert.ok(els.nextQuestionBtn.innerHTML.includes('Intermediate'), 'C3 label = Intermediate');
 
   // D) Next on the LAST question still navigates to the list
   const evD = click(els.nextQuestionBtn);
