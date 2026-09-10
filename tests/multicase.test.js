@@ -76,8 +76,8 @@ describe('multicase - no quoted output keys remain', () => {
   });
 });
 
-describe('multicase - core passes mockFiles through', () => {
-  it('file questions expose mockFiles on testCases', () => {
+describe('multicase - core passes mockFiles through (single-case)', () => {
+  it('file questions expose mockFiles on the single testCase', () => {
     const vm = require('node:vm');
     const store = new Map();
     const localStorage = { getItem: k => store.get(k) ?? null, setItem: (k, v) => store.set(k, String(v)), removeItem: k => store.delete(k) };
@@ -89,70 +89,73 @@ describe('multicase - core passes mockFiles through', () => {
     vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', 'core.js'), 'utf8'), sandbox);
     const qs = sandbox.questionsFor('File Handling', 'intermediate');
     const byTitle = Object.fromEntries(qs.map(q => [q.title, q]));
+    assert.equal(byTitle['Read numbers and sum'].testCases.length, 1);
     assert.ok(byTitle['Read numbers and sum'].testCases[0].mockFiles['nums.txt']);
-    assert.ok(byTitle['Read numbers and sum'].testCases[1].mockFiles['data.txt']);
+    assert.equal(byTitle['Reverse file lines'].testCases.length, 1);
     assert.ok(byTitle['Reverse file lines'].testCases[0].mockFiles['a.txt']);
     const adv = sandbox.questionsFor('File Handling', 'advanced');
     const advByTitle = Object.fromEntries(adv.map(q => [q.title, q]));
     assert.ok(advByTitle['Sort numbers file'].testCases[0].mockFiles['nums.txt']);
   });
+  it('questionsFor returns exactly one testCase per question', () => {
+    const vm = require('node:vm');
+    const store = new Map();
+    const localStorage = { getItem: k => store.get(k) ?? null, setItem: (k, v) => store.set(k, String(v)), removeItem: k => store.delete(k) };
+    const noop = () => {};
+    const el = { classList: { add: noop, remove: noop, toggle: noop, contains: () => false }, style: {} };
+    const sandbox = { localStorage, console, module: { exports: {} }, document: { addEventListener: noop, createElement: () => el, getElementById: () => null, querySelector: () => null, querySelectorAll: () => [], body: el, documentElement: el }, window: {}, navigator: {}, setTimeout, clearTimeout };
+    vm.createContext(sandbox);
+    vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', 'topics-data.js'), 'utf8'), sandbox);
+    vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', 'core.js'), 'utf8'), sandbox);
+    for (const q of sandbox.allQuestions()) {
+      assert.equal(q.testCases.length, 1, `${q.id} should have 1 testCase`);
+    }
+  });
 });
 
-describe('multicase - corrected file expectations match real Python', () => {
-  it('word count: notes=8 hello=5', async () => {
+describe('multicase - corrected file expectations match real Python (single visible case)', () => {
+  it('word count: visible sample notes=8', async () => {
     const code = 'fn = input().strip()\nwith open(fn) as f:\n    print(len(f.read().split()))';
     const files = { 'hello.txt': 'Hello\nWorld\nPython file handling', 'notes.txt': 'Learning Python\nPractice makes perfect\nLine 3 notes' };
-    let r = await runHarness(code, 'notes.txt', files);
+    // Single-case mode exposes only the sample input (notes.txt); hello.txt remains covered by base mocks but not graded
+    const r = await runHarness(code, 'notes.txt', files);
     assert.equal(r.stderr, '');
     assert.equal(norm(r.stdout), '8');
-    r = await runHarness(code, 'hello.txt', files);
-    assert.equal(norm(r.stdout), '5');
   });
 
-  it('longest line: notes=22 hello=20', async () => {
+  it('longest line: visible sample notes=22', async () => {
     const code = 'fn = input().strip()\nwith open(fn) as f:\n    print(max(len(l) for l in f.read().splitlines()))';
     const files = { 'hello.txt': 'Hello\nWorld\nPython file handling', 'notes.txt': 'Learning Python\nPractice makes perfect\nLine 3 notes' };
-    let r = await runHarness(code, 'notes.txt', files);
+    const r = await runHarness(code, 'notes.txt', files);
     assert.equal(norm(r.stdout), '22');
-    r = await runHarness(code, 'hello.txt', files);
-    assert.equal(norm(r.stdout), '20');
   });
 
-  it('read numbers and sum: one generic solution passes both cases', async () => {
+  it('read numbers and sum: sample nums.txt', async () => {
     const { questionSeeds } = require('../js/topics-data.js');
     const q = questionSeeds['File Handling'].intermediate.find(x => x[0] === 'Read numbers and sum');
     const code = 'fn = input().strip()\nwith open(fn) as f:\n    print(sum(int(x) for x in f.read().split()))';
     const mocks = { 'nums.txt': '5\n5\n5', 'data.txt': '11\n11\n11' };
-    let r = await runHarness(code, q[2], mocks);
+    const r = await runHarness(code, q[2], mocks);
     assert.equal(norm(r.stdout), norm(q[3]));
-    const e = q[4][0];
-    r = await runHarness(code, e.input, { ...mocks, ...(e.mockFiles || {}) });
-    assert.equal(norm(r.stdout), norm(e.output));
   });
 
-  it('reverse lines: one generic solution passes both', async () => {
+  it('reverse lines: sample a.txt', async () => {
     const { questionSeeds } = require('../js/topics-data.js');
     const q = questionSeeds['File Handling'].intermediate.find(x => x[0] === 'Reverse file lines');
     const code = 'fn = input().strip()\nwith open(fn) as f:\n    lines = f.read().splitlines()\nfor l in reversed(lines):\n    print(l)';
     const seedMocks = { 'a.txt': 'a\nb\nc', 'b.txt': 'x\ny\nz' };
-    let r = await runHarness(code, q[2], seedMocks);
+    const r = await runHarness(code, q[2], seedMocks);
     assert.equal(norm(r.stdout), norm(q[3]));
-    const e = q[4][0];
-    r = await runHarness(code, e.input, { ...seedMocks, ...(e.mockFiles || {}) });
-    assert.equal(norm(r.stdout), norm(e.output));
   });
 
-  it('filter lines matches unified a.txt', async () => {
+  it('filter lines: visible sample a.txt cat', async () => {
     const { questionSeeds } = require('../js/topics-data.js');
     const q = questionSeeds['File Handling'].advanced.find(x => x[0] === 'Filter lines');
     const code = 'fn = input().strip()\nword = input().strip()\nwith open(fn) as f:\n    [print(l) for l in f.read().splitlines() if word in l]';
     const worker = require('../js/pyodide-worker.js');
     const base = worker.baseMockFiles();
-    let r = await runHarness(code, q[2], base);
+    const r = await runHarness(code, q[2], base);
     assert.equal(norm(r.stdout), norm(q[3]));
-    const e = q[4][0];
-    r = await runHarness(code, e.input, base);
-    assert.equal(norm(r.stdout), norm(e.output));
   });
 
   it('sys.stdin.read style also works (unified buffer)', async () => {

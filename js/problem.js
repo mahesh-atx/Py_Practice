@@ -437,11 +437,9 @@ function initProblemPage() {
     }
     if (bcTitle) fitBreadcrumbText(bcTitle, q.title);
 
-    // Reset per-question UI state
-    activeCaseIdx = 0;
-    testCaseResults = {};
-    renderTestCasePills();
-    renderActiveCaseDetail();
+    // Reset per-question UI state (single-case)
+    currentResult = null;
+    renderSingleCase();
     const resultPanel = document.getElementById('resultPanel');
     if (resultPanel) { resultPanel.classList.add('hidden'); resultPanel.innerHTML = ''; }
     if (explanation) { explanation.classList.add('hidden'); explanation.innerHTML = ''; }
@@ -564,69 +562,28 @@ function initProblemPage() {
     // Clear custom output if present
     const customOut = document.getElementById('customOutputPanel');
     if (customOut) { customOut.classList.add('hidden'); customOut.innerHTML = ''; }
-    // Reset test results
-    testCaseResults = {};
-    renderTestCasePills();
-    renderActiveCaseDetail();
+    // Reset single result
+    currentResult = null;
+    renderSingleCase();
     appendTerminal(`Reset code to template: ${q.topic}`, 'system');
     toast('Starter code restored.');
   });
 
-  let activeCaseIdx = 0;
-  let testCaseResults = {};
-  // Generation token: every run (Run/Submit) takes a sequence number and
-  // snapshots the question. A response that arrives after a newer run was
-  // started — or after switching to another question — is stale and must
-  // not touch the banner, pills, badge, or details. Without this, a slow
-  // Submit resolving after a fast Run (or vice versa) leaves the banner
-  // disagreeing with the per-case details (e.g. "Failed 1 of 2" while
-  // both visible cases show Passed).
+  // Single-case mode: no pill tabs, one input/output visible.
+  let currentResult = null;
   let runSeq = 0;
 
-  function renderTestCasePills() {
+  function renderSingleCase() {
     const tabsContainer = document.getElementById('testCaseTabsContainer');
-    if (!tabsContainer) return;
-
-    tabsContainer.innerHTML = q.testCases.map((tc, idx) => {
-      const isSelected = idx === activeCaseIdx;
-      const res = testCaseResults[idx];
-      let dot = '';
-      if (res) {
-        dot = res.passed
-          ? '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>'
-          : '<span class="w-1.5 h-1.5 rounded-full bg-red-400 shrink-0"></span>';
-      } else {
-        dot = '<span class="w-1 h-1 rounded-full bg-white/20 shrink-0"></span>';
-      }
-      return `
-        <button
-          data-case-tab="${idx}"
-          class="case-pill sm:w-full w-auto shrink-0 text-left flex items-center justify-between gap-2 px-2.5 py-2 rounded-md text-[11px] font-mono leading-none border transition cursor-pointer select-none ${
-            isSelected
-              ? 'bg-white text-[#1a1918] border-white font-medium shadow-sm'
-              : 'bg-white/[.02] text-white/45 border-white/[.07] hover:bg-white/[.06] hover:text-white/80 hover:border-white/12'
-          }"
-        >
-          <span class="inline-flex items-center gap-2 min-w-0"><span class="shrink-0">${dot}</span><span class="truncate">${escapeHtml(tc.label || `Case ${idx + 1}`)}</span></span>
-          ${isSelected ? '<span class="w-1 h-1 rounded-full bg-[#1a1918]/30 shrink-0 hidden sm:block"></span>' : ''}
-        </button>`;
-    }).join('');
-
-    tabsContainer.querySelectorAll('[data-case-tab]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeCaseIdx = parseInt(btn.dataset.caseTab, 10);
-        renderTestCasePills();
-        renderActiveCaseDetail();
-      });
-    });
-  }
-
-  function renderActiveCaseDetail() {
+    if (tabsContainer) {
+      tabsContainer.innerHTML = '';
+      tabsContainer.classList.add('hidden');
+    }
     const detailContainer = document.getElementById('selectedTestCaseDetail');
     if (!detailContainer) return;
-    const tc = q.testCases[activeCaseIdx];
+    const tc = q.testCases[0];
     if (!tc) return;
-    const res = testCaseResults[activeCaseIdx];
+    const res = currentResult;
     const rawInput = tc.input ?? '';
     const decodedInput = rawInput.replace(/\\n/g, '\n');
     const hasInput = decodedInput.trim() !== '';
@@ -666,11 +623,14 @@ function initProblemPage() {
       ` : `
         <div class="mt-3 flex items-center gap-1.5 text-[11px] font-mono text-white/25">
           <span class="w-1 h-1 rounded-full bg-white/20 shrink-0"></span>
-          Select a case and press Run to see output — Submit grades all cases
+          Press Run or Submit to test this case
         </div>
       `}
     `;
   }
+  // Legacy shims for tests that still probe the old multi-case API
+  function renderTestCasePills() { renderSingleCase(); }
+  function renderActiveCaseDetail() { renderSingleCase(); }
 
   // First question render (nav, pills, editor code all flow from here)
   renderQuestion();
@@ -704,9 +664,7 @@ function initProblemPage() {
     const customOutputPanel = document.getElementById('customOutputPanel');
     if (runBtn) { runBtn.disabled = true; runBtn.style.opacity = '0.6'; }
     if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = '0.6'; }
-    // Transient run feedback goes to the toast — the toolbar keeps the
-    // persistent Python state (loading / ready / error) untouched.
-    const runLabel = mode === 'submit' ? 'Running all test cases…' : `Running Case ${activeCaseIdx + 1}…`;
+    const runLabel = mode === 'submit' ? 'Submitting…' : 'Running…';
     toast(runLabel);
     if (testSummary) testSummary.textContent = 'Executing…';
     if (editorState) editorState.textContent = 'Running';
@@ -716,17 +674,12 @@ function initProblemPage() {
 
     if (isCustom) {
       appendTerminal(`Executing with custom input…`, 'cmd');
-    } else if (isSubmit) {
-      appendTerminal(`Executing full test suite (${q.testCases.length} cases)…`, 'cmd');
     } else {
-      appendTerminal(`Executing Case ${activeCaseIdx + 1} (${q.testCases[activeCaseIdx]?.label || 'sample'})…`, 'cmd');
+      appendTerminal(`Executing sample…`, 'cmd');
     }
 
     try {
       let casesToRun = [];
-      // Run targets the currently selected case tab so any failing case
-      // can be debugged in isolation; Submit always grades every case.
-      let runCaseIdx = activeCaseIdx;
 
       if (isCustom) {
         const customVal = customInputEl ? customInputEl.value : '';
@@ -736,11 +689,9 @@ function initProblemPage() {
           output: '',
           expected: ''
         }];
-      } else if (isSubmit) {
-        casesToRun = q.testCases;
       } else {
-        runCaseIdx = Math.min(Math.max(0, activeCaseIdx), q.testCases.length - 1);
-        casesToRun = [q.testCases[runCaseIdx]];
+        // Single-case mode: both Run and Submit grade the same sole case
+        casesToRun = [q.testCases[0]];
       }
 
       const startTime = performance.now();
@@ -765,12 +716,11 @@ function initProblemPage() {
       if (isCustom) {
         const r = res.results && res.results[0];
         if (!r) throw new Error('No result returned');
-        const stdout = r.stdout ?? r.actual ?? '';
+        const stdout = r.actual ?? r.stdout ?? '';
         const stderr = r.stderr ?? '';
         const hasError = !!(stderr && String(stderr).trim());
 
-        // Update testCaseResults for badge but mark custom as not graded
-        testCaseResults[0] = {
+        currentResult = {
           passed: !hasError,
           actual: stdout,
           expected: '',
@@ -779,8 +729,7 @@ function initProblemPage() {
           isCustom: true
         };
 
-        renderTestCasePills();
-        renderActiveCaseDetail();
+        renderSingleCase();
 
         // Show custom output panel — minimal
         if (customOutputPanel) {
@@ -825,11 +774,11 @@ function initProblemPage() {
         return;
       }
 
-      // Run (selected case) — grade this one case, keep others untouched
-      if (!isSubmit) {
+      // Single-case grading (both Run and Submit)
+      {
         const r = res.results && res.results[0];
         if (!r) throw new Error('No result returned');
-        const stdout = r.stdout ?? r.actual ?? '';
+        const stdout = r.actual ?? r.stdout ?? '';
         const stderr = r.stderr ?? '';
         const hasError = !!(stderr && String(stderr).trim());
         const expected = r.expected ?? r.output ?? (casesToRun[0] ? casesToRun[0].output : '');
@@ -840,117 +789,43 @@ function initProblemPage() {
           passed = normActual === normExpected && !hasError;
         }
 
-        testCaseResults[runCaseIdx] = {
+        currentResult = {
           passed,
           actual: stdout,
           expected,
           elapsed: r.elapsed ?? totalElapsed,
           stderr
         };
-        activeCaseIdx = runCaseIdx;
-        renderTestCasePills();
-        renderActiveCaseDetail();
+        renderSingleCase();
 
         if (testTabBadge) {
-          const correctPassed = Object.values(testCaseResults).filter(v => v.passed).length;
-          const total = q.testCases.length;
           testTabBadge.classList.remove('hidden');
-          testTabBadge.textContent = `· ${correctPassed}/${total}`;
+          testTabBadge.textContent = passed ? '· 1/1' : '· 0/1';
+          testTabBadge.className = `text-[10px] font-mono font-normal ${passed ? 'text-white/45' : 'text-red-300/70'}`;
         }
 
         if (stdout) appendTerminal(stdout, 'stdout');
         if (stderr) appendTerminal(stderr, 'stderr');
-        appendTerminal(`[Case ${runCaseIdx + 1} ${passed ? 'passed' : 'failed'}, ${r.elapsed ?? totalElapsed}ms]`, 'system');
+        appendTerminal(`[${passed ? 'passed' : 'failed'}, ${r.elapsed ?? totalElapsed}ms]`, 'system');
 
-        if (testSummary) testSummary.textContent = passed ? `Case ${runCaseIdx + 1} passed` : `Case ${runCaseIdx + 1} failed`;
-        if (editorState) editorState.textContent = passed ? 'Passed' : 'Wrong Answer';
+        if (resultPanel) resultPanel.classList.remove('hidden');
 
-        if (resultPanel) {
-          resultPanel.classList.remove('hidden');
-          if (passed) {
-            resultPanel.innerHTML = `
-              <div class="pop-in bg-[#050f06] border-y border-[#1a381c] px-3 py-2 flex items-center gap-2 font-mono">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
-                <span class="text-emerald-300/90 text-[11px]">Case ${runCaseIdx + 1} passed.</span>
-                <span class="ml-auto text-white/20 text-[10px]">${r.elapsed ?? totalElapsed}ms</span>
-              </div>`;
-          } else {
-            resultPanel.innerHTML = `
-              <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-3 py-2 flex items-center gap-2 font-mono">
-                <svg class="w-3.5 h-3.5 text-red-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                <span class="text-red-400 text-[11px] font-medium">Case ${runCaseIdx + 1} failed — compare your output below.</span>
-              </div>`;
-          }
-        }
-        return;
-      }
-
-      // Submit — grade against all test cases.
-      // The verdict is derived AFTER storing, from the same
-      // testCaseResults the pills/detail/badge render — a single source
-      // of truth, so the banner can never disagree with the cases below.
-      const results = res.results || [];
-      results.forEach((r, idx) => {
-        const actual = r.actual ?? r.stdout ?? '';
-        const expected = r.expected ?? r.output ?? (casesToRun[idx] ? casesToRun[idx].output : '');
-        let passed = r.passed;
-        if (typeof passed === 'undefined') {
-          const normActual = typeof normalizeOutput === 'function' ? normalizeOutput(actual) : String(actual).trim();
-          const normExpected = typeof normalizeOutput === 'function' ? normalizeOutput(expected) : String(expected).trim();
-          passed = normActual === normExpected && !(r.stderr && String(r.stderr).trim());
-        }
-
-        testCaseResults[idx] = {
-          passed,
-          actual,
-          expected,
-          elapsed: r.elapsed ?? 0,
-          stderr: r.stderr ?? ''
-        };
-
-        if (r.stdout ?? actual) appendTerminal(r.stdout ?? actual, 'stdout');
-        if (r.stderr) appendTerminal(r.stderr, 'stderr');
-      });
-
-      const storedVals = q.testCases.map((_, i) => testCaseResults[i]);
-      const passedCount = storedVals.filter(v => v && v.passed).length;
-      const allPassed = storedVals.length > 0 && passedCount === storedVals.length && results.length === storedVals.length;
-
-      activeCaseIdx = 0;
-      renderTestCasePills();
-      renderActiveCaseDetail();
-
-      if (testTabBadge) {
-        const correctPassed = Object.values(testCaseResults).filter(v => v.passed).length;
-        const total = q.testCases.length;
-        testTabBadge.classList.remove('hidden');
-        testTabBadge.textContent = `· ${correctPassed}/${total}`;
-        testTabBadge.className = `text-[10px] font-mono font-normal ${allPassed ? 'text-white/45' : 'text-red-300/70'}`;
-      }
-
-      appendTerminal(`[Exit code ${allPassed ? '0' : '1'}, ${totalElapsed}ms]`, 'system');
-
-      if (resultPanel) resultPanel.classList.remove('hidden');
-
-      if (allPassed) {
-          if (testSummary) testSummary.textContent = `${results.length}/${results.length} passed`;
+        if (passed) {
+          if (testSummary) testSummary.textContent = '1/1 passed';
           if (editorState) editorState.textContent = 'Accepted';
-          appendTerminal(`[All ${results.length} test cases passed in ${totalElapsed}ms]`, 'stdout');
-          
-          const wasAlreadySolved = state.solved[q.id] ? true : false;
-          
-          markSolved(q);
-          renderHeaderProgress();
-
-          const hasNextQuestion = index + 1 < qs.length;
-          const nextQuestion = hasNextQuestion ? qs[index + 1] : null;
-
-          if (resultPanel) resultPanel.innerHTML = `
+          appendTerminal('[Test case passed in ' + totalElapsed + 'ms]', 'stdout');
+          if (isSubmit) {
+            const wasAlreadySolved = state.solved[q.id] ? true : false;
+            markSolved(q);
+            renderHeaderProgress();
+            const hasNextQuestion = index + 1 < qs.length;
+            const nextQuestion = hasNextQuestion ? qs[index + 1] : null;
+            if (resultPanel) resultPanel.innerHTML = `
             <div class="pop-in bg-[#051108] border-y border-[#1a381c] px-3 sm:px-4 py-2 sm:py-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4 font-mono shadow-sm">
               <div class="flex items-center gap-2 min-w-0">
                 <svg class="text-[#7CB342] w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 <span class="text-[#7CB342] font-bold text-xs tracking-wide whitespace-nowrap">Accepted</span>
-                <span class="text-emerald-300/70 text-[11px] truncate">${results.length}/${results.length} passed${wasAlreadySolved ? ' · already completed' : ' · +1 solved'}</span>
+                <span class="text-emerald-300/70 text-[11px] truncate">1/1 passed${wasAlreadySolved ? ' · already completed' : ' · +1 solved'}</span>
               </div>
               <div class="flex shrink-0">
                 ${hasNextQuestion ? `
@@ -967,36 +842,39 @@ function initProblemPage() {
               </div>
             </div>
           `;
-          // Next Question switches in place (slide transition, warm editor);
-          // "Back to Topics" (last question) navigates. Navigation is forced
-          // explicitly as a safety net (a reported mobile issue where a plain
-          // tap did nothing).
-          const bannerLink = resultPanel.querySelector('a');
-          if (bannerLink) {
-            bannerLink.addEventListener('click', (e) => {
-              const href = bannerLink.getAttribute('href');
-              if (hasNextQuestion && isPlainClick(e)) {
-                e.preventDefault();
-                switchQuestion(index + 1);
-              } else if (href) {
-                window.location.href = href;
-              }
-            });
+            const bannerLink = resultPanel.querySelector('a');
+            if (bannerLink) {
+              bannerLink.addEventListener('click', (e) => {
+                const href = bannerLink.getAttribute('href');
+                if (hasNextQuestion && isPlainClick(e)) {
+                  e.preventDefault();
+                  switchQuestion(index + 1);
+                } else if (href) {
+                  window.location.href = href;
+                }
+              });
+            }
+            toast('Question solved and progress saved!');
+          } else {
+            if (resultPanel) resultPanel.innerHTML = `
+              <div class="pop-in bg-[#050f06] border-y border-[#1a381c] px-3 py-2 flex items-center gap-2 font-mono">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0"></span>
+                <span class="text-emerald-300/90 text-[11px]">Passed — press Submit to save.</span>
+                <span class="ml-auto text-white/20 text-[10px]">${r.elapsed ?? totalElapsed}ms</span>
+              </div>`;
           }
-          toast('Question solved and progress saved!');
         } else {
-          const failedCount = storedVals.length - passedCount;
-          if (testSummary) testSummary.textContent = `${passedCount}/${storedVals.length} passed`;
+          if (testSummary) testSummary.textContent = '0/1 passed';
           if (editorState) editorState.textContent = 'Wrong Answer';
-          
           if (resultPanel) resultPanel.innerHTML = `
             <div class="pop-in bg-[#1f1110] border-y border-red-500/30 px-3 sm:px-4 py-2 flex items-center gap-2 font-mono">
               <svg class="w-4 h-4 shrink-0 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
-              <span class="text-red-400 text-xs font-semibold whitespace-nowrap">Wrong Answer · Failed ${failedCount} of ${results.length} test cases.</span>
-              <span class="hidden sm:inline text-white/40 text-[11px] ml-auto whitespace-nowrap">Inspect failed test cases below.</span>
+              <span class="text-red-400 text-xs font-semibold whitespace-nowrap">Wrong Answer</span>
+              <span class="hidden sm:inline text-white/40 text-[11px] ml-auto whitespace-nowrap">Check your output below.</span>
             </div>
           `;
         }
+      }
 
       showExplanation();
 

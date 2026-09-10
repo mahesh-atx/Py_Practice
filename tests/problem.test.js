@@ -30,12 +30,13 @@ describe('problem.js - ID and DOM contract', () => {
     assert.match(p, /explanation\.innerHTML/);
   });
 
-  it('should compute badge correctly via passed filter', () => {
+  it('should compute badge for single case', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
-    // Old buggy code used indexOf, new should use direct passed count
     assert.doesNotMatch(p, /res\.results\.indexOf/);
-    // Should count via Object.values(testCaseResults).filter
-    assert.match(p, /Object\.values\(testCaseResults\)/);
+    // Single-case badge is 1/1 or 0/1 — no multi-case counting
+    assert.match(p, /· 1\/1/);
+    assert.match(p, /· 0\/1/);
+    assert.match(p, /currentResult/);
   });
 
   it('should handle custom input as special case (not graded)', () => {
@@ -49,22 +50,24 @@ describe('problem.js - ID and DOM contract', () => {
 
   it('run feedback goes to the toast, not the toolbar status', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
-    // Transient "Running…" messages are toasts now; Run targets the selected case
-    assert.match(p, /Running all test cases/);
-    assert.match(p, /Running Case/);
+    // Single-case toasts
+    assert.match(p, /Submitting/);
+    assert.match(p, /Running…/);
     assert.match(p, /runLabel/);
+    assert.doesNotMatch(p, /Running all test cases/);
+    assert.doesNotMatch(p, /Running Case/);
     // The toolbar only shows the file label now — runner.js owns the
     // Python status (as toasts) and problem.js must not touch it.
     assert.doesNotMatch(p, /runnerStatus/);
     assert.doesNotMatch(p, /pyodideStatus/);
   });
 
-  it('Run grades the selected case, Submit grades all', () => {
+  it('Run and Submit both grade the same single case', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
-    assert.match(p, /runCaseIdx/);
-    assert.match(p, /casesToRun = \[q\.testCases\[runCaseIdx\]\]/);
-    assert.match(p, /testCaseResults\[runCaseIdx\]/);
-    assert.match(p, /casesToRun = q\.testCases/);
+    assert.match(p, /Single-case mode: both Run and Submit grade the same sole case/);
+    assert.match(p, /casesToRun = \[q\.testCases\[0\]\]/);
+    assert.match(p, /currentResult/);
+    assert.match(p, /renderSingleCase\(\)/);
   });
 
   it('stale run responses are discarded (generation token + question snapshot)', () => {
@@ -76,12 +79,12 @@ describe('problem.js - ID and DOM contract', () => {
     assert.match(p, /Ignored a stale result/);
   });
 
-  it('submit verdict is derived from stored results (banner cannot disagree with cases)', () => {
+  it('single-case verdict drives banner and stored result', () => {
     const p = fs.readFileSync(path.join(__dirname, '../js/problem.js'), 'utf8');
-    assert.match(p, /const storedVals = q\.testCases\.map/);
-    assert.match(p, /const passedCount = storedVals\.filter/);
-    assert.match(p, /const allPassed = storedVals\.length > 0 && passedCount === storedVals\.length/);
-    assert.doesNotMatch(p, /if \(!passed\) allPassed = false/);
+    assert.match(p, /Single-case grading/);
+    assert.match(p, /currentResult = \{/);
+    assert.match(p, /if \(passed\)/);
+    assert.doesNotMatch(p, /storedVals/);
   });
 
   it('pyodide lifecycle status is toasted, not written to the toolbar', () => {

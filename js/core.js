@@ -174,14 +174,10 @@ function allQuestions() {
 function questionsFor(topicName, level) {
   const arr = (questionSeeds[topicName] && questionSeeds[topicName][level]) || [];
   return arr.map((x, i) => {
-    const primaryCase = { label: 'Case 1 · sample', input: x[2], output: x[3], ...(x[5] && x[5].mockFiles ? { mockFiles: x[5].mockFiles } : {}) };
-    const extraCases = (x[4] || []).map((c, ci) => ({
-      label: `Case ${ci + 2} · test`,
-      input: c.input,
-      output: c.output ?? c.expected ?? '',
-      ...(c.mockFiles ? { mockFiles: c.mockFiles } : {})
-    }));
-    const testCases = [primaryCase, ...extraCases];
+    // Single-case mode: only the visible sample is graded. Hidden extras
+    // remain in questionSeeds but are not exposed to the runner/UI.
+    const singleCase = { label: 'Sample', input: x[2], output: x[3], ...(x[5] && x[5].mockFiles ? { mockFiles: x[5].mockFiles } : {}) };
+    const testCases = [singleCase];
 
     return {
       id: `${canonicalTopic(topicName)}__${level}__${i + 1}`,
