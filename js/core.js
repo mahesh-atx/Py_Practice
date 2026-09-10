@@ -437,37 +437,57 @@ function syncAllStats() {
   if (preview) preview.textContent = `${started}/${topics.length} topics · ${pctStr} complete`;
 }
 
-const defaultCodes = {
-  'Python Basics': 'print("Hello, World!")',
-  'Variables': 'name = input().strip()\nprint(f"Hello, {name}!")',
-  'Data Types': 'val = input().strip()\nprint(type(val))',
-  'Variables and Data Types': 'name = input().strip()\nprint(f"Hello, {name}!")',
-  'Input and Output': 'value = input().strip()\nprint(value)',
-  'Operators': 'a, b = map(int, input().split())\nprint(a + b)',
-  'Conditional Statements': 'n = int(input())\nprint("Even" if n % 2 == 0 else "Odd")',
-  'Loops': 'n = int(input())\nfor i in range(1, n + 1):\n    print(i)',
-  'For Loops': 'n = int(input())\nfor i in range(1, n + 1):\n    print(i)',
-  'While Loops': 'n = int(input())\ni = 1\nwhile i <= n:\n    print(i)\n    i += 1',
-  'Nested Loops': 'n = int(input())\nfor i in range(n):\n    print("*" * n)',
-  'Strings': 'text = input().strip()\nprint(text[::-1])',
-  'String Methods': 'text = input().strip()\nprint(text.replace(" ", "-"))',
-  'Functions': 'def solve(value):\n    return value * value\n\nprint(solve(int(input())))',
-  'Lists': 'numbers = list(map(int, input().split()))\nprint(sum(numbers))',
-  'Tuples': 'values = tuple(map(int, input().split()))\nprint(values)',
-  'Sets': 'values = set(map(int, input().split()))\nprint(len(values))',
-  'Dictionaries': 'words = input().split()\ncounts = {}\nfor word in words:\n    counts[word] = counts.get(word, 0) + 1\nprint(counts)',
-  'Comprehensions': 'n = int(input())\nresult = [i * i for i in range(1, n + 1)]\nprint(*result)',
-  'Comprehension': 'n = int(input())\nresult = [i * i for i in range(1, n + 1)]\nprint(*result)',
-  'List Comprehension': 'n = int(input())\nresult = [i * i for i in range(1, n + 1)]\nprint(*result)',
-  'Exception Handling': 'try:\n    value = int(input())\n    print(value)\nexcept ValueError:\n    print("Invalid")',
-  'File Handling': 'filename = input().strip()\nwith open(filename, "r", encoding="utf-8") as file:\n    content = file.read()\nprint(content)',
-  'Modules and Packages': 'import math\n\nn = int(input())\nprint(math.isqrt(n))',
-  'Object-Oriented Programming': 'class Person:\n    def __init__(self, name):\n        self.name = name\n\nperson = Person(input())\nprint(person.name)'
-};
-
-function defaultCode(topic) {
-  return defaultCodes[topic] || '# Write your Python solution here\n';
+function starterComment(q) {
+  const num = q && q.number ? `Q${q.number} · ` : '';
+  const title = q && q.title ? q.title : 'Write your solution';
+  return `# ${num}${title}\n# Read the problem, then write your solution below\n`;
 }
+
+// Legacy templates removed — keep a shim for any external caller that
+// still calls defaultCode(topic). Returns a generic comment.
+function defaultCode(topic) {
+  return '# Write your Python solution here\n';
+}
+
+/* One-time cleanup: saved editor values that are exactly an old starter
+   template are reset to the new comment (user-typed code is never touched). */
+(function cleanupLegacyStarters() {
+  const legacyStarters = new Set([
+    'print("Hello, World!")',
+    'name = input().strip()\nprint(f"Hello, {name}!")',
+    'val = input().strip()\nprint(type(val))',
+    'value = input().strip()\nprint(value)',
+    'a, b = map(int, input().split())\nprint(a + b)',
+    'n = int(input())\nprint("Even" if n % 2 == 0 else "Odd")',
+    'n = int(input())\nfor i in range(1, n + 1):\n    print(i)',
+    'n = int(input())\ni = 1\nwhile i <= n:\n    print(i)\n    i += 1',
+    'n = int(input())\nfor i in range(n):\n    print("*" * n)',
+    'text = input().strip()\nprint(text[::-1])',
+    'text = input().strip()\nprint(text.replace(" ", "-"))',
+    'def solve(value):\n    return value * value\n\nprint(solve(int(input())))',
+    'numbers = list(map(int, input().split()))\nprint(sum(numbers))',
+    'values = tuple(map(int, input().split()))\nprint(values)',
+    'values = set(map(int, input().split()))\nprint(len(values))',
+    'words = input().split()\ncounts = {}\nfor word in words:\n    counts[word] = counts.get(word, 0) + 1\nprint(counts)',
+    'n = int(input())\nresult = [i * i for i in range(1, n + 1)]\nprint(*result)',
+    'try:\n    value = int(input())\n    print(value)\nexcept ValueError:\n    print("Invalid")',
+    'filename = input().strip()\nwith open(filename, "r", encoding="utf-8") as file:\n    content = file.read()\nprint(content)',
+    'import math\n\nn = int(input())\nprint(math.isqrt(n))',
+    'class Person:\n    def __init__(self, name):\n        self.name = name\n\nperson = Person(input())\nprint(person.name)',
+    '# Write your Python solution here\n'
+  ]);
+  try {
+    const keys = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('code:')) keys.push(k);
+    }
+    for (const k of keys) {
+      const v = localStorage.getItem(k);
+      if (legacyStarters.has(v)) localStorage.removeItem(k);
+    }
+  } catch {}
+})();
 
 function recordActivity() {
   const today = new Date().toISOString().slice(0, 10);

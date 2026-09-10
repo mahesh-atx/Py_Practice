@@ -400,8 +400,8 @@ function initProblemPage() {
     const exOutEl = document.getElementById('exampleOutput');
     if (exOutEl) exOutEl.textContent = q.output ? q.output.replace(/\\n/g, '\n') : '(empty)';
 
-    // Editor code for this question — the Monaco instance itself persists
-    setEditorCode(localStorage.getItem(codeKey) || defaultCode(q.topic));
+    // Editor code for this question — the Monaco instance itself persists (comment-only starter)
+    setEditorCode(localStorage.getItem(codeKey) || starterComment(q));
 
     if (prevBtn) {
       if (index > 0) {
@@ -542,7 +542,7 @@ function initProblemPage() {
     renderQuestion();
   });
 
-  initMonaco(editorContainer, localStorage.getItem(codeKey) || defaultCode(q.topic), (newCode) => {
+  initMonaco(editorContainer, localStorage.getItem(codeKey) || starterComment(q), (newCode) => {
     localStorage.setItem(codeKey, newCode);
     const editorState = document.getElementById('editorState');
     if (editorState) editorState.textContent = 'Editing';
@@ -550,7 +550,7 @@ function initProblemPage() {
   });
 
   document.getElementById('resetBtn')?.addEventListener('click', () => {
-    const freshCode = defaultCode(q.topic);
+    const freshCode = starterComment(q);
     setEditorCode(freshCode);
     localStorage.setItem(codeKey, freshCode);
     const editorState = document.getElementById('editorState');
@@ -565,8 +565,8 @@ function initProblemPage() {
     // Reset single result
     currentResult = null;
     renderSingleCase();
-    appendTerminal(`Reset code to template: ${q.topic}`, 'system');
-    toast('Starter code restored.');
+    appendTerminal(`Reset to starter comment: ${q.title}`, 'system');
+    toast('Starter comment restored.');
   });
 
   // Single-case mode: no pill tabs, one input/output visible.
@@ -671,6 +671,19 @@ function initProblemPage() {
 
     const isCustom = customInputToggle && customInputToggle.checked && mode === 'sample';
     const isSubmit = mode === 'submit';
+
+    // Friendly guard: comment-only / blank editors have nothing to run
+    if (!isCustom) {
+      const hasCode = code.split('\n').some(l => l.trim() !== '' && !l.trim().startsWith('#'));
+      if (!hasCode) {
+        toast('Write your solution first');
+        if (testSummary) testSummary.textContent = 'Empty';
+        if (editorState) editorState.textContent = 'Empty';
+        if (runBtn) { runBtn.disabled = false; runBtn.style.opacity = ''; }
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = ''; }
+        return;
+      }
+    }
 
     if (isCustom) {
       appendTerminal(`Executing with custom input…`, 'cmd');
