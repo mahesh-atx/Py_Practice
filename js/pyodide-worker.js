@@ -177,7 +177,7 @@ class _SmartStr(str):
                         _pending_tokens.clear()
                     return base + rem
                 else:
-                    combined = str(self) + "\\\\n" + "\\\\n".join(pending_extra) + ("\\\\n" + remaining if remaining else "")
+                    combined = str(self) + "\\n" + "\\n".join(pending_extra) + ("\\n" + remaining if remaining else "")
                     # clear pending as consumed
                     if pending_extra:
                         _pending_tokens.clear()
