@@ -137,7 +137,7 @@ const questionSeeds = {
       ['Personal card','Read a name and a city and print them in one sentence.','Nina\nNagpur','Nina lives in Nagpur.',[{input:'Kiran\nPune',output:'Kiran lives in Pune.'}]],
       ['Formatted number','Read an integer and print it inside a sentence.','18','You are 18 years old.',[{input:'25',output:'You are 25 years old.'}]],
       ['Read a mark','Read a mark and print it along with a label.','85','Mark: 85',[{input:'42',output:'Mark: 42'}]],
-      ['Read two and print sum','Read two integers in one line and print them with their sum.','4 6','4 + 6 = 10',[{input:'3 9',output:'3 + 9 = 12'}]],
+      ['Read two and print sum','Read two integers and print them with their sum.','4\n6','4 + 6 = 10',[{input:'3\n9',output:'3 + 9 = 12'}]],
       ['Greet by name','Read a name and print a friendly welcome message.','Ria','Welcome, Ria!',[{input:'Dev',output:'Welcome, Dev!'}]],
       ['Read decimal and print','Read a decimal number and print it with two decimal places.','3.14159','3.14',[{input:'2.0',output:'2.00'}]],
       ['Read a flag','Read the word True or False and print its opposite.','True','False',[{input:'False',output:'True'}]],
