@@ -142,7 +142,7 @@ const questionSeeds = {
       ['Read decimal and print','Read a decimal number and print it with two decimal places.','3.14159','3.14',[{input:'2.0',output:'2.00'}]],
       ['Read a flag','Read the word True or False and print its opposite.','True','False',[{input:'False',output:'True'}]],
       ['Print a line twice','Read a value and print it twice on separate lines.','hi','hi\nhi',[{input:'ok',output:'ok\nok'}]],
-      ['Read three items','Read three integers and print them in a single line.','1 2 3','1 2 3',[{input:'9 8 7',output:'9 8 7'}]]
+      ['Read three items','Read three integers (each on a new line) and print them in a single line.','1\n2\n3','1 2 3',[{input:'9\n8\n7',output:'9 8 7'}]]
     ],
     intermediate:[
       ['Format a bill','Read an item name, quantity and price and print a clean total.','Notebook\n3\n49.5','Notebook: ₹148.50',[{input:'Pen\n5\n10.0',output:'Pen: ₹50.00'}]],
@@ -151,7 +151,7 @@ const questionSeeds = {
       ['Read a box','Read width and height and print a labelled box with numbers.','4\n2','Width: 4\nHeight: 2',[{input:'7\n3',output:'Width: 7\nHeight: 3'}]],
       ['Discount label','Read a price and a discount percent and print both as text.','800\n15','Original: 800.00\nDiscount: 15%',[{input:'1000\n10',output:'Original: 1000.00\nDiscount: 10%'}]],
       ['Read Celsius and print','Read a temperature and print it with a unit label.','30','30 degree Celsius',[{input:'21',output:'21 degree Celsius'}]],
-      ['Read two words','Read two words in one line and print them joined by a colon.','hello world','hello:world',[{input:'left right',output:'left:right'}]],
+      ['Read two words','Read two words (each on a new line) and print them joined by a colon.','hello\nworld','hello:world',[{input:'left\nright',output:'left:right'}]],
       ['Print a receipt line','Read an item and a cost and print a formatted line.','Coffee 40','Item: Coffee | Cost: 40',[{input:'Tea 20',output:'Item: Tea | Cost: 20'}]],
       ['Read a score and label','Read a score and print the label and value with a colon.','76','Score: 76',[{input:'58',output:'Score: 58'}]],
       ['Print a summary','Read a name, a role and print a one-line summary.','Nina Manager','Nina works as Manager.',[{input:'Aman Engineer',output:'Aman works as Engineer.'}]]
