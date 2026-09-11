@@ -133,40 +133,25 @@ const questionSeeds = {
   },
   'Input and Output': {
     basic:[
-      ['Echo a sentence','Read one line and print it back exactly.','Python is fun','Python is fun',[{input:'Code every day',output:'Code every day'}]],
-      ['Personal card','Read a name and a city and print them in one sentence.','Nina\nNagpur','Nina lives in Nagpur.',[{input:'Kiran\nPune',output:'Kiran lives in Pune.'}]],
-      ['Formatted number','Read an integer and print it inside a sentence.','18','You are 18 years old.',[{input:'25',output:'You are 25 years old.'}]],
-      ['Read a mark','Read a mark and print it along with a label.','85','Mark: 85',[{input:'42',output:'Mark: 42'}]],
-      ['Read two and print sum','Read two integers and print them with their sum.','4\n6','4 + 6 = 10',[{input:'3\n9',output:'3 + 9 = 12'}]],
-      ['Greet by name','Read a name and print a friendly welcome message.','Ria','Welcome, Ria!',[{input:'Dev',output:'Welcome, Dev!'}]],
-      ['Read decimal and print','Read a decimal number and print it with two decimal places.','3.14159','3.14',[{input:'2.0',output:'2.00'}]],
-      ['Read a flag','Read the word True or False and print its opposite.','True','False',[{input:'False',output:'True'}]],
-      ['Print a line twice','Read a value and print it twice on separate lines.','hi','hi\nhi',[{input:'ok',output:'ok\nok'}]],
-      ['Read three items','Read three integers (each on a new line) and print them in a single line.','1\n2\n3','1 2 3',[{input:'9\n8\n7',output:'9 8 7'}]]
+      ['Personal card','Read a name and a city, each on a new line, and print them in one sentence.','Nina\nNagpur','Nina lives in Nagpur.',[{input:'Kiran\nPune',output:'Kiran lives in Pune.'}]],
+      ['Read two and print sum','Read two integers, each on a new line, and print them with their sum in the format "a + b = c".','4\n6','4 + 6 = 10',[{input:'3\n9',output:'3 + 9 = 12'}]],
+      ['Read three items','Read three integers, each on a new line, and print them in a single line separated by spaces.','1\n2\n3','1 2 3',[{input:'9\n8\n7',output:'9 8 7'}]],
+      ['Full name builder','Read a first name and a last name, each on a new line, and print the full name with a space.','Rahul\nSharma','Rahul Sharma',[{input:'Asha\nVerma',output:'Asha Verma'}]],
+      ['Welcome message','Read a name and an age, each on a new line, and print a welcome message in the format "Hello <name>, you are <age>!".','Ria\n21','Hello Ria, you are 21!',[{input:'Dev\n30',output:'Hello Dev, you are 30!'}]]
     ],
     intermediate:[
-      ['Format a bill','Read an item name, quantity and price and print a clean total.','Notebook\n3\n49.5','Notebook: ₹148.50',[{input:'Pen\n5\n10.0',output:'Pen: ₹50.00'}]],
-      ['Temperature report','Read Celsius and print the Fahrenheit value in a sentence.','25','25°C = 77.0°F',[{input:'0',output:'0°C = 32.0°F'}]],
-      ['Aligned output','Read three labels and print each padded to 12 characters.','one\ntwo\nthree','one         \ntwo         \nthree       ',[{input:'cat\ndog\nbird',output:'cat         \ndog         \nbird        '}]],
-      ['Read a box','Read width and height and print a labelled box with numbers.','4\n2','Width: 4\nHeight: 2',[{input:'7\n3',output:'Width: 7\nHeight: 3'}]],
-      ['Discount label','Read a price and a discount percent and print both as text.','800\n15','Original: 800.00\nDiscount: 15%',[{input:'1000\n10',output:'Original: 1000.00\nDiscount: 10%'}]],
-      ['Read Celsius and print','Read a temperature and print it with a unit label.','30','30 degree Celsius',[{input:'21',output:'21 degree Celsius'}]],
-      ['Read two words','Read two words (each on a new line) and print them joined by a colon.','hello\nworld','hello:world',[{input:'left\nright',output:'left:right'}]],
-      ['Print a receipt line','Read an item and a cost and print a formatted line.','Coffee 40','Item: Coffee | Cost: 40',[{input:'Tea 20',output:'Item: Tea | Cost: 20'}]],
-      ['Read a score and label','Read a score and print the label and value with a colon.','76','Score: 76',[{input:'58',output:'Score: 58'}]],
-      ['Print a summary','Read a name, a role and print a one-line summary.','Nina Manager','Nina works as Manager.',[{input:'Aman Engineer',output:'Aman works as Engineer.'}]]
+      ['Format a bill','Read an item name, quantity and price, each on a new line, and print a clean total like "Notebook: ₹148.50".','Notebook\n3\n49.5','Notebook: ₹148.50',[{input:'Pen\n5\n10.0',output:'Pen: ₹50.00'}]],
+      ['Aligned output','Read three labels, each on a new line, and print each padded to 12 characters.','one\ntwo\nthree','one         \ntwo         \nthree       ',[{input:'cat\ndog\nbird',output:'cat         \ndog         \nbird        '}]],
+      ['Read a box','Read width and height, each on a new line, and print them as "Width: <w>" and "Height: <h>" on separate lines.','4\n2','Width: 4\nHeight: 2',[{input:'7\n3',output:'Width: 7\nHeight: 3'}]],
+      ['Discount label','Read a price and a discount percent, each on a new line, and print them as "Original: <price>.00" and "Discount: <percent>%".','800\n15','Original: 800.00\nDiscount: 15%',[{input:'1000\n10',output:'Original: 1000.00\nDiscount: 10%'}]],
+      ['Read two words','Read two words, each on a new line, and print them joined by a colon.','hello\nworld','hello:world',[{input:'left\nright',output:'left:right'}]]
     ],
     advanced:[
-      ['Mini receipt','Read three item rows and print subtotal, tax and total.','Pen 2 10\nBook 1 100\nBag 1 300','Subtotal: 420.00\nTax: 42.00\nTotal: 462.00',[{input:'ItemA 1 50\nItemB 2 25\nItemC 1 100',output:'Subtotal: 200.00\nTax: 20.00\nTotal: 220.00'}]],
-      ['Safe integer input','Keep reading until the user gives a valid integer, then print it.','x\ny\n17','17',[{input:'bad\n42',output:'42'}]],
-      ['Report builder','Read four values and print a compact aligned report.','Nina\n21\nPython\n90','Name : Nina\nAge  : 21\nSkill: Python\nScore: 90',[{input:'Aman\n24\nData\n95',output:'Name : Aman\nAge  : 24\nSkill: Data\nScore: 95'}]],
-      ['Read and multiply','Read two numbers in one line and print their product with no decimals.','6 7','42',[{input:'4 5',output:'20'}]],
-      ['Distance label','Read a distance and print it as kilometres with two decimals.','3.456','3.46 km',[{input:'1.5',output:'1.50 km'}]],
-      ['Order summary','Read an item, quantity and unit price and print a full line.','Fan 2 1500','Fan: 2 x 1500 = 3000',[{input:'Lamp 3 200',output:'Lamp: 3 x 200 = 600'}]],
-      ['Read a tuple-like line','Read three comma-separated values and print each on a separate line.','a,b,c','a\nb\nc',[{input:'x,y,z',output:'x\ny\nz'}]],
-      ['Print a total row','Read two numbers in one line and print their sum right-aligned in a 10-character field.','12 20','        32',[{input:'3 4',output:'         7'}]],
-      ['Read a range and label','Read start and end and print the span and count.','4 11','Span: 7\nCount: 8',[{input:'1 3',output:'Span: 2\nCount: 3'}]],
-      ['Star rating','Read a rating between 1 and 5 and print it as a line of stars.','3','***',[{input:'5',output:'*****'}]]
+      ['Mini receipt','Read three item rows (each "name qty price" on a new line) and print subtotal, tax (10%) and total.','Pen 2 10\nBook 1 100\nBag 1 300','Subtotal: 420.00\nTax: 42.00\nTotal: 462.00',[{input:'ItemA 1 50\nItemB 2 25\nItemC 1 100',output:'Subtotal: 200.00\nTax: 20.00\nTotal: 220.00'}]],
+      ['Safe integer input','Keep reading lines until the user gives a valid integer, then print it.','x\ny\n17','17',[{input:'bad\n42',output:'42'}]],
+      ['Report builder','Read four values — name, age, skill and score — each on a new line, and print a compact aligned report.','Nina\n21\nPython\n90','Name : Nina\nAge  : 21\nSkill: Python\nScore: 90',[{input:'Aman\n24\nData\n95',output:'Name : Aman\nAge  : 24\nSkill: Data\nScore: 95'}]],
+      ['Salary slip','Read a name, basic salary and bonus, each on a new line, and print the name and total salary formatted to two decimals.','Aman\n40000\n5000','Name: Aman\nTotal: 45000.00',[{input:'Riya\n30000\n2000',output:'Name: Riya\nTotal: 32000.00'}]],
+      ['Grade summary','Read a student name and three subject marks, each on a new line, and print the name and average with two decimals like "Riya: 84.33".','Riya\n78\n85\n90','Riya: 84.33',[{input:'Aman\n90\n90\n90',output:'Aman: 90.00'}]]
     ]
   },
   'Operators': {
