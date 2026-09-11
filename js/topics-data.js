@@ -147,8 +147,8 @@ const questionSeeds = {
       ['Read two words','Read two words, each on a new line, and print them joined by a colon.','hello\nworld','hello:world',[{input:'left\nright',output:'left:right'}]]
     ],
     advanced:[
-      ['Mini receipt','Read three item rows (each "name qty price" on a new line) and print subtotal, tax (10%) and total.','Pen 2 10\nBook 1 100\nBag 1 300','Subtotal: 420.00\nTax: 42.00\nTotal: 462.00',[{input:'ItemA 1 50\nItemB 2 25\nItemC 1 100',output:'Subtotal: 200.00\nTax: 20.00\nTotal: 220.00'}]],
-      ['Safe integer input','Keep reading lines until the user gives a valid integer, then print it.','x\ny\n17','17',[{input:'bad\n42',output:'42'}]],
+      ['Address block','Read a name, street and city, each on a new line, and print them joined as "Name | Street | City".','Rohan\nMG Road\nPune','Rohan | MG Road | Pune',[{input:'Sita\nPark Street\nKolkata',output:'Sita | Park Street | Kolkata'}]],
+      ['Date formatter','Read a day, month and year, each on a new line, and print the date in two formats: "DD/MM/YYYY" and "DD-MM-YYYY" on separate lines.','12\n08\n2025','12/08/2025\n12-08-2025',[{input:'05\n01\n2024',output:'05/01/2024\n05-01-2024'}]],
       ['Report builder','Read four values — name, age, skill and score — each on a new line, and print a compact aligned report.','Nina\n21\nPython\n90','Name : Nina\nAge  : 21\nSkill: Python\nScore: 90',[{input:'Aman\n24\nData\n95',output:'Name : Aman\nAge  : 24\nSkill: Data\nScore: 95'}]],
       ['Salary slip','Read a name, basic salary and bonus, each on a new line, and print the name and total salary formatted to two decimals.','Aman\n40000\n5000','Name: Aman\nTotal: 45000.00',[{input:'Riya\n30000\n2000',output:'Name: Riya\nTotal: 32000.00'}]],
       ['Grade summary','Read a student name and three subject marks, each on a new line, and print the name and average with two decimals like "Riya: 84.33".','Riya\n78\n85\n90','Riya: 84.33',[{input:'Aman\n90\n90\n90',output:'Aman: 90.00'}]]
