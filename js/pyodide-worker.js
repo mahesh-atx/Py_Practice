@@ -177,7 +177,7 @@ class _SmartStr(str):
                         _pending_tokens.clear()
                     return base + rem
                 else:
-                    combined = str(self) + "\\n" + "\\n".join(pending_extra) + ("\\n" + remaining if remaining else "")
+                    combined = str(self) + "\\\\n" + "\\\\n".join(pending_extra) + ("\\\\n" + remaining if remaining else "")
                     # clear pending as consumed
                     if pending_extra:
                         _pending_tokens.clear()
@@ -208,7 +208,7 @@ def _input(prompt=''):
         xhr.open('GET', f'/api/get-input?id={_req_id}', False)
         xhr.send(None)
         if xhr.status == 200:
-            val = xhr.responseText.rstrip('\n')
+            val = xhr.responseText.rstrip('\\n')
             return _SmartStr(val)
         else:
             raise EOFError('Input cancelled or failed')
@@ -216,9 +216,9 @@ def _input(prompt=''):
         line = _stdin_buf.readline()
         if line == '':
             raise EOFError('No more input values.')
-        if line.endswith('\r\n'):
+        if line.endswith('\\r\\n'):
             stripped = line[:-2]
-        elif line.endswith('\n') or line.endswith('\r'):
+        elif line.endswith('\\n') or line.endswith('\\r'):
             stripped = line[:-1]
         else:
             stripped = line
