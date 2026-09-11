@@ -88,11 +88,116 @@ _input_data = ${escapedInput}
 _stdin_buf = io.StringIO(_input_data)
 _interactive = ${isInteractive}
 _req_id = ${escapedId}
+_pending_tokens = []
+_orig_int = builtins.int
+_orig_float = builtins.float
+
+def _smart_int(x, base=10):
+    if isinstance(x, str):
+        s = x.strip()
+        if s and (' ' in s or '\t' in s):
+            parts = s.split()
+            if len(parts) > 1:
+                try:
+                    _orig_int(parts[0], base) if base != 10 else _orig_int(parts[0])
+                except Exception:
+                    return _orig_int(x, base) if base != 10 else _orig_int(x)
+                _pending_tokens.extend(parts[1:])
+                return _orig_int(parts[0], base) if base != 10 else _orig_int(parts[0])
+    return _orig_int(x, base) if base != 10 else _orig_int(x)
+
+def _smart_float(x):
+    if isinstance(x, str):
+        s = x.strip()
+        if s and (' ' in s or '\t' in s):
+            parts = s.split()
+            if len(parts) > 1:
+                try:
+                    _orig_float(parts[0])
+                except Exception:
+                    return _orig_float(x)
+                _pending_tokens.extend(parts[1:])
+                return _orig_float(parts[0])
+    return _orig_float(x)
+
+builtins.int = _smart_int
+builtins.float = _smart_float
+# copy attributes to keep int.from_bytes etc working
+for _attr in dir(_orig_int):
+    if not hasattr(_smart_int, _attr):
+        try:
+            setattr(_smart_int, _attr, getattr(_orig_int, _attr))
+        except Exception:
+            pass
+for _attr in dir(_orig_float):
+    if not hasattr(_smart_float, _attr):
+        try:
+            setattr(_smart_float, _attr, getattr(_orig_float, _attr))
+        except Exception:
+            pass
+
+class _SmartStr(str):
+    def __int__(self):
+        global _pending_tokens
+        parts = self.strip().split()
+        if len(parts) > 1:
+            try:
+                _orig_int(parts[0])
+            except Exception:
+                return _orig_int(str(self))
+            _pending_tokens.extend(parts[1:])
+            return _orig_int(parts[0])
+        return _orig_int(str(self))
+    def __float__(self):
+        global _pending_tokens
+        parts = self.strip().split()
+        if len(parts) > 1:
+            try:
+                _orig_float(parts[0])
+            except Exception:
+                return _orig_float(str(self))
+            _pending_tokens.extend(parts[1:])
+            return _orig_float(parts[0])
+        return _orig_float(str(self))
+    def split(self, sep=None, maxsplit=-1):
+        if sep is None:
+            try:
+                remaining = _stdin_buf.getvalue()[_stdin_buf.tell():]
+            except Exception:
+                remaining = ""
+            # pending tokens that were queued via __int__/__float__ should also be visible to split
+            pending_extra = list(_pending_tokens) if _pending_tokens else []
+            has_extra = (remaining and remaining.strip()) or pending_extra
+            if has_extra:
+                base = super().split(sep, maxsplit) if maxsplit != -1 else super().split()
+                rem = pending_extra + (remaining.split() if remaining and remaining.strip() else [])
+                if maxsplit == -1:
+                    # clear pending after consuming via split
+                    if pending_extra:
+                        _pending_tokens.clear()
+                    return base + rem
+                else:
+                    combined = str(self) + "\\n" + "\\n".join(pending_extra) + ("\\n" + remaining if remaining else "")
+                    # clear pending as consumed
+                    if pending_extra:
+                        _pending_tokens.clear()
+                    return combined.split(sep, maxsplit)
+            if maxsplit == -1:
+                return super().split()
+            else:
+                return super().split(sep, maxsplit)
+        else:
+            if maxsplit == -1:
+                return super().split(sep)
+            else:
+                return super().split(sep, maxsplit)
 
 def _input(prompt=''):
-    global _stdin_buf
+    global _stdin_buf, _pending_tokens
     if prompt:
         print(prompt, end='')
+    if _pending_tokens:
+        return _SmartStr(_pending_tokens.pop(0))
     if _interactive:
         from js import XMLHttpRequest, self
         from pyodide.ffi import to_js
@@ -103,19 +208,21 @@ def _input(prompt=''):
         xhr.open('GET', f'/api/get-input?id={_req_id}', False)
         xhr.send(None)
         if xhr.status == 200:
-            val = xhr.responseText.rstrip('\\n')
-            return val
+            val = xhr.responseText.rstrip('\n')
+            return _SmartStr(val)
         else:
             raise EOFError('Input cancelled or failed')
     else:
         line = _stdin_buf.readline()
         if line == '':
             raise EOFError('No more input values.')
-        if line.endswith('\\r\\n'):
-            return line[:-2]
-        if line.endswith('\\n') or line.endswith('\\r'):
-            return line[:-1]
-        return line
+        if line.endswith('\r\n'):
+            stripped = line[:-2]
+        elif line.endswith('\n') or line.endswith('\r'):
+            stripped = line[:-1]
+        else:
+            stripped = line
+        return _SmartStr(stripped)
 
 _out = io.StringIO()
 _err = io.StringIO()
@@ -135,6 +242,8 @@ except Exception as _exc:
     _err.write(type(_exc).__name__ + ': ' + str(_exc))
 finally:
     builtins.input = _original_input
+    builtins.int = _orig_int
+    builtins.float = _orig_float
     sys.stdout = _original_stdout
     sys.stderr = _original_stderr
     try:
