@@ -103,6 +103,38 @@ print("Age: " + str(age))       # must convert numbers manually → f-strings ar
 
 ---
 
+## 5. Reading multiple values on one line ⭐ (avoids `ValueError: invalid literal for int() with base 10: '4 6'`)
+
+Many beginner errors come from input like `4 6` (two numbers on **one line** separated by space).
+
+This **fails**:
+```python
+a = int(input())  # input() returns '4 6' -> int('4 6') raises ValueError
+b = int(input())
+```
+
+`int()` cannot parse a string that contains a space. You must `split()` first:
+
+```python
+# When input is "4 6" on one line (Q5 · Read two and print sum)
+a, b = map(int, input().split())  # '4 6' -> ['4', '6'] -> 4, 6
+print(f"{a} + {b} = {a + b}")  # 4 + 6 = 10
+
+# For words: x, y = input().split()  # "hello world" -> ["hello", "world"]
+```
+
+**Robust pattern** that works for both `4 6` (one line) and `4\n6` (two lines):
+```python
+import sys
+data = sys.stdin.read().strip().split()
+a, b = map(int, data[:2])
+print(f"{a} + {b} = {a + b}")
+```
+
+This same fix applies to all problems where the example input shows `7 5`, `4 9`, `6 7`, etc. on one line (e.g. `Add two numbers`, `Compare values`, `Read two words`, `Read and multiply`).
+
+---
+
 ## Quick Revision
 
 - `input()` always returns a **string** → convert with `int()`/`float()` for math.

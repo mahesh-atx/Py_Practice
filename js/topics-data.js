@@ -49,7 +49,7 @@ const questionSeeds = {
   'Variables': {
     basic:[
       ['Store a greeting','Create a variable named name and print a greeting using its value.','Nina','Hello, Nina!',[{input:'Sam',output:'Hello, Sam!'}]],
-      ['Sum two variables','Read two integers into a and b and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
+      ['Sum two variables','Read two integers in one line into a and b and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
       ['Multiple assignment','Assign three values at once and print each one on a new line.','1 2 3','1\n2\n3',[{input:'4 5 6',output:'4\n5\n6'}]],
       ['Reassign a value','Read a number, double it by reassigning the same variable, and print it.','8','16',[{input:'5',output:'10'}]],
       ['String length','Read a word and print how many characters it has.','python','6',[{input:'code',output:'4'}]],
@@ -60,7 +60,7 @@ const questionSeeds = {
       ['Average of three','Read three numbers and print their average.','3 6 9','6.0',[{input:'2 4 6',output:'4.0'}]],
       ['Split a bill','Read a total amount and the number of people and print each share to two decimals.','100 3','33.33',[{input:'50 4',output:'12.50'}]],
       ['Rotate three values','Move a to b, b to c, and c to a (rotate right), then print all three.','1 2 3','3 1 2',[{input:'4 5 6',output:'6 4 5'}]],
-      ['Concatenate numbers','Read two numbers, convert them into text, and print them joined with a hyphen.','4 9','4-9',[{input:'12 7',output:'12-7'}]]
+      ['Concatenate numbers','Read two numbers in one line, convert them into text, and print them joined with a hyphen.','4 9','4-9',[{input:'12 7',output:'12-7'}]]
     ],
     advanced:[
       ['Scale a value','Read a value and a scale factor and print the result as an int and then as a float.','10 2.5','25\n25.0',[{input:'4 1.5',output:'6\n6.0'}]],
@@ -98,7 +98,7 @@ const questionSeeds = {
       ['Store a greeting','Create a variable named name and print a greeting using its value.','Nina','Hello, Nina!',[{input:'Sam',output:'Hello, Sam!'}]],
       ['Convert a value','Read a numeric string and convert it to an integer before adding 5.','12','17',[{input:'50',output:'55'}]],
       ['Check a type','Store a value and print its type using type().','42',"<class 'int'>",[{input:'hello',output:"<class 'str'>"}]],
-      ['Sum two variables','Read two integers into a and b and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
+      ['Sum two variables','Read two integers in one line into a and b and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
       ['Multiple assignment','Assign three values at once and print each one on a new line.','1 2 3','1\n2\n3',[{input:'4 5 6',output:'4\n5\n6'}]],
       ['Float to integer','Read a decimal value, convert it to an integer, and print it.','7.9','7',[{input:'3.2',output:'3'}]],
       ['Comparison result','Store the result of a greater-than comparison in a variable and print it.','4 9','False',[{input:'12 3',output:'True'}]],
@@ -116,7 +116,7 @@ const questionSeeds = {
       ['Round a decimal','Read a float, print its rounded value and the type of that value.','3.6',"4\n<class 'int'>",[{input:'2.2',output:"2\n<class 'int'>"}]],
       ['Flip a boolean','Read a boolean as text, convert it to a bool, and print its opposite.','True','False',[{input:'False',output:'True'}]],
       ['Odd and big check','Read a number and print whether it is odd and whether it is greater than 10.','13','True\nTrue',[{input:'4',output:'False\nFalse'}]],
-      ['Concatenate numbers','Read two numbers, convert them into text, and print them joined with a hyphen.','4 9','4-9',[{input:'12 7',output:'12-7'}]]
+      ['Concatenate numbers','Read two numbers in one line, convert them into text, and print them joined with a hyphen.','4 9','4-9',[{input:'12 7',output:'12-7'}]]
     ],
     advanced:[
       ['Normalize a value','Read a value, convert it to int when possible, otherwise print Invalid.','25','25',[{input:'abc',output:'Invalid'}]],
@@ -137,7 +137,7 @@ const questionSeeds = {
       ['Personal card','Read a name and a city and print them in one sentence.','Nina\nNagpur','Nina lives in Nagpur.',[{input:'Kiran\nPune',output:'Kiran lives in Pune.'}]],
       ['Formatted number','Read an integer and print it inside a sentence.','18','You are 18 years old.',[{input:'25',output:'You are 25 years old.'}]],
       ['Read a mark','Read a mark and print it along with a label.','85','Mark: 85',[{input:'42',output:'Mark: 42'}]],
-      ['Read two and print sum','Read two integers and print them with their sum.','4 6','4 + 6 = 10',[{input:'3 9',output:'3 + 9 = 12'}]],
+      ['Read two and print sum','Read two integers in one line and print them with their sum.','4 6','4 + 6 = 10',[{input:'3 9',output:'3 + 9 = 12'}]],
       ['Greet by name','Read a name and print a friendly welcome message.','Ria','Welcome, Ria!',[{input:'Dev',output:'Welcome, Dev!'}]],
       ['Read decimal and print','Read a decimal number and print it with two decimal places.','3.14159','3.14',[{input:'2.0',output:'2.00'}]],
       ['Read a flag','Read the word True or False and print its opposite.','True','False',[{input:'False',output:'True'}]],
@@ -151,7 +151,7 @@ const questionSeeds = {
       ['Read a box','Read width and height and print a labelled box with numbers.','4\n2','Width: 4\nHeight: 2',[{input:'7\n3',output:'Width: 7\nHeight: 3'}]],
       ['Discount label','Read a price and a discount percent and print both as text.','800\n15','Original: 800.00\nDiscount: 15%',[{input:'1000\n10',output:'Original: 1000.00\nDiscount: 10%'}]],
       ['Read Celsius and print','Read a temperature and print it with a unit label.','30','30 degree Celsius',[{input:'21',output:'21 degree Celsius'}]],
-      ['Read two words','Read two words and print them joined by a colon.','hello world','hello:world',[{input:'left right',output:'left:right'}]],
+      ['Read two words','Read two words in one line and print them joined by a colon.','hello world','hello:world',[{input:'left right',output:'left:right'}]],
       ['Print a receipt line','Read an item and a cost and print a formatted line.','Coffee 40','Item: Coffee | Cost: 40',[{input:'Tea 20',output:'Item: Tea | Cost: 20'}]],
       ['Read a score and label','Read a score and print the label and value with a colon.','76','Score: 76',[{input:'58',output:'Score: 58'}]],
       ['Print a summary','Read a name, a role and print a one-line summary.','Nina Manager','Nina works as Manager.',[{input:'Aman Engineer',output:'Aman works as Engineer.'}]]
@@ -164,23 +164,23 @@ const questionSeeds = {
       ['Distance label','Read a distance and print it as kilometres with two decimals.','3.456','3.46 km',[{input:'1.5',output:'1.50 km'}]],
       ['Order summary','Read an item, quantity and unit price and print a full line.','Fan 2 1500','Fan: 2 x 1500 = 3000',[{input:'Lamp 3 200',output:'Lamp: 3 x 200 = 600'}]],
       ['Read a tuple-like line','Read three comma-separated values and print each on a separate line.','a,b,c','a\nb\nc',[{input:'x,y,z',output:'x\ny\nz'}]],
-      ['Print a total row','Read two numbers and print their sum right-aligned in a 10-character field.','12 20','        32',[{input:'3 4',output:'         7'}]],
+      ['Print a total row','Read two numbers in one line and print their sum right-aligned in a 10-character field.','12 20','        32',[{input:'3 4',output:'         7'}]],
       ['Read a range and label','Read start and end and print the span and count.','4 11','Span: 7\nCount: 8',[{input:'1 3',output:'Span: 2\nCount: 3'}]],
       ['Star rating','Read a rating between 1 and 5 and print it as a line of stars.','3','***',[{input:'5',output:'*****'}]]
     ]
   },
   'Operators': {
     basic:[
-      ['Add two numbers','Read two integers and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
-      ['Compare values','Read two integers and print whether the first is greater than the second.','9 4','True',[{input:'3 8',output:'False'}]],
+      ['Add two numbers','Read two integers in one line and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
+      ['Compare values','Read two integers in one line and print whether the first is greater than the second.','9 4','True',[{input:'3 8',output:'False'}]],
       ['Check a range','Read a number and print whether it is between 10 and 20 inclusive.','16','True',[{input:'5',output:'False'}]],
-      ['Multiply and divide','Read two numbers and print their product and quotient.','8 2','16\n4.0',[{input:'6 3',output:'18\n2.0'}]],
-      ['Modulo result','Read two integers and print the remainder when the first is divided by the second.','17 5','2',[{input:'20 6',output:'2'}]],
-      ['Check divisibility','Read two numbers and print True when the first is divisible by the second.','15 3','True',[{input:'14 4',output:'False'}]],
-      ['Floor division','Read two integers and print the result of floor division.','17 5','3',[{input:'9 2',output:'4'}]],
-      ['Absolute difference','Read two numbers and print the absolute difference.','10 3','7',[{input:'4 12',output:'8'}]],
+      ['Multiply and divide','Read two numbers in one line and print their product and quotient.','8 2','16\n4.0',[{input:'6 3',output:'18\n2.0'}]],
+      ['Modulo result','Read two integers in one line and print the remainder when the first is divided by the second.','17 5','2',[{input:'20 6',output:'2'}]],
+      ['Check divisibility','Read two numbers in one line and print True when the first is divisible by the second.','15 3','True',[{input:'14 4',output:'False'}]],
+      ['Floor division','Read two integers in one line and print the result of floor division.','17 5','3',[{input:'9 2',output:'4'}]],
+      ['Absolute difference','Read two numbers in one line and print the absolute difference.','10 3','7',[{input:'4 12',output:'8'}]],
       ['Exponentiation','Read a base and an exponent and print the result of the ** operator.','3 4','81',[{input:'2 5',output:'32'}]],
-      ['Evaluate expression','Read two numbers and print the value of (a + b) * 2.','3 4','14',[{input:'2 6',output:'16'}]]
+      ['Evaluate expression','Read two numbers in one line and print the value of (a + b) * 2.','3 4','14',[{input:'2 6',output:'16'}]]
     ],
     intermediate:[
       ['Discount price','Apply a 15% discount to a price and print the final value.','800','680.0',[{input:'1000',output:'850.0'}]],
@@ -212,7 +212,7 @@ const questionSeeds = {
       ['Even or odd','Read an integer and print whether it is even or odd.','11','Odd',[{input:'14',output:'Even'}]],
       ['Positive or negative','Read an integer and print Positive, Negative, or Zero.','-4','Negative',[{input:'10',output:'Positive'}]],
       ['Pass or fail','Read a score and print Pass when it is at least 40.','58','Pass',[{input:'32',output:'Fail'}]],
-      ['Bigger of two','Read two numbers and print the bigger one.','8 13','13',[{input:'25 10',output:'25'}]],
+      ['Bigger of two','Read two numbers in one line and print the bigger one.','8 13','13',[{input:'25 10',output:'25'}]],
       ['Eligible for discount','Read a bill amount and print Discount when it is at least 500.','650','Discount',[{input:'200',output:'No discount'}]],
       ['Vote eligibility','Read an age and print Eligible when it is 18 or more, else Not eligible.','20','Eligible',[{input:'15',output:'Not eligible'}]],
       ['Adult or minor','Print Adult when an age is at least 18, else Minor.','25','Adult',[{input:'12',output:'Minor'}]],
