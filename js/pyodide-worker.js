@@ -165,23 +165,53 @@ class _SmartStr(str):
                 remaining = _stdin_buf.getvalue()[_stdin_buf.tell():]
             except Exception:
                 remaining = ""
-            # pending tokens that were queued via __int__/__float__ should also be visible to split
             pending_extra = list(_pending_tokens) if _pending_tokens else []
             has_extra = (remaining and remaining.strip()) or pending_extra
             if has_extra:
                 base = super().split(sep, maxsplit) if maxsplit != -1 else super().split()
-                rem = pending_extra + (remaining.split() if remaining and remaining.strip() else [])
-                if maxsplit == -1:
-                    # clear pending after consuming via split
-                    if pending_extra:
-                        _pending_tokens.clear()
-                    return base + rem
+                remaining_tokens = remaining.split() if remaining and remaining.strip() else []
+                # Merge policy: pending tokens always visible; remaining buffer only
+                # merged when base is a single token (e.g. "7" with remaining "5").
+                # This lets a,b=map(int,input().split()) work on multiline "7\\n5"
+                # or "10\\n20\\n30" without breaking structured inputs like
+                # "1 5\\n3 8" where each line is a distinct record and must stay separate.
+                if pending_extra:
+                    # pending was queued via _smart_int/_smart_float from a prior line
+                    # that contained multiple space-separated values; always expose it
+                    if len(base) == 1 and remaining_tokens:
+                        rem = pending_extra + remaining_tokens
+                        if maxsplit == -1:
+                            _pending_tokens.clear()
+                            return base + rem
+                        else:
+                            combined = str(self) + "\\n" + "\\n".join(pending_extra) + "\\n" + remaining
+                            _pending_tokens.clear()
+                            return combined.split(sep, maxsplit)
+                    else:
+                        # base already has multiple tokens (structured line) — only expose pending
+                        if maxsplit == -1:
+                            _pending_tokens.clear()
+                            return base + pending_extra
+                        else:
+                            combined = str(self) + "\\n" + "\\n".join(pending_extra)
+                            _pending_tokens.clear()
+                            return combined.split(sep, maxsplit)
                 else:
-                    combined = str(self) + "\\n" + "\\n".join(pending_extra) + ("\\n" + remaining if remaining else "")
-                    # clear pending as consumed
-                    if pending_extra:
-                        _pending_tokens.clear()
-                    return combined.split(sep, maxsplit)
+                    # No pending — only merge remaining when base is single-token
+                    # (single number per line case). For multi-token lines, keep
+                    # the line boundary intact so "1 5\\n3 8" stays as two separate
+                    # reads: first split -> ["1","5"], second -> ["3","8"]
+                    if len(base) == 1 and remaining_tokens:
+                        if maxsplit == -1:
+                            return base + remaining_tokens
+                        else:
+                            combined = str(self) + "\\n" + remaining
+                            return combined.split(sep, maxsplit)
+                    else:
+                        if maxsplit == -1:
+                            return base
+                        else:
+                            return super().split(sep, maxsplit)
             if maxsplit == -1:
                 return super().split()
             else:

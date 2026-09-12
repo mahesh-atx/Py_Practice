@@ -156,40 +156,40 @@ const questionSeeds = {
   },
   'Operators': {
     basic:[
-      ['Add two numbers','Read two integers in one line and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
-      ['Compare values','Read two integers in one line and print whether the first is greater than the second.','9 4','True',[{input:'3 8',output:'False'}]],
+      ['Add two numbers','Read two integers, each on a new line, and print their sum.','7\n5','12',[{input:'100\n25',output:'125'}]],
+      ['Compare values','Read two integers, each on a new line, and print whether the first is greater than the second.','9\n4','True',[{input:'3\n8',output:'False'}]],
       ['Check a range','Read a number and print whether it is between 10 and 20 inclusive.','16','True',[{input:'5',output:'False'}]],
-      ['Multiply and divide','Read two numbers in one line and print their product and quotient.','8 2','16\n4.0',[{input:'6 3',output:'18\n2.0'}]],
-      ['Modulo result','Read two integers in one line and print the remainder when the first is divided by the second.','17 5','2',[{input:'20 6',output:'2'}]],
-      ['Check divisibility','Read two numbers in one line and print True when the first is divisible by the second.','15 3','True',[{input:'14 4',output:'False'}]],
-      ['Floor division','Read two integers in one line and print the result of floor division.','17 5','3',[{input:'9 2',output:'4'}]],
-      ['Absolute difference','Read two numbers in one line and print the absolute difference.','10 3','7',[{input:'4 12',output:'8'}]],
-      ['Exponentiation','Read a base and an exponent and print the result of the ** operator.','3 4','81',[{input:'2 5',output:'32'}]],
-      ['Evaluate expression','Read two numbers in one line and print the value of (a + b) * 2.','3 4','14',[{input:'2 6',output:'16'}]]
+      ['Multiply and divide','Read two numbers, each on a new line, and print their product and quotient.','8\n2','16\n4.0',[{input:'6\n3',output:'18\n2.0'}]],
+      ['Modulo result','Read two integers, each on a new line, and print the remainder when the first is divided by the second.','17\n5','2',[{input:'20\n6',output:'2'}]],
+      ['Check divisibility','Read two numbers, each on a new line, and print True when the first is divisible by the second.','15\n3','True',[{input:'14\n4',output:'False'}]],
+      ['Floor division','Read two integers, each on a new line, and print the result of floor division.','17\n5','3',[{input:'9\n2',output:'4'}]],
+      ['Absolute difference','Read two numbers, each on a new line, and print the absolute difference.','10\n3','7',[{input:'4\n12',output:'8'}]],
+      ['Exponentiation','Read a base and an exponent, each on a new line, and print the result of the ** operator.','3\n4','81',[{input:'2\n5',output:'32'}]],
+      ['Evaluate expression','Read two numbers, each on a new line, and print the value of (a + b) * 2.','3\n4','14',[{input:'2\n6',output:'16'}]]
     ],
     intermediate:[
       ['Discount price','Apply a 15% discount to a price and print the final value.','800','680.0',[{input:'1000',output:'850.0'}]],
-      ['Choose the larger','Use a conditional expression to print the larger of two values.','14 29','29',[{input:'50 12',output:'50'}]],
+      ['Choose the larger','Read two numbers, each on a new line, and use a conditional expression to print the larger.','14\n29','29',[{input:'50\n12',output:'50'}]],
       ['Combine conditions','Print True only when a number is positive and even.','8','True',[{input:'-4',output:'False'}]],
       ['Within range','Print True when a number is between 5 and 50 (excluding the endpoints).','20','True',[{input:'5',output:'False'}]],
-      ['Average price','Read three prices and print the average rounded to two decimals.','10 20 30','20.00',[{input:'5 10 15',output:'10.00'}]],
+      ['Average price','Read three prices, each on a new line, and print the average rounded to two decimals.','10\n20\n30','20.00',[{input:'5\n10\n15',output:'10.00'}]],
       ['Even and positive','Print True only when a number is even and greater than 0.','12','True',[{input:'-6',output:'False'}]],
       ['Absolute with condition','Print True when the distance from zero is greater than 100.','-150','True',[{input:'40',output:'False'}]],
       ['Remainder parity','Read a number and print 1 when it is odd, else 0.','9','1',[{input:'8',output:'0'}]],
-      ['Weighted score','Read three values and print their weighted average.','50 60 70','61.0',[{input:'10 20 30',output:'21.0'}]],
+      ['Weighted score','Read three values, each on a new line, and print their weighted average.','50\n60\n70','61.0',[{input:'10\n20\n30',output:'21.0'}]],
       ['Time modulo','Read minutes and print the hour and minute part as a clock time.','135','02:15',[{input:'90',output:'01:30'}]]
     ],
     advanced:[
-      ['Power without **','Calculate a positive integer power without using the ** operator.','3 4','81',[{input:'2 5',output:'32'}]],
-      ['Modulo clock','Add minutes to a clock time and print the resulting hour and minute.','23 50','00:13',[{input:'10 20',output:'10:20'}]],
-      ['Boolean score','Print True when a score is between 60 and 100 and a valid flag is present.','78 True','True',[{input:'45 True',output:'False'}]],
+      ['Power without **','Calculate a positive integer power without using the ** operator. Read base and exponent, each on a new line.','3\n4','81',[{input:'2\n5',output:'32'}]],
+      ['Modulo clock','Add minutes to a clock time. Read hour and minutes, each on a new line, and print the resulting hour and minute.','23\n50','00:13',[{input:'10\n20',output:'10:20'}]],
+      ['Boolean score','Print True when a score is between 60 and 100 and a valid flag is present. Read score and flag, each on a new line.','78\nTrue','True',[{input:'45\nTrue',output:'False'}]],
       ['Round a price','Read a price and round it to the nearest rupee.','19.6','20',[{input:'19.4',output:'19'}]],
-      ['Score average with a twist','Read three marks, drop the lowest, and print the average of the remaining two.','60 80 70','75.0',[{input:'50 90 60',output:'75.0'}]],
+      ['Score average with a twist','Read three marks, each on a new line, drop the lowest, and print the average of the remaining two.','60\n80\n70','75.0',[{input:'50\n90\n60',output:'75.0'}]],
       ['Range overlap','Read two ranges and print True when they overlap.','1 5\n3 8','True',[{input:'1 3\n5 8',output:'False'}]],
-      ['Profit or loss','Read cost and selling price and print the profit (or minus for a loss).','200 250','50',[{input:'100 50',output:'-50'}]],
-      ['Large of three with operators','Print the largest of three integers without using max().','7 14 9','14',[{input:'20 3 40',output:'40'}]],
+      ['Profit or loss','Read cost and selling price, each on a new line, and print the profit (or minus for a loss).','200\n250','50',[{input:'100\n50',output:'-50'}]],
+      ['Large of three with operators','Read three integers, each on a new line, and print the largest without using max().','7\n14\n9','14',[{input:'20\n3\n40',output:'40'}]],
       ['Compound interest flag','Print True when an amount becomes more than double with a simple multiplier.','100\n3','True',[{input:'200\n1',output:'False'}]],
-      ['Nested expression','Read three integers and print the result of (a + b) * (b - c).','5 6 2','32',[{input:'9 3 1',output:'24'}]]
+      ['Nested expression','Read three integers, each on a new line, and print the result of (a + b) * (b - c).','5\n6\n2','32',[{input:'9\n3\n1',output:'24'}]]
     ]
   },
   'Conditional Statements': {
