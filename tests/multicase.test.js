@@ -210,7 +210,7 @@ describe('multicase - one generic solution passes both cases (spec-fixed)', () =
   });
   it('BMI category', async () => {
     await bothPass('Conditional Statements', 'intermediate', 4,
-      'w,h=map(float,input().split())\nb=w/(h*h)\nprint("Underweight" if b<18.5 else "Normal" if b<23 else "Overweight")');
+      'import sys\ndata=sys.stdin.read().strip().split()\nw,h=map(float,data[:2])\nb=w/(h*h)\nprint("Underweight" if b<18.5 else "Normal" if b<23 else "Overweight")');
   });
   it('Grade with feedback', async () => {
     await bothPass('Conditional Statements', 'intermediate', 8,
@@ -218,7 +218,7 @@ describe('multicase - one generic solution passes both cases (spec-fixed)', () =
   });
   it('Shipping tier', async () => {
     await bothPass('Conditional Statements', 'advanced', 0,
-      'p=input().split()\na=float(p[0]);m=p[1]=="True"\nprint("Free" if a>=1000 or (m and a>=500) else "Standard")');
+      'import sys\np=sys.stdin.read().strip().split()\na=float(p[0]);m=p[1]=="True"\nprint("Free" if a>=1000 or (m and a>=500) else "Standard")');
   });
   it('Tax bracket', async () => {
     await bothPass('Conditional Statements', 'advanced', 2,

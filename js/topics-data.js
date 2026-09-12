@@ -49,24 +49,24 @@ const questionSeeds = {
   'Variables': {
     basic:[
       ['Store a greeting','Create a variable named name and print a greeting using its value.','Nina','Hello, Nina!',[{input:'Sam',output:'Hello, Sam!'}]],
-      ['Sum two variables','Read two integers in one line into a and b and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
-      ['Multiple assignment','Assign three values at once and print each one on a new line.','1 2 3','1\n2\n3',[{input:'4 5 6',output:'4\n5\n6'}]],
+      ['Sum two variables','Read two integers, each on a new line, into a and b and print their sum.','7\n5','12',[{input:'100\n25',output:'125'}]],
+      ['Multiple assignment','Read three values, each on a new line, assign them at once and print each one on a new line.','1\n2\n3','1\n2\n3',[{input:'4\n5\n6',output:'4\n5\n6'}]],
       ['Reassign a value','Read a number, double it by reassigning the same variable, and print it.','8','16',[{input:'5',output:'10'}]],
       ['String length','Read a word and print how many characters it has.','python','6',[{input:'code',output:'4'}]],
-      ['Comparison result','Store the result of a greater-than comparison in a variable and print it.','4 9','False',[{input:'12 3',output:'True'}]]
+      ['Comparison result','Read two numbers, each on a new line, store the result of a greater-than comparison in a variable and print it.','4\n9','False',[{input:'12\n3',output:'True'}]]
     ],
     intermediate:[
       ['Swap two variables','Swap the values of a and b without using a third variable.','3\n7','7\n3',[{input:'10\n20',output:'20\n10'}]],
-      ['Average of three','Read three numbers and print their average.','3 6 9','6.0',[{input:'2 4 6',output:'4.0'}]],
-      ['Split a bill','Read a total amount and the number of people and print each share to two decimals.','100 3','33.33',[{input:'50 4',output:'12.50'}]],
-      ['Rotate three values','Move a to b, b to c, and c to a (rotate right), then print all three.','1 2 3','3 1 2',[{input:'4 5 6',output:'6 4 5'}]],
-      ['Concatenate numbers','Read two numbers in one line, convert them into text, and print them joined with a hyphen.','4 9','4-9',[{input:'12 7',output:'12-7'}]]
+      ['Average of three','Read three numbers, each on a new line, and print their average.','3\n6\n9','6.0',[{input:'2\n4\n6',output:'4.0'}]],
+      ['Split a bill','Read a total amount and the number of people, each on a new line, and print each share to two decimals.','100\n3','33.33',[{input:'50\n4',output:'12.50'}]],
+      ['Rotate three values','Read three values, each on a new line, move a to b, b to c, and c to a (rotate right), then print all three.','1\n2\n3','3 1 2',[{input:'4\n5\n6',output:'6 4 5'}]],
+      ['Concatenate numbers','Read two numbers, each on a new line, convert them into text, and print them joined with a hyphen.','4\n9','4-9',[{input:'12\n7',output:'12-7'}]]
     ],
     advanced:[
-      ['Scale a value','Read a value and a scale factor and print the result as an int and then as a float.','10 2.5','25\n25.0',[{input:'4 1.5',output:'6\n6.0'}]],
-      ['Swap a float and int','Read two values and print them after swapping their variables.','7 2.5','2.5 7',[{input:'9 4.5',output:'4.5 9'}]],
+      ['Scale a value','Read a value and a scale factor, each on a new line, and print the result as an int and then as a float.','10\n2.5','25\n25.0',[{input:'4\n1.5',output:'6\n6.0'}]],
+      ['Swap a float and int','Read two values, each on a new line, and print them after swapping their variables.','7\n2.5','2.5 7',[{input:'9\n4.5',output:'4.5 9'}]],
       ['Band check as int','Read a number and print 1 if it is between 10 and 20 inclusive, else 0.','15','1',[{input:'3',output:'0'}]],
-      ['Sum spaced numbers','Read several whole numbers separated by spaces, convert each to int, and print their sum.','3 5 7','15',[{input:'1 2 3',output:'6'}]],
+      ['Sum spaced numbers','Read several whole numbers (separated by spaces or newlines), convert each to int, and print their sum.','3\n5\n7','15',[{input:'1\n2\n3',output:'6'}]],
       ['Nearest rupee','Read a rupee amount and print the nearest whole rupee using rounding.','99.5','100',[{input:'12.4',output:'12'}]]
     ]
   },
@@ -98,35 +98,35 @@ const questionSeeds = {
       ['Store a greeting','Create a variable named name and print a greeting using its value.','Nina','Hello, Nina!',[{input:'Sam',output:'Hello, Sam!'}]],
       ['Convert a value','Read a numeric string and convert it to an integer before adding 5.','12','17',[{input:'50',output:'55'}]],
       ['Check a type','Store a value and print its type using type().','42',"<class 'int'>",[{input:'hello',output:"<class 'str'>"}]],
-      ['Sum two variables','Read two integers in one line into a and b and print their sum.','7 5','12',[{input:'100 25',output:'125'}]],
-      ['Multiple assignment','Assign three values at once and print each one on a new line.','1 2 3','1\n2\n3',[{input:'4 5 6',output:'4\n5\n6'}]],
+      ['Sum two variables','Read two integers, each on a new line, into a and b and print their sum.','7\n5','12',[{input:'100\n25',output:'125'}]],
+      ['Multiple assignment','Read three values, each on a new line, assign them at once and print each one on a new line.','1\n2\n3','1\n2\n3',[{input:'4\n5\n6',output:'4\n5\n6'}]],
       ['Float to integer','Read a decimal value, convert it to an integer, and print it.','7.9','7',[{input:'3.2',output:'3'}]],
-      ['Comparison result','Store the result of a greater-than comparison in a variable and print it.','4 9','False',[{input:'12 3',output:'True'}]],
+      ['Comparison result','Read two numbers, each on a new line, store the result of a greater-than comparison in a variable and print it.','4\n9','False',[{input:'12\n3',output:'True'}]],
       ['Reassign a value','Read a number, double it by reassigning the same variable, and print it.','8','16',[{input:'5',output:'10'}]],
       ['String length','Read a word and print how many characters it has.','python','6',[{input:'code',output:'4'}]],
       ['Type after conversion','Read a whole number as text, convert it to a float, and print its type.','5',"<class 'float'>",[{input:'3',output:"<class 'float'>"}]]
     ],
     intermediate:[
       ['Swap two variables','Swap the values of a and b without using a third variable.','3\n7','7\n3',[{input:'10\n20',output:'20\n10'}]],
-      ['Average of three','Read three numbers and print their average.','3 6 9','6.0',[{input:'2 4 6',output:'4.0'}]],
-      ['Split a bill','Read a total amount and the number of people and print each share to two decimals.','100 3','33.33',[{input:'50 4',output:'12.50'}]],
+      ['Average of three','Read three numbers, each on a new line, and print their average.','3\n6\n9','6.0',[{input:'2\n4\n6',output:'4.0'}]],
+      ['Split a bill','Read a total amount and the number of people, each on a new line, and print each share to two decimals.','100\n3','33.33',[{input:'50\n4',output:'12.50'}]],
       ['Rupees and paise','Read a rupee amount as a decimal and print whole rupees and paise.','45.75','45 rupees 75 paise',[{input:'12.5',output:'12 rupees 50 paise'}]],
-      ['Rotate three values','Move a to b, b to c, and c to a (rotate right), then print all three.','1 2 3','3 1 2',[{input:'4 5 6',output:'6 4 5'}]],
+      ['Rotate three values','Read three values, each on a new line, move a to b, b to c, and c to a (rotate right), then print all three.','1\n2\n3','3 1 2',[{input:'4\n5\n6',output:'6 4 5'}]],
       ['Type of a string','Convert an integer into a string and print the type of that string.','5',"<class 'str'>",[{input:'42',output:"<class 'str'>"}]],
       ['Round a decimal','Read a float, print its rounded value and the type of that value.','3.6',"4\n<class 'int'>",[{input:'2.2',output:"2\n<class 'int'>"}]],
       ['Flip a boolean','Read a boolean as text, convert it to a bool, and print its opposite.','True','False',[{input:'False',output:'True'}]],
       ['Odd and big check','Read a number and print whether it is odd and whether it is greater than 10.','13','True\nTrue',[{input:'4',output:'False\nFalse'}]],
-      ['Concatenate numbers','Read two numbers in one line, convert them into text, and print them joined with a hyphen.','4 9','4-9',[{input:'12 7',output:'12-7'}]]
+      ['Concatenate numbers','Read two numbers, each on a new line, convert them into text, and print them joined with a hyphen.','4\n9','4-9',[{input:'12\n7',output:'12-7'}]]
     ],
     advanced:[
       ['Normalize a value','Read a value, convert it to int when possible, otherwise print Invalid.','25','25',[{input:'abc',output:'Invalid'}]],
       ['Compare mixed values','Read two values and report whether they represent the same number.','5\n5.0','Same',[{input:'3\n4',output:'Different'}]],
       ['Typed record','Store name, age and active status and print each value with its type.','Nina\n21\nTrue','Nina: str\n21: int\nTrue: bool',[{input:'Leo\n30\nFalse',output:'Leo: str\n30: int\nFalse: bool'}]],
-      ['Sum spaced numbers','Read several whole numbers separated by spaces, convert each to int, and print their sum.','3 5 7','15',[{input:'1 2 3',output:'6'}]],
+      ['Sum spaced numbers','Read several whole numbers (separated by spaces or newlines), convert each to int, and print their sum.','3\n5\n7','15',[{input:'1\n2\n3',output:'6'}]],
       ['Show a value three ways','Read an integer and print it as int, as float, and as text.','6','6\n6.0\n6',[{input:'2',output:'2\n2.0\n2'}]],
-      ['Scale a value','Read a value and a scale factor and print the result as an int and then as a float.','10 2.5','25\n25.0',[{input:'4 1.5',output:'6\n6.0'}]],
+      ['Scale a value','Read a value and a scale factor, each on a new line, and print the result as an int and then as a float.','10\n2.5','25\n25.0',[{input:'4\n1.5',output:'6\n6.0'}]],
       ['Print three types','Read an int, a float and a boolean and print the type of each.','5\n3.2\nTrue',"<class 'int'>\n<class 'float'>\n<class 'bool'>",[{input:'1\n2.0\nFalse',output:"<class 'int'>\n<class 'float'>\n<class 'bool'>"}]],
-      ['Swap a float and int','Read two values and print them after swapping their variables.','7 2.5','2.5 7',[{input:'9 4.5',output:'4.5 9'}]],
+      ['Swap a float and int','Read two values, each on a new line, and print them after swapping their variables.','7\n2.5','2.5 7',[{input:'9\n4.5',output:'4.5 9'}]],
       ['Band check as int','Read a number and print 1 if it is between 10 and 20 inclusive, else 0.','15','1',[{input:'3',output:'0'}]],
       ['Nearest rupee','Read a rupee amount and print the nearest whole rupee using rounding.','99.5','100',[{input:'12.4',output:'12'}]]
     ]
@@ -176,20 +176,20 @@ const questionSeeds = {
       ['Even and positive','Print True only when a number is even and greater than 0.','12','True',[{input:'-6',output:'False'}]],
       ['Absolute with condition','Print True when the distance from zero is greater than 100.','-150','True',[{input:'40',output:'False'}]],
       ['Remainder parity','Read a number and print 1 when it is odd, else 0.','9','1',[{input:'8',output:'0'}]],
-      ['Weighted score','Read three values, each on a new line, and print their weighted average.','50\n60\n70','61.0',[{input:'10\n20\n30',output:'21.0'}]],
+      ['Weighted score','Read three values, each on a new line, and print the weighted average with weights 0.3, 0.3, 0.4 (a*0.3+b*0.3+c*0.4).','50\n60\n70','61.0',[{input:'10\n20\n30',output:'21.0'}]],
       ['Time modulo','Read minutes and print the hour and minute part as a clock time.','135','02:15',[{input:'90',output:'01:30'}]]
     ],
     advanced:[
       ['Power without **','Calculate a positive integer power without using the ** operator. Read base and exponent, each on a new line.','3\n4','81',[{input:'2\n5',output:'32'}]],
-      ['Modulo clock','Add minutes to a clock time. Read hour and minutes, each on a new line, and print the resulting hour and minute.','23\n50','00:13',[{input:'10\n20',output:'10:20'}]],
+      ['Modulo clock','Read hour, minute, and minutes to add, each on a new line. Add the minutes to the clock time and print the resulting hour and minute as HH:MM.','23\n50\n23','00:13',[{input:'10\n20\n0',output:'10:20'}]],
       ['Boolean score','Print True when a score is between 60 and 100 and a valid flag is present. Read score and flag, each on a new line.','78\nTrue','True',[{input:'45\nTrue',output:'False'}]],
       ['Round a price','Read a price and round it to the nearest rupee.','19.6','20',[{input:'19.4',output:'19'}]],
       ['Score average with a twist','Read three marks, each on a new line, drop the lowest, and print the average of the remaining two.','60\n80\n70','75.0',[{input:'50\n90\n60',output:'75.0'}]],
-      ['Range overlap','Read two ranges and print True when they overlap.','1 5\n3 8','True',[{input:'1 3\n5 8',output:'False'}]],
+      ['Range overlap','Read two ranges, each on a new line as start end, and print True when they overlap.','1 5\n3 8','True',[{input:'1 3\n5 8',output:'False'}]],
       ['Profit or loss','Read cost and selling price, each on a new line, and print the profit (or minus for a loss).','200\n250','50',[{input:'100\n50',output:'-50'}]],
       ['Large of three with operators','Read three integers, each on a new line, and print the largest without using max().','7\n14\n9','14',[{input:'20\n3\n40',output:'40'}]],
-      ['Compound interest flag','Print True when an amount becomes more than double with a simple multiplier.','100\n3','True',[{input:'200\n1',output:'False'}]],
-      ['Nested expression','Read three integers, each on a new line, and print the result of (a + b) * (b - c).','5\n6\n2','32',[{input:'9\n3\n1',output:'24'}]]
+      ['Compound interest flag','Read amount and multiplier, each on a new line. Print True when amount * multiplier is more than double the amount (i.e. multiplier > 2).','100\n3','True',[{input:'200\n1',output:'False'}]],
+      ['Nested expression','Read three integers, each on a new line, and print the result of (a + b) * (b - c).','5\n6\n2','44',[{input:'9\n3\n1',output:'24'}]]
     ]
   },
   'Conditional Statements': {
@@ -197,36 +197,36 @@ const questionSeeds = {
       ['Even or odd','Read an integer and print whether it is even or odd.','11','Odd',[{input:'14',output:'Even'}]],
       ['Positive or negative','Read an integer and print Positive, Negative, or Zero.','-4','Negative',[{input:'10',output:'Positive'}]],
       ['Pass or fail','Read a score and print Pass when it is at least 40.','58','Pass',[{input:'32',output:'Fail'}]],
-      ['Bigger of two','Read two numbers in one line and print the bigger one.','8 13','13',[{input:'25 10',output:'25'}]],
+      ['Bigger of two','Read two numbers, each on a new line, and print the bigger one.','8\n13','13',[{input:'25\n10',output:'25'}]],
       ['Eligible for discount','Read a bill amount and print Discount when it is at least 500.','650','Discount',[{input:'200',output:'No discount'}]],
       ['Vote eligibility','Read an age and print Eligible when it is 18 or more, else Not eligible.','20','Eligible',[{input:'15',output:'Not eligible'}]],
       ['Adult or minor','Print Adult when an age is at least 18, else Minor.','25','Adult',[{input:'12',output:'Minor'}]],
       ['Multiple of 5','Read a number and print True when it is a multiple of 5.','30','True',[{input:'13',output:'False'}]],
       ['Grade comment','Print Excellent when a score is 90 or more, else Good.','95','Excellent',[{input:'70',output:'Good'}]],
-      ['Sign of difference','Print which number is larger: a, b, or Equal.','7 7','Equal',[{input:'9 3',output:'a'}]]
+      ['Sign of difference','Read two numbers, each on a new line, and print which is larger: a, b, or Equal.','7\n7','Equal',[{input:'9\n3',output:'a'}]]
     ],
     intermediate:[
       ['Grade calculator','Print a grade from a score: A for 80+, B for 60+, C for 40+, D for 33+, else F.','82','A',[{input:'65',output:'B'}]],
-      ['Largest of three','Read three integers and print the largest.','7 14 9','14',[{input:'20 15 8',output:'20'}]],
+      ['Largest of three','Read three integers, each on a new line, and print the largest.','7\n14\n9','14',[{input:'20\n15\n8',output:'20'}]],
       ['Leap year','Check whether a year is a leap year.','2024','Leap year',[{input:'2023',output:'Not a leap year'}]],
       ['Number category','Print Even positive, Odd positive, Even negative, Odd negative, or Zero.','-9','Odd negative',[{input:'8',output:'Even positive'}]],
-      ['BMI category','Read weight (kg) and height (m), compute BMI = weight / height^2, and print Underweight (<18.5), Normal (18.5-22.9), or Overweight (23+).','70 1.7','Overweight',[{input:'60 1.7',output:'Normal'}]],
-      ['Three-way comparison','Print Smaller, Equal, or Larger by comparing two values.','7 4','Larger',[{input:'5 5',output:'Equal'}]],
+      ['BMI category','Read weight (kg) and height (m), each on a new line, compute BMI = weight / height^2, and print Underweight (<18.5), Normal (18.5-22.9), or Overweight (23+).','70\n1.7','Overweight',[{input:'60\n1.7',output:'Normal'}]],
+      ['Three-way comparison','Read two values, each on a new line, and print Smaller, Equal, or Larger.','7\n4','Larger',[{input:'5\n5',output:'Equal'}]],
       ['Discount bracket','Print 10% when a price is below 500, else 20%.','400','10%',[{input:'900',output:'20%'}]],
-      ['Quadrant finder','Read x and y and print which quadrant the point lies in.','-3 4','Quadrant II',[{input:'2 -5',output:'Quadrant IV'}]],
+      ['Quadrant finder','Read x and y, each on a new line, and print which quadrant the point lies in.','-3\n4','Quadrant II',[{input:'2\n-5',output:'Quadrant IV'}]],
       ['Grade with feedback','Print High for 85+, Average for 50-84, or Low below 50.','60','Average',[{input:'95',output:'High'}]],
-      ['Valid triangle','Read three sides and print whether they can form a triangle.','3 4 5','Valid',[{input:'1 2 3',output:'Invalid'}]]
+      ['Valid triangle','Read three sides, each on a new line, and print whether they can form a triangle.','3\n4\n5','Valid',[{input:'1\n2\n3',output:'Invalid'}]]
     ],
     advanced:[
-      ['Shipping tier','Print Free for orders of 1000+ (or 500+ for members), else Standard.','1250 True','Free',[{input:'300 False',output:'Standard'}]],
-      ['Triangle type','Given three sides, print whether the triangle is valid and its type.','3 3 4','Valid - Isosceles',[{input:'3 4 5',output:'Valid - Scalene'}]],
+      ['Shipping tier','Read amount and member flag, each on a new line. Print Free for orders of 1000+ (or 500+ for members), else Standard.','1250\nTrue','Free',[{input:'300\nFalse',output:'Standard'}]],
+      ['Triangle type','Read three sides, each on a new line. Print whether the triangle is valid and its type.','3\n3\n4','Valid - Isosceles',[{input:'3\n4\n5',output:'Valid - Scalene'}]],
       ['Tax bracket','Calculate flat-rate tax: 0 up to 25000, 10% up to 100000, 20% above.','50000','5000.0',[{input:'20000',output:'0.0'}]],
       ['Electricity bill','Compute the bill at 0.75/unit up to 200 units and 1.50/unit above, plus a 5 surcharge above 200 units.','350','380.0',[{input:'120',output:'90.0'}]],
       ['Student result with grace','Read marks and decide: Pass, Fail, Or Pass with grace when marks are within 5 of the pass mark.','41','Pass',[{input:'36',output:'Pass with grace'}]],
       ['Age group','Read an age and print Toddler, Child, Teenager, Adult, or Senior.','15','Teenager',[{input:'70',output:'Senior'}]],
       ['Divisibility combo','Read a number and print its category by combinations of 3 and 5.','15','FizzBuzz',[{input:'9',output:'Fizz'}]],
-      ['Largest and smallest','Read three numbers and print both the largest and the smallest.','9 2 6','Largest: 9\nSmallest: 2',[{input:'5 4 3',output:'Largest: 5\nSmallest: 3'}]],
-      ['Salary with bonus','Read salary and years and add a bonus when years are 5 or more.','40000 7','44000',[{input:'30000 3',output:'30000'}]],
+      ['Largest and smallest','Read three numbers, each on a new line, and print both the largest and the smallest.','9\n2\n6','Largest: 9\nSmallest: 2',[{input:'5\n4\n3',output:'Largest: 5\nSmallest: 3'}]],
+      ['Salary with bonus','Read salary and years, each on a new line, and add a bonus when years are 5 or more.','40000\n7','44000',[{input:'30000\n3',output:'30000'}]],
       ['Absolute threshold','Read a number and print its absolute value only when it is negative.','-9','9',[{input:'4',output:'4'}]]
     ]
   },
@@ -261,12 +261,12 @@ const questionSeeds = {
       ['Fibonacci up to N terms','Take a number N and print the first N terms of the Fibonacci sequence.','6','0 1 1 2 3 5',[{input:'4',output:'0 1 1 2'},{input:'8',output:'0 1 1 2 3 5 8 13'}]],
       ['Sum of digits','Take an integer and print the sum of its digits.','472','13',[{input:'909',output:'18'},{input:'5',output:'5'}]],
       ['Perfect number','Take a number and print True when it equals the sum of its positive divisors.','6','True',[{input:'12',output:'False'},{input:'28',output:'True'}]],
-      ['HCF of two numbers','Take two numbers and print their greatest common divisor.','48 18','6',[{input:'12 8',output:'4'},{input:'17 5',output:'1'}]],
+      ['HCF of two numbers','Take two numbers, each on a new line, and print their greatest common divisor.','48\n18','6',[{input:'12\n8',output:'4'},{input:'17\n5',output:'1'}]],
       ['Print a number pyramid','Take N and print ascending rows of numbers.','3','1\n1 2\n1 2 3',[{input:'2',output:'1\n1 2'}]],
       ['Count vowels in the input','Take a word and count its vowels.','education','5',[{input:'xyz',output:'0'},{input:'oasis',output:'3'}]],
-      ['First N multiples of a number','Take a number and N and print its first N multiples.','4 5','4 8 12 16 20',[{input:'3 4',output:'3 6 9 12'}]],
+      ['First N multiples of a number','Take a number and N, each on a new line, and print its first N multiples.','4\n5','4 8 12 16 20',[{input:'3\n4',output:'3 6 9 12'}]],
       ['Count words','Take a sentence and count how many words it has.','learn python every day','4',[{input:'a b c',output:'3'},{input:'hi',output:'1'}]],
-      ['Print a rectangle of stars','Take rows and columns and print that many rows of stars.','3 4','****\n****\n****',[{input:'2 3',output:'***\n***'}]]
+      ['Print a rectangle of stars','Take rows and columns, each on a new line, and print that many rows of stars.','3\n4','****\n****\n****',[{input:'2\n3',output:'***\n***'}]]
     ]
   },
   'While Loops': {
@@ -297,7 +297,7 @@ const questionSeeds = {
     advanced:[
       ['Find the largest entered','Keep reading numbers until 0 is entered and print the largest one seen.','8\n3\n11\n0','11',[{input:'-2\n-9\n0',output:'-2'},{input:'5\n5\n0',output:'5'}]],
       ['Factorial in a while loop','Take a number N and print its factorial using a while loop in the format: N! = <result>.','5','5! = 120',[{input:'4',output:'4! = 24'},{input:'0',output:'0! = 1'}]],
-      ['Power with while','Take a base and an exponent and print the result using a while loop.','3 4','81',[{input:'2 5',output:'32'},{input:'2 0',output:'1'}]],
+      ['Power with while','Take a base and an exponent, each on a new line, and print the result using a while loop.','3\n4','81',[{input:'2\n5',output:'32'},{input:'2\n0',output:'1'}]],
       ['Number of digits in while','Take an integer and print how many digits it has.','849201','6',[{input:'7',output:'1'},{input:'1000',output:'4'}]],
       ['Reverse a number with while','Take an integer and print its reversed digits.','12345','54321',[{input:'987',output:'789'},{input:'1042',output:'2401'}]],
       ['Print spiral-ish triangle','Take N and print rows of stars of increasing length.','4','*\n**\n***\n****',[{input:'3',output:'*\n**\n***'}]],
@@ -311,7 +311,7 @@ const questionSeeds = {
     basic:[
       ['Square pattern','Print an n by n square of stars.','3','***\n***\n***',[{input:'2',output:'**\n**'}]],
       ['Number grid','Print rows of repeated numbers 1 to n.','3','123\n123\n123',[{input:'2',output:'12\n12'}]],
-      ['Coordinate pairs','Print every (row, column) pair for a 2 by 3 grid.','2 3','(1,1) (1,2) (1,3)\n(2,1) (2,2) (2,3)',[{input:'1 2',output:'(1,1) (1,2)'}]],
+      ['Coordinate pairs','Read rows and columns, each on a new line, and print every (row, column) pair for the grid.','2\n3','(1,1) (1,2) (1,3)\n(2,1) (2,2) (2,3)',[{input:'1\n2',output:'(1,1) (1,2)'}]],
       ['Right triangle of stars','Print a right triangle with n rows.','4','*\n**\n***\n****',[{input:'3',output:'*\n**\n***'}]],
       ['Star grid with border','Print an n x n grid where only the border uses stars and the inside uses dots.','4','****\n*..*\n*..*\n****',[{input:'3',output:'***\n*.*\n***'}]],
       ['Reversed triangle','Print a right triangle pointing down with n rows.','4','****\n***\n**\n*',[{input:'3',output:'***\n**\n*'}]],
@@ -425,10 +425,10 @@ const questionSeeds = {
     basic:[
       ['Create a greeting','Write a function greet(name) that returns a greeting string.','Nina','Hello, Nina!',[{input:'Aman',output:'Hello, Aman!'}]],
       ['Square a number','Write a function square(n) and print its result.','7','49',[{input:'12',output:'144'}]],
-      ['Add two values','Write add(a, b) that returns their sum.','4 9','13',[{input:'20 30',output:'50'}]],
-      ['Difference function','Write difference(a, b) that returns a - b.','9 4','5',[{input:'15 20',output:'-5'}]],
+      ['Add two values','Read two numbers, each on a new line. Write add(a, b) that returns their sum.','4\n9','13',[{input:'20\n30',output:'50'}]],
+      ['Difference function','Read two numbers, each on a new line. Write difference(a, b) that returns a - b.','9\n4','5',[{input:'15\n20',output:'-5'}]],
       ['Even check function','Write is_even(n) that returns True for even numbers.','8','True',[{input:'7',output:'False'}]],
-      ['Area of a rectangle','Write area(width, height) and print the area.','4 6','24',[{input:'5 5',output:'25'}]],
+      ['Area of a rectangle','Read width and height, each on a new line. Write area(width, height) and print the area.','4\n6','24',[{input:'5\n5',output:'25'}]],
       ['Length of a word','Write word_length(word) that returns the number of characters.','python','6',[{input:'code',output:'4'}]],
       ['Double a value','Write double(n) that returns two times the value.','9','18',[{input:'21',output:'42'}]],
       ['Greet three times','Call a greeting function three times and print each line.','Ria','Hello, Ria!\nHello, Ria!\nHello, Ria!',[{input:'Dev',output:'Hello, Dev!\nHello, Dev!\nHello, Dev!'}]],
@@ -436,10 +436,10 @@ const questionSeeds = {
     ],
     intermediate:[
       ['Factorial function','Write factorial(n) using a loop inside a function.','5','120',[{input:'3',output:'6'}]],
-      ['Return the larger','Write max_of_two(a, b) without using max().','8 13','13',[{input:'25 10',output:'25'}]],
+      ['Return the larger','Read two numbers, each on a new line. Write max_of_two(a, b) without using max().','8\n13','13',[{input:'25\n10',output:'25'}]],
       ['Count vowels function','Return the vowel count of a string from a function.','beautiful','5',[{input:'rhythm',output:'0'}]],
       ['Sum of a list','Write sum_list(items) that returns the total of a list.','1 2 3 4','10',[{input:'5 6 7',output:'18'}]],
-      ['Average function','Write average(a, b, c) that returns the mean.','4 8 12','8.0',[{input:'3 6 9',output:'6.0'}]],
+      ['Average function','Read three numbers, each on a new line. Write average(a, b, c) that returns the mean.','4\n8\n12','8.0',[{input:'3\n6\n9',output:'6.0'}]],
       ['Range sum function','Write range_sum(start, end) that sums numbers between them.','5\n10','45',[{input:'1\n4',output:'10'}]],
       ['First letter function','Write first_letter(word) that returns the first character.','python','p',[{input:'code',output:'c'}]],
       ['Is prime function','Write is_prime(n) that returns True for prime numbers.','17','True',[{input:'12',output:'False'}]],
@@ -454,7 +454,7 @@ const questionSeeds = {
       ['Keyword argument','Write describe(name, age) and call it by keyword to print a sentence.','Nina\n21','Nina is 21 years old.',[{input:'Aman\n24',output:'Aman is 24 years old.'}]],
       ['Return multiple values','Write min_max(items) that returns both the smallest and the largest.','9 2 6','(2, 9)',[{input:'4 8 3',output:'(3, 8)'}]],
       ['Recursive sum','Write a recursive function rec_sum(n) that sums from 1 to n.','5','15',[{input:'4',output:'10'}]],
-      ['Recursive power','Write a recursive function rec_power(base, exp) that computes powers.','3 4','81',[{input:'2 5',output:'32'}]],
+      ['Recursive power','Read base and exponent, each on a new line. Write a recursive function rec_power(base, exp) that computes powers.','3\n4','81',[{input:'2\n5',output:'32'}]],
       ['Is palindrome function','Write is_palindrome(word) that returns True for palindromes.','level','True',[{input:'python',output:'False'}]],
       ['Compose two functions','Write double(n) and increment(n), then print increment(double(3)).','3','7',[{input:'5',output:'11'}]]
     ]
@@ -1005,11 +1005,11 @@ const questionSeeds = {
 },
   'Exception Handling': {
     basic:[
-      ['Safe division','Divide two values and print a friendly message when division by zero occurs.','10 0','Cannot divide by zero',[{input:'10 2',output:'5.0'}]],
+      ['Safe division','Read two values, each on a new line. Divide them and print a friendly message when division by zero occurs.','10\n0','Cannot divide by zero',[{input:'10\n2',output:'5.0'}]],
       ['Integer parser','Convert a string to int and print Invalid on failure.','abc','Invalid',[{input:'42',output:'42'}]],
       ['Index guard','Read an index and handle an out-of-range list access.','10','Index out of range',[{input:'1',output:'20'}]],
       ['Safe conversion to float','Convert a string to float and print Not a number on failure.','3.5','3.5',[{input:'abc',output:'Not a number'}]],
-      ['Zero check in subtraction','Subtract two numbers, catching only when the result is exact.','10 3','7',[{input:'9 5',output:'4'}]],
+      ['Zero check in subtraction','Read two numbers, each on a new line, subtract them, catching only when the result is exact.','10\n3','7',[{input:'9\n5',output:'4'}]],
       ['List element getter','Read an index into a list and print the value or Default.','2','30',[{input:'9',output:'Default'}]],
       ['Dict lookup guard','Look up a key and print Missing when it is not present.','name Nina\nage','Missing',[{input:'name Nina\nname',output:'Nina'}]],
       ['Parse a list of numbers','Convert each token to int, skipping invalid ones.','10 a 20','10 20',[{input:'1 x 2',output:'1 2'}]],
@@ -1020,11 +1020,11 @@ const questionSeeds = {
       ['Retry input','Keep asking for a valid integer using try/except.','x\n12','12',[{input:'15',output:'15'}]],
       ['File-style parser','Parse several values and skip invalid numeric entries.','10 a 4 b 7','10 4 7',[{input:'1 x 2 y',output:'1 2'}]],
       ['Key guard','Safely access a dictionary key and print Missing when absent.','name Nina\ncity','Missing',[{input:'name Nina\nname',output:'Nina'}]],
-      ['Convert then add','Read two values, convert to int, and add, handling errors.','3 4','7',[{input:'a 4',output:'Invalid'}]],
+      ['Convert then add','Read two values, each on a new line, convert to int, and add, handling errors.','3\n4','7',[{input:'a\n4',output:'Invalid'}]],
       ['Safe average','Compute an average of a list of numbers, guarding against empty.','','0.00',[{input:'4 6',output:'5.00'}]],
       ['Try a division table','Print 100 / n for numbers in a range, skipping zero.','0 1 2','Error\n100.0\n50.0',[{input:'1 2',output:'100.0\n50.0'}]],
       ['Parse scores','Count how many valid integers appear on a line.','10 abc 30','2',[{input:'a b',output:'0'}]],
-      ['Exception type message','Read two values and print the specific error that occurs on invalid input.','10 0','ZeroDivisionError',[{input:'10 2',output:'None'}]],
+      ['Exception type message','Read two values, each on a new line, and print the specific error that occurs on invalid input.','10\n0','ZeroDivisionError',[{input:'10\n2',output:'None'}]],
       ['Retry with max attempts','Keep reading until a valid int or after 3 failures print Fail.','a\nb\nc','Fail',[{input:'1',output:'1'}]],
       ['Safe list sum','Sum a comma-separated list, ignoring non-numeric values.','1,2,x,3','6',[{input:'a,4,b',output:'4'}]]
     ],
@@ -1032,13 +1032,13 @@ const questionSeeds = {
       ['Custom error','Raise ValueError for a negative age and handle it cleanly.','-2','Age must be non-negative',[{input:'25',output:'25'}]],
       ['Transaction guard','Process a set of updates and roll back when any update is invalid.','+10\n-5\n-20','Rolled back',[{input:'+10\n-5',output:'5'}]],
       ['Nested handling','Handle conversion and division errors separately in one flow.','x\n2','Invalid number',[{input:'10\n0',output:'Cannot divide by zero'}]],
-      ['Safe percentage','Calculate a percentage, guarding against non-numeric and zero denominators.','10 0','Error',[{input:'20 50',output:'40.0'}]],
+      ['Safe percentage','Read two values, each on a new line. Calculate a percentage, guarding against non-numeric and zero denominators.','10\n0','Error',[{input:'20\n50',output:'40.0'}]],
       ['Parse salary slip','Read a salary and raise an error when it is negative.','-5','Salary cannot be negative',[{input:'5000',output:'5000'}]],
       ['List access custom','Read an index and print the value or a custom IndexError message.','5','Invalid index',[{input:'1',output:'50'}]],
       ['Convert a CSV row','Convert each cell of a row to int, raising for invalid cells.','1,2,3','1 2 3',[{input:'1,x',output:"'x' is not a number"}]],
       ['Graceful percentage of many','Compute percentages for many values, printing entries on error.','10 0 25\n40','25.0\nError\n62.5',[{input:'20 0\n50',output:'40.0\nError'}]],
-      ['Trade calculation','Compute a price with a markup, raising when markup is invalid.','100 50','150.0',[{input:'100 -10',output:'Invalid markup'}]],
-      ['Two types of errors','Read two numbers and report whether an error is a type or value error.','abc 2','Type error',[{input:'10 0',output:'Value error'}]]
+      ['Trade calculation','Read price and markup, each on a new line. Compute a price with a markup, raising when markup is invalid.','100\n50','150.0',[{input:'100\n-10',output:'Invalid markup'}]],
+      ['Two types of errors','Read two numbers, each on a new line, and report whether an error is a type or value error.','abc\n2','Type error',[{input:'10\n0',output:'Value error'}]]
     ]
   },
   'File Handling': {
@@ -1072,7 +1072,7 @@ const questionSeeds = {
       ['Chunk a large file','Read a text file and report how many chunks of size n are needed.','2500\n1000','3',[{input:'1000\n500',output:'2'}]],
       ['Filter lines','Print lines from a file that contain a given word.','a.txt\ncat','cat naps',[{input:'a.txt\ndog',output:'dog barks\ndog runs'}]],
       ['Largest number in file','Read numbers from a file and print the maximum.','nums.txt','15',[{input:'data.txt',output:'22',mockFiles:{'data.txt':'22\n10\n5'}}],{mockFiles:{'nums.txt':'5\n15\n10'}}],
-      ['Merge two files','Combine the contents of two files into one.','a.txt b.txt','Merged',[{input:'x.txt y.txt',output:'Merged'}]],
+      ['Merge two files','Read two filenames, each on a new line. Combine the contents of two files into one.','a.txt\nb.txt','Merged',[{input:'x.txt\ny.txt',output:'Merged'}]],
       ['Sort numbers file','Read numbers from a file, sort them and print.','nums.txt','5 7 8 9 10',[{input:'data.txt',output:'9 12 21 33',mockFiles:{'data.txt':'33\n9\n21\n12'}}],{mockFiles:{'nums.txt':'10\n5\n9\n7\n8'}}],
       ['File to dictionary','Build a dictionary from a file of key-value pairs and print one value.','config.txt\nhost','localhost',[{input:'config.txt\nport',output:'8080'}]],
       ['Read and update a counter','Read a counter, add 1, and write it back.','counter.txt','Incremented',[{input:'counter.txt',output:'Incremented'}]],
@@ -1458,11 +1458,11 @@ const questionSeeds = {
   'Object-Oriented Programming': {
     basic:[
       ['Create a class','Create a Person class with a name attribute and print it.','Nina','Nina',[{input:'Aman',output:'Aman'}]],
-      ['Add a method','Create a Rectangle class with area().','4 6','24',[{input:'5 5',output:'25'}]],
+      ['Add a method','Read width and height, each on a new line. Create a Rectangle class with area().','4\n6','24',[{input:'5\n5',output:'25'}]],
       ['Use __init__','Create a Book object using __init__ and print its title.','Python Basics','Python Basics',[{input:'Fluent Python',output:'Fluent Python'}]],
       ['Greeting method','Add a greet() method to a class that prints a message.','Alex','Hello, Alex!',[{input:'Ria',output:'Hello, Ria!'}]],
       ['Age attribute','Create a class with an age attribute and print it.','21','21',[{input:'30',output:'30'}]],
-      ['Perimeter method','Add perimeter() to a Rectangle class.','4 6','20',[{input:'5 5',output:'20'}]],
+      ['Perimeter method','Read width and height, each on a new line. Add perimeter() to a Rectangle class.','4\n6','20',[{input:'5\n5',output:'20'}]],
       ['String representation','Override __str__ to print a friendly message.','Nina','I am Nina.',[{input:'Sam',output:'I am Sam.'}]],
       ['Counter with class','Create a class and count how many objects are made.','3','3',[{input:'5',output:'5'}]],
       ['Simple inheritance','Create a base class and a child class that inherits from it.','dog','Animal: dog',[{input:'cat',output:'Animal: cat'}]],
